@@ -1,107 +1,436 @@
 #!/usr/bin/env python3
 """
-generate_annotated.py
+annotate.py -- one-file, menu-driven tool for building "International Law
+Annotated"-style pages: hover/tap paragraph annotations, an author filter,
+a note-density rail, and a "jump to first annotation" button.
 
-Turn a plain-text legal instrument + a JSON set of annotations into an
-"International Law Annotated"-style HTML page: hover/tap popovers on each
-paragraph, an author filter, a note-density rail down the side, and a
-"jump to first annotation" button. Matches the structure of the hand-built
-Kyoto Protocol page.
+Run it with no arguments to get an interactive menu:
 
-------------------------------------------------------------------------
-SOURCE TEXT FORMAT  (plain .txt file)
-------------------------------------------------------------------------
-Optional front matter, then a line containing only "---", then the body.
+    python annotate.py
 
-    TITLE: Kyoto Protocol to the United Nations Framework Convention on Climate Change
-    DESC: Annotated Kyoto Protocol text with inline author-filtered notes.
-    HEADER: Kyoto Protocol
-    HOME: ../index.html
-    CLOSING: Done at Kyoto this tenth day of December one thousand nine hundred and ninety-seven.
-    ---
-    ¶ The Parties to this Protocol,
-    ¶ Being Parties to the United Nations Framework Convention on Climate Change...
+It walks you through three steps, remembering your progress (in a small
+.annotate_state.json file in the current directory) so you can quit and
+come back later, or re-run after editing a file by hand:
 
-    ## Article 1
-    ¶ For the purposes of this Protocol, the definitions contained in Article 1 shall apply.
-    1. "Conference of the Parties" means the Conference of the Parties to the Convention.
-    2. "Convention" means the United Nations Framework Convention on Climate Change...
+    1) Set the source text -- either convert a PDF, or point at an
+       existing source .txt you already have (e.g. one you edited after
+       a previous conversion).
+    2) Set the annotations -- a plain-text file in the format described
+       under option 4 in the menu, or a JSON file if you already have one.
+    3) Generate the final HTML + notes.js -- unlocked once both 1 and 2
+       are set.
 
-    ## Article 2
-    1. Each Party included in Annex I shall:
-    (a) Implement and/or further elaborate policies and measures...
-    (i) Enhancement of energy efficiency in relevant sectors...
-
-Body rules:
-  * Blank lines are ignored (no need to hard-wrap paragraphs; one paragraph
-    per line, however long).
-  * A line starting with "## " becomes an <h3>Article heading.
-  * Each remaining line becomes one annotatable paragraph. If it starts with
-    one of these markers it is stripped off and shown as the paragraph's
-    clickable label; otherwise the label defaults to "¶":
-        ¶            bare pilcrow
-        1.  2.  3.   numbered
-        (a) (b)      lettered
-        (i) (ii)     lower-case roman
-  * Inline HTML (<em>, <strong>, <br>, etc.) inside a line is passed through
-    untouched, so you can keep emphasis exactly as in the source instrument.
-  * To give a paragraph a stable id (so annotations survive re-ordering /
-    re-running the script), prefix the line with {key}:
-        {def-cop} 1. "Conference of the Parties" means ...
-    Its id becomes "para-def-cop". Paragraphs without an explicit key are
-    numbered sequentially: "para-1", "para-2", ...
-
-------------------------------------------------------------------------
-ANNOTATIONS FORMAT  (JSON file)
-------------------------------------------------------------------------
-A list of note objects. "para" must match a paragraph id from the source
-(with or without the "para-" prefix -- both "def-cop" and "para-def-cop"
-work, as does the plain sequential number "9"):
-
-    [
-      {
-        "para": "def-cop",
-        "author": "J. Smith",
-        "title": "Scope of \"Conference of the Parties\"",
-        "text": "This definition folds the COP into the Protocol's own
-                  institutional machinery rather than creating a new body.",
-        "source": "Smith, Climate Law (2020) 45"
-      },
-      {
-        "para": "16",
-        "author": "A. Nguyen",
-        "text": "Note the 'shall' -- this is treated as a binding, not
-                  hortatory, obligation on Annex I parties."
-      }
-    ]
-
-Only "para" and "text" are required; "author", "title" and "source" are
-optional and simply omitted from the rendered note if left out.
-
-------------------------------------------------------------------------
-USAGE
-------------------------------------------------------------------------
-    python generate_annotated.py \
-        --text kyoto_source.txt \
-        --annotations kyoto_notes.json \
-        --out-html texts/kyoto.html \
-        --out-notes texts/kyoto-notes.js
+Nothing here talks to the network or needs installing anything beyond
+Python 3 and poppler-utils' `pdftotext`/`pdfinfo` (already present in
+most environments that can open PDFs at all).
 """
 
 import argparse
 import html
 import json
 import re
+import subprocess
 import sys
+from collections import Counter
 from pathlib import Path
 
-MARKER_RE = re.compile(r'^(¶|\d+\.|\([a-z]+\)|\([ivxlcdm]+\))\s+(.*)$', re.IGNORECASE)
-KEY_RE = re.compile(r'^\{([\w-]+)\}\s*(.*)$')
-HEADER_RE = re.compile(r'^##\s+(.*)$')
-META_RE = re.compile(r'^([A-Z_]+):\s*(.*)$')
+STATE_FILE = Path('.annotate_state.json')
 
 
-# ---------------------------------------------------------------- parsing --
+# ========================================================================
+#  PART 1 -- PDF -> plain-text "source" format
+# ========================================================================
+#
+# SOURCE TEXT FORMAT  (plain .txt)
+# ---------------------------------------------------------------------
+# Optional front matter, then a line containing only "---", then the body.
+#
+#     TITLE: Kyoto Protocol to the United Nations Framework Convention on Climate Change
+#     DESC: Annotated Kyoto Protocol text with inline author-filtered notes.
+#     HEADER: Kyoto Protocol
+#     HOME: ../index.html
+#     CLOSING: Done at Kyoto this tenth day of December one thousand nine hundred and ninety-seven.
+#     ---
+#     ¶ The Parties to this Protocol,
+#     ¶ Being Parties to the United Nations Framework Convention on Climate Change...
+#
+#     ## Article 1
+#     ¶ For the purposes of this Protocol, the definitions contained in Article 1 shall apply.
+#     1. "Conference of the Parties" means the Conference of the Parties to the Convention.
+#
+# Body rules:
+#   * Blank lines are ignored.
+#   * A line starting with "## " becomes an Article heading.
+#   * Each remaining line becomes one annotatable paragraph. A leading
+#     marker (¶, "1.", "(a)", "(i)") is stripped off and shown as the
+#     paragraph's clickable label; otherwise the label defaults to "¶".
+#   * Prefix a line with {key} to give it a stable id ("para-key") that
+#     survives re-ordering / re-conversion. Without one, paragraphs are
+#     auto-numbered: para-1, para-2, ...
+
+PDF_HEADING_RE = re.compile(
+    r'^(Article|Part|Chapter|Section|Annex|Title)\s+[IVXLCDM0-9]+[A-Za-z]*\b.{0,60}$',
+    re.IGNORECASE,
+)
+
+PDF_MARKER_RE = re.compile(
+    r'^(?:'
+    r'(?P<num>\d+)[.\)]'
+    r'|\((?P<letter>[a-z]{1,3})\)'
+    r'|\((?P<roman>[ivxlcdm]{1,6})\)'
+    r'|(?P<pilcrow>¶)'
+    r')\s+(?P<rest>.*)$',
+    re.IGNORECASE,
+)
+
+PDF_PAGE_NUM_LINE_RE = re.compile(
+    r'^\s*[-\u2013\u2014]?\s*\d+\s*[-\u2013\u2014]?\s*$|^\s*page\s+\d+(\s+of\s+\d+)?\s*$',
+    re.IGNORECASE,
+)
+
+# Recital preambles ("The Parties to this Protocol, / Recognizing that..., /
+# Have agreed as follows:") are near-universal in treaty drafting, but PDFs
+# often have no blank line between clauses, so pdftotext fuses the whole
+# preamble into one paragraph. These cue words almost always start a new
+# recital, so they're used to re-split it.
+PDF_RECITAL_CUES = [
+    'Being', 'Recognizing', 'Recognising', 'Recalling', 'Further recalling',
+    'Noting', 'Taking note', 'Taking into account', 'Considering', 'Desiring',
+    'Desirous', 'Reaffirming', 'Bearing in mind', 'Convinced', 'Determined',
+    'Concerned', 'Emphasizing', 'Emphasising', 'Underlining', 'Acknowledging',
+    'Mindful', 'Guided by', 'Welcoming', 'Alarmed by', 'Aware that',
+    'Affirming', 'Conscious', 'Stressing', 'Have agreed', 'In pursuit of',
+    'Pursuant to',
+]
+PDF_RECITAL_CUE_RE = re.compile(
+    r',\s+(?=(?:' + '|'.join(re.escape(c) for c in PDF_RECITAL_CUES) + r')\b)'
+)
+
+
+def pdf_split_recitals(text: str):
+    parts = [p.strip() for p in PDF_RECITAL_CUE_RE.split(text) if p.strip()]
+    if len(parts) < 2:
+        return [text]
+    for i in range(len(parts) - 1):
+        if not parts[i].endswith((',', ';', ':', '.')):
+            parts[i] += ','
+    return parts
+
+
+def pdf_extract_raw_text(pdf_path: Path, layout: bool = False) -> str:
+    cmd = ['pdftotext']
+    if layout:
+        cmd.append('-layout')
+    cmd += [str(pdf_path), '-']
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"pdftotext failed:\n{result.stderr}")
+    if not result.stdout.strip():
+        raise RuntimeError(
+            "no text extracted -- this PDF may be scanned/raster-only "
+            "(no text layer). OCR it first, then re-run."
+        )
+    return result.stdout
+
+
+def pdf_strip_running_headers_footers(raw_text: str) -> str:
+    """Drop lines repeating at the top/bottom of most pages (mastheads,
+    page numbers), and trim blank lines right at page boundaries so a
+    paragraph wrapping across a page break isn't split into two."""
+    pages = raw_text.split('\x0c')
+    if len(pages) < 3:
+        return raw_text
+
+    def norm(line):
+        return re.sub(r'\d+', '#', line.strip())
+
+    page_lines = [p.split('\n') for p in pages]
+    top_counter, bot_counter = Counter(), Counter()
+    for lines in page_lines:
+        non_blank = [i for i, l in enumerate(lines) if l.strip()]
+        if not non_blank:
+            continue
+        top_counter[norm(lines[non_blank[0]])] += 1
+        bot_counter[norm(lines[non_blank[-1]])] += 1
+
+    threshold = max(2, round(len(pages) * 0.5))
+    top_boiler = {k for k, v in top_counter.items() if v >= threshold and 0 < len(k) < 90}
+    bot_boiler = {k for k, v in bot_counter.items() if v >= threshold and 0 < len(k) < 90}
+
+    out_page_lines = []
+    for lines in page_lines:
+        non_blank = [i for i, l in enumerate(lines) if l.strip()]
+        drop = set()
+        if non_blank and norm(lines[non_blank[0]]) in top_boiler:
+            drop.add(non_blank[0])
+        if non_blank and norm(lines[non_blank[-1]]) in bot_boiler:
+            drop.add(non_blank[-1])
+        for i in non_blank[:2] + non_blank[-2:]:
+            if PDF_PAGE_NUM_LINE_RE.match(lines[i]):
+                drop.add(i)
+        kept = [l for i, l in enumerate(lines) if i not in drop]
+        while kept and not kept[0].strip():
+            kept.pop(0)
+        while kept and not kept[-1].strip():
+            kept.pop()
+        out_page_lines.append(kept)
+
+    return '\n'.join('\n'.join(lines) for lines in out_page_lines)
+
+
+def pdf_dehyphenate_join(a: str, b: str) -> str:
+    if re.search(r'[A-Za-z]-$', a):
+        return a[:-1] + b
+    return a + ' ' + b
+
+
+def normalize_text(s: str) -> str:
+    return re.sub(r'[^a-z0-9]+', ' ', s.lower()).strip()
+
+
+def pdf_group_paragraphs(raw_text: str, skip_title: str = None, split_recitals_enabled: bool = True):
+    lines = [l.strip() for l in raw_text.replace('\x0c', '\n').split('\n')]
+    skip_norm = normalize_text(skip_title) if skip_title else None
+
+    paragraphs = []
+    buf_text = None
+    buf_label = None
+
+    def flush():
+        nonlocal buf_text, buf_label
+        if buf_text:
+            paragraphs.append({'type': 'para', 'label': buf_label, 'text': buf_text.strip()})
+        buf_text, buf_label = None, None
+
+    for line in lines:
+        if not line:
+            flush()
+            continue
+
+        if skip_norm and normalize_text(line) == skip_norm:
+            continue
+
+        if PDF_HEADING_RE.match(line):
+            flush()
+            paragraphs.append({'type': 'header', 'text': line})
+            continue
+
+        mm = PDF_MARKER_RE.match(line)
+        if mm:
+            flush()
+            if mm.group('num') is not None:
+                buf_label = f"{mm.group('num')}."
+            elif mm.group('letter') is not None:
+                buf_label = f"({mm.group('letter')})"
+            elif mm.group('roman') is not None:
+                buf_label = f"({mm.group('roman')})"
+            else:
+                buf_label = '¶'
+            buf_text = mm.group('rest')
+            continue
+
+        if buf_text is None:
+            buf_label = '¶'
+            buf_text = line
+        else:
+            buf_text = pdf_dehyphenate_join(buf_text, line)
+
+    flush()
+
+    if split_recitals_enabled:
+        expanded = []
+        in_leading_run = True
+        for p in paragraphs:
+            if in_leading_run and p['type'] == 'para' and p['label'] == '¶':
+                for clause in pdf_split_recitals(p['text']):
+                    expanded.append({'type': 'para', 'label': '¶', 'text': clause})
+            else:
+                in_leading_run = False
+                expanded.append(p)
+        paragraphs = expanded
+
+    return paragraphs
+
+
+def pdf_looks_suspicious(paragraphs):
+    flags = []
+    for i, p in enumerate(paragraphs):
+        if p['type'] != 'para':
+            continue
+        t = p['text']
+        if len(t) < 3:
+            flags.append((i, t, 'very short'))
+        elif re.search(r'[A-Za-z]{2}-[A-Za-z]{2}', t) and t.count('-') > len(t) / 20:
+            flags.append((i, t[:60], 'possible leftover hyphenation'))
+    return flags
+
+
+def pdf_render_source(meta: dict, paragraphs) -> str:
+    lines = []
+    for key in ('TITLE', 'DESC', 'HEADER', 'HOME', 'CLOSING'):
+        if meta.get(key):
+            lines.append(f"{key}: {meta[key]}")
+    lines.append('---')
+    lines.append('')
+    for p in paragraphs:
+        if p['type'] == 'header':
+            lines.append(f"## {p['text']}")
+        else:
+            lines.append(f"{p['label']} {p['text']}")
+    lines.append('')
+    return '\n'.join(lines)
+
+
+def pdf_guess_title(pdf_path: Path) -> str:
+    try:
+        result = subprocess.run(['pdfinfo', str(pdf_path)], capture_output=True, text=True)
+        m = re.search(r'^Title:\s*(.+)$', result.stdout, re.MULTILINE)
+        if m and m.group(1).strip():
+            return m.group(1).strip()
+    except FileNotFoundError:
+        pass
+    return pdf_path.stem.replace('_', ' ').replace('-', ' ').title()
+
+
+def convert_pdf_to_source(pdf_path: Path, meta: dict, layout: bool = False):
+    """Returns (rendered_source_text, paragraphs, warnings_list)."""
+    raw = pdf_extract_raw_text(pdf_path, layout=layout)
+    raw = pdf_strip_running_headers_footers(raw)
+    paragraphs = pdf_group_paragraphs(raw, skip_title=meta.get('TITLE'))
+    if not any(p['type'] == 'para' for p in paragraphs):
+        raise RuntimeError(
+            "no paragraphs detected -- try layout-preserving extraction, "
+            "or check the PDF actually has a text layer."
+        )
+    flags = pdf_looks_suspicious(paragraphs)
+    return pdf_render_source(meta, paragraphs), paragraphs, flags
+
+
+# ========================================================================
+#  PART 2 -- annotations: plain-text format + JSON, both accepted
+# ========================================================================
+#
+# ANNOTATION TEXT FORMAT  (suggested default -- see menu option 4)
+# ---------------------------------------------------------------------
+# One block per note. A block starts with a line of the form "@<id>",
+# where <id> matches a paragraph id from the source text (with or
+# without the "para-" prefix, or the bare sequential number). Inside a
+# block, optional "Author:", "Title:", and "Source:" lines come first;
+# everything after that, up to the next "@" line, is the note text
+# (reflowed -- wrap it across as many lines as you like).
+#
+#     @def-cop
+#     Author: J. Smith
+#     Title: Institutional continuity
+#     Source: Smith, Climate Law (2020) 45
+#     The Protocol folds the COP into its own machinery rather than
+#     creating a rival body.
+#
+#     @art2-chapeau
+#     Author: A. Nguyen
+#     The word "shall" here is generally read as imposing a binding
+#     obligation on Annex I parties.
+#
+# Repeat "@same-id" for a second note on the same paragraph.
+#
+# JSON FORMAT (also accepted -- a list of note objects)
+# ---------------------------------------------------------------------
+#     [
+#       {"para": "def-cop", "author": "J. Smith", "title": "...",
+#        "text": "...", "source": "..."}
+#     ]
+#
+# Only "para" and "text" are required either way.
+
+ANN_BLOCK_START_RE = re.compile(r'^@([\w-]+)\s*$')
+ANN_FIELD_RE = re.compile(r'^(Author|Title|Source):\s*(.*)$', re.IGNORECASE)
+
+
+def parse_annotations_text(path: Path):
+    lines = path.read_text(encoding='utf-8').splitlines()
+    items = []
+    cur = None
+    body_lines = []
+    body_started = False
+
+    def flush():
+        nonlocal cur, body_lines, body_started
+        if cur is not None:
+            text = ' '.join(l.strip() for l in body_lines if l.strip())
+            cur['text'] = text.strip()
+            if cur.get('text'):
+                items.append(cur)
+        cur, body_lines, body_started = None, [], False
+
+    for raw in lines:
+        stripped = raw.strip()
+        bm = ANN_BLOCK_START_RE.match(stripped)
+        if bm:
+            flush()
+            cur = {'para': bm.group(1)}
+            continue
+        if cur is None:
+            continue
+        if not stripped:
+            continue
+        fm = ANN_FIELD_RE.match(stripped)
+        if fm and not body_started:
+            cur[fm.group(1).lower()] = fm.group(2).strip()
+            continue
+        body_started = True
+        body_lines.append(raw)
+
+    flush()
+    return items
+
+
+def normalize_para_ref(ref: str) -> str:
+    ref = str(ref).strip()
+    return ref if ref.startswith('para-') else f'para-{ref}'
+
+
+def build_notes(items, valid_ids=None):
+    notes = {}
+    warnings = []
+    for item in items:
+        ref = item.get('para') or item.get('id')
+        if not ref:
+            continue
+        para_id = normalize_para_ref(ref)
+        if valid_ids is not None and para_id not in valid_ids:
+            warnings.append(para_id)
+        entry = {k: item[k] for k in ('author', 'title', 'text', 'source') if item.get(k)}
+        if not entry.get('text'):
+            continue
+        notes.setdefault(para_id, []).append(entry)
+    return notes, warnings
+
+
+def load_annotations_any(path: Path, valid_ids=None):
+    """Detects plain-text vs JSON and returns (notes_dict, warnings_list)."""
+    text = path.read_text(encoding='utf-8')
+    stripped = text.strip()
+    if path.suffix.lower() == '.json' or stripped.startswith('['):
+        raw = json.loads(text)
+        if not isinstance(raw, list):
+            raise ValueError("annotations JSON must be a list of note objects")
+        items = raw
+    else:
+        items = parse_annotations_text(path)
+    if not items:
+        raise ValueError("no notes found in this file")
+    return build_notes(items, valid_ids)
+
+
+# ========================================================================
+#  PART 3 -- source .txt + notes -> HTML + notes.js
+# ========================================================================
+
+SRC_MARKER_RE = re.compile(r'^(¶|\d+\.|\([a-z]+\)|\([ivxlcdm]+\))\s+(.*)$', re.IGNORECASE)
+SRC_KEY_RE = re.compile(r'^\{([\w-]+)\}\s*(.*)$')
+SRC_HEADER_RE = re.compile(r'^##\s+(.*)$')
+SRC_META_RE = re.compile(r'^([A-Z_]+):\s*(.*)$')
+
 
 def parse_source(path: Path):
     lines = path.read_text(encoding='utf-8').splitlines()
@@ -113,7 +442,7 @@ def parse_source(path: Path):
         if stripped == '---':
             i += 1
             break
-        m = META_RE.match(stripped)
+        m = SRC_META_RE.match(stripped)
         if m:
             meta[m.group(1)] = m.group(2).strip()
         i += 1
@@ -128,20 +457,20 @@ def parse_source(path: Path):
         if not line:
             continue
 
-        hm = HEADER_RE.match(line)
+        hm = SRC_HEADER_RE.match(line)
         if hm:
             paragraphs.append({'type': 'header', 'text': hm.group(1).strip()})
             continue
 
         explicit_key = None
-        km = KEY_RE.match(line)
+        km = SRC_KEY_RE.match(line)
         if km:
             explicit_key = km.group(1)
             line = km.group(2).strip()
             if not line:
                 continue
 
-        mm = MARKER_RE.match(line)
+        mm = SRC_MARKER_RE.match(line)
         if mm:
             label, content = mm.group(1), mm.group(2)
         else:
@@ -151,60 +480,20 @@ def parse_source(path: Path):
         pid_core = explicit_key if explicit_key else str(auto_n)
         para_id = f'para-{pid_core}'
         if para_id in seen_ids:
-            sys.exit(f"error: duplicate paragraph id '{para_id}' "
-                     f"(explicit keys must be unique)")
+            raise ValueError(f"duplicate paragraph id '{para_id}' (explicit keys must be unique)")
         seen_ids.add(para_id)
 
-        paragraphs.append({
-            'type': 'para',
-            'id': para_id,
-            'label': label,
-            'text': content,
-        })
+        paragraphs.append({'type': 'para', 'id': para_id, 'label': label, 'text': content})
 
     if not any(p['type'] == 'para' for p in paragraphs):
-        sys.exit("error: no paragraphs found -- check the '---' front-matter delimiter")
+        raise ValueError("no paragraphs found -- check the '---' front-matter delimiter")
 
     return meta, paragraphs
-
-
-def normalize_para_ref(ref: str) -> str:
-    ref = str(ref).strip()
-    return ref if ref.startswith('para-') else f'para-{ref}'
-
-
-def load_annotations(path: Path, valid_ids):
-    raw = json.loads(path.read_text(encoding='utf-8'))
-    if not isinstance(raw, list):
-        sys.exit("error: annotations JSON must be a list of note objects")
-
-    notes = {}
-    warnings = []
-    for item in raw:
-        ref = item.get('para') or item.get('id')
-        if not ref:
-            sys.exit(f"error: annotation missing 'para' field: {item}")
-        para_id = normalize_para_ref(ref)
-        if para_id not in valid_ids:
-            warnings.append(para_id)
-        entry = {k: item[k] for k in ('author', 'title', 'text', 'source') if item.get(k)}
-        if not entry.get('text'):
-            sys.exit(f"error: annotation for '{para_id}' has no 'text'")
-        notes.setdefault(para_id, []).append(entry)
-
-    if warnings:
-        uniq = sorted(set(warnings))
-        print(f"warning: {len(uniq)} annotation(s) reference paragraph ids "
-              f"not found in the source text: {', '.join(uniq)}", file=sys.stderr)
-
-    return notes
 
 
 def esc(s: str) -> str:
     return html.escape(s, quote=False)
 
-
-# --------------------------------------------------------------- rendering --
 
 PARA_TEMPLATE = '''<div id="{pid}">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
@@ -223,18 +512,13 @@ def render_body(paragraphs):
         if p['type'] == 'header':
             out.append(HEADER_TEMPLATE.format(text=esc(p['text'])))
         else:
-            # paragraph text is passed through as-is so inline <em>/<strong>/<br>
-            # tags from the source survive; only the label is escaped.
             out.append(PARA_TEMPLATE.format(pid=p['id'], label=esc(p['label']), text=p['text']))
     return ''.join(out)
 
 
 def render_notes_js(notes: dict) -> str:
     body = json.dumps(notes, ensure_ascii=False, indent=2)
-    return (
-        f"window.NOTES = {body};\n"
-        f"window.dispatchEvent(new Event('notes:ready'));\n"
-    )
+    return f"window.NOTES = {body};\nwindow.dispatchEvent(new Event('notes:ready'));\n"
 
 
 PAGE_TEMPLATE = r'''<!DOCTYPE html>
@@ -691,35 +975,281 @@ def build_page(meta: dict, body_html: str, notes_js_filename: str) -> str:
     return page
 
 
-# -------------------------------------------------------------------- main --
+# ========================================================================
+#  PART 4 -- interactive menu
+# ========================================================================
 
-def main():
-    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--text', required=True, type=Path, help='source text file')
-    ap.add_argument('--annotations', required=True, type=Path, help='annotations JSON file')
-    ap.add_argument('--out-html', required=True, type=Path, help='output HTML path')
-    ap.add_argument('--out-notes', required=True, type=Path, help='output notes .js path')
-    args = ap.parse_args()
+def load_state():
+    if STATE_FILE.exists():
+        try:
+            return json.loads(STATE_FILE.read_text(encoding='utf-8'))
+        except Exception:
+            return {}
+    return {}
 
-    meta, paragraphs = parse_source(args.text)
+
+def save_state(state: dict):
+    try:
+        STATE_FILE.write_text(json.dumps(state, indent=2), encoding='utf-8')
+    except OSError:
+        pass
+
+
+def prompt(msg, default=None):
+    if default:
+        raw = input(f"{msg} [{default}]: ").strip()
+        return raw or default
+    return input(f"{msg}: ").strip()
+
+
+def prompt_yes_no(msg, default=False):
+    d = 'y/N' if not default else 'Y/n'
+    raw = input(f"{msg} [{d}]: ").strip().lower()
+    if not raw:
+        return default
+    return raw.startswith('y')
+
+
+ANNOTATION_FORMAT_HELP = """
+------------------------------------------------------------------
+ Annotation text format
+------------------------------------------------------------------
+One block per note. A block starts with a line "@<id>", where <id>
+matches a paragraph id from the source text -- with or without the
+"para-" prefix, or the bare sequential number if you didn't give
+that paragraph a {key} in the source file.
+
+Inside a block, optional "Author:", "Title:", and "Source:" lines
+come first. Everything after that, up to the next "@" line, is the
+note text -- wrap it across as many lines as you like.
+
+    @def-cop
+    Author: J. Smith
+    Title: Institutional continuity
+    Source: Smith, Climate Law (2020) 45
+    The Protocol folds the COP into its own machinery rather than
+    creating a rival body.
+
+    @art2-chapeau
+    Author: A. Nguyen
+    The word "shall" here is generally read as imposing a binding
+    obligation on Annex I parties.
+
+Repeat "@same-id" again for a second note on the same paragraph.
+
+A .json file (a list of {"para", "author", "title", "text", "source"}
+objects) is also accepted -- it's auto-detected by the .json
+extension or by the file starting with "[".
+------------------------------------------------------------------
+"""
+
+
+def print_status(state):
+    print()
+    print("=" * 64)
+    print(" Annotated Text Builder")
+    print("=" * 64)
+    print(f" 1. Source text : {state.get('source_txt') or '(not set)'}")
+    print(f" 2. Annotations : {state.get('annotations') or '(not set)'}")
+    out_html = state.get('out_html')
+    print(f" 3. Output      : {out_html or '(not generated yet)'}")
+    print("-" * 64)
+
+
+def action_set_source(state):
+    print()
+    path_str = prompt("Path to a PDF to convert, or an existing source .txt (blank to cancel)")
+    if not path_str:
+        return
+    path = Path(path_str).expanduser()
+    if not path.exists():
+        print(f"\n'{path}' does not exist.")
+        return
+
+    if path.suffix.lower() == '.pdf':
+        guessed = pdf_guess_title(path)
+        title = prompt("Title", guessed)
+        header = prompt("Header (short title-bar text)", title)
+        desc = prompt("Description", "")
+        home = prompt("Home link", "../index.html")
+        closing = prompt("Closing statement (optional)", "")
+        layout = prompt_yes_no(
+            "Use layout-preserving extraction? (try this only if the default output looks jumbled)",
+            False,
+        )
+        default_out = path.with_name(path.stem + "_source.txt")
+        out_str = prompt("Output .txt path", str(default_out))
+        out_path = Path(out_str).expanduser()
+
+        meta = {'TITLE': title, 'DESC': desc, 'HEADER': header, 'HOME': home, 'CLOSING': closing}
+        try:
+            source_text, paragraphs, flags = convert_pdf_to_source(path, meta, layout=layout)
+        except RuntimeError as e:
+            print(f"\nCouldn't convert this PDF: {e}")
+            return
+
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(source_text, encoding='utf-8')
+
+        n_headers = sum(1 for p in paragraphs if p['type'] == 'header')
+        n_paras = sum(1 for p in paragraphs if p['type'] == 'para')
+
+        print(f"\nWrote {out_path}")
+        print(f"{n_headers} heading(s), {n_paras} paragraph(s) parsed.")
+        if flags:
+            print(f"{len(flags)} paragraph(s) worth a manual check:")
+            for _, snippet, reason in flags[:10]:
+                print(f"  - [{reason}] \"{snippet}\"")
+            if len(flags) > 10:
+                print(f"  ... and {len(flags) - 10} more")
+
+        print("\nOpen this file now if you want to fix paragraph breaks, tidy the")
+        print("preamble, or add {key} tags to paragraphs you plan to annotate.")
+        print("This path is already remembered -- come back whenever you're ready.")
+
+        state['source_txt'] = str(out_path)
+    else:
+        try:
+            parse_source(path)
+        except ValueError as e:
+            print(f"\n'{path}' doesn't look like a valid source file: {e}")
+            return
+        state['source_txt'] = str(path)
+        print(f"\nUsing '{path}' as the source text.")
+
+    save_state(state)
+
+
+def action_set_annotations(state):
+    print()
+    path_str = prompt("Path to your annotations file -- text format or .json (blank to cancel)")
+    if not path_str:
+        return
+    path = Path(path_str).expanduser()
+    if not path.exists():
+        print(f"\n'{path}' does not exist.")
+        return
+
+    valid_ids = None
+    if state.get('source_txt'):
+        src = Path(state['source_txt'])
+        if src.exists():
+            try:
+                _, paragraphs = parse_source(src)
+                valid_ids = {p['id'] for p in paragraphs if p['type'] == 'para'}
+            except ValueError:
+                pass
+
+    try:
+        notes, warnings = load_annotations_any(path, valid_ids)
+    except (ValueError, json.JSONDecodeError) as e:
+        print(f"\nCouldn't parse '{path}': {e}")
+        return
+
+    n_notes = sum(len(v) for v in notes.values())
+    print(f"\nParsed {n_notes} note(s) across {len(notes)} paragraph id(s).")
+    if warnings:
+        uniq = sorted(set(warnings))
+        print(f"Warning: {len(uniq)} id(s) don't match any paragraph in the current source text:")
+        print("  " + ", ".join(uniq))
+
+    state['annotations'] = str(path)
+    save_state(state)
+
+
+def action_generate(state):
+    print()
+    source_path = Path(state['source_txt'])
+    ann_path = Path(state['annotations'])
+    if not source_path.exists():
+        print(f"'{source_path}' no longer exists -- set the source text again (option 1).")
+        return
+    if not ann_path.exists():
+        print(f"'{ann_path}' no longer exists -- set the annotations again (option 2).")
+        return
+
+    default_html = source_path.with_suffix('.html')
+    out_html = Path(prompt("Output HTML path", str(default_html))).expanduser()
+    default_notes = out_html.with_name(out_html.stem + '-notes.js')
+    out_notes = Path(prompt("Output notes .js path", str(default_notes))).expanduser()
+
+    try:
+        meta, paragraphs = parse_source(source_path)
+    except ValueError as e:
+        print(f"\nCouldn't parse the source text: {e}")
+        return
+
     valid_ids = {p['id'] for p in paragraphs if p['type'] == 'para'}
-    notes = load_annotations(args.annotations, valid_ids)
+    try:
+        notes, warnings = load_annotations_any(ann_path, valid_ids)
+    except (ValueError, json.JSONDecodeError) as e:
+        print(f"\nCouldn't parse the annotations: {e}")
+        return
 
-    notes_js_filename = args.out_notes.name
+    if warnings:
+        uniq = sorted(set(warnings))
+        print(f"Warning: {len(uniq)} annotation id(s) don't match any paragraph: {', '.join(uniq)}")
+
     body_html = render_body(paragraphs)
-    page = build_page(meta, body_html, notes_js_filename)
+    page = build_page(meta, body_html, out_notes.name)
 
-    args.out_html.parent.mkdir(parents=True, exist_ok=True)
-    args.out_notes.parent.mkdir(parents=True, exist_ok=True)
-    args.out_html.write_text(page, encoding='utf-8')
-    args.out_notes.write_text(render_notes_js(notes), encoding='utf-8')
+    out_html.parent.mkdir(parents=True, exist_ok=True)
+    out_notes.parent.mkdir(parents=True, exist_ok=True)
+    out_html.write_text(page, encoding='utf-8')
+    out_notes.write_text(render_notes_js(notes), encoding='utf-8')
 
     n_paras = sum(1 for p in paragraphs if p['type'] == 'para')
     n_annotated = sum(1 for pid in valid_ids if pid in notes)
-    n_notes = sum(len(v) for v in notes.values())
-    print(f"wrote {args.out_html}")
-    print(f"wrote {args.out_notes}")
-    print(f"{n_paras} paragraphs parsed, {n_annotated} annotated, {n_notes} notes total")
+    n_notes_total = sum(len(v) for v in notes.values())
+
+    print(f"\nWrote {out_html}")
+    print(f"Wrote {out_notes}")
+    print(f"{n_paras} paragraph(s), {n_annotated} annotated, {n_notes_total} note(s) total.")
+
+    state['out_html'] = str(out_html)
+    state['out_notes'] = str(out_notes)
+    save_state(state)
+
+
+def menu_loop():
+    state = load_state()
+    while True:
+        print_status(state)
+        ready = bool(state.get('source_txt')) and bool(state.get('annotations'))
+        lock = "" if ready else "   [locked -- complete 1 and 2 first]"
+        print(" 1) Set source text (convert a PDF, or point at an existing .txt)")
+        print(" 2) Set annotations (a formatted text file, or JSON)")
+        print(f" 3) Generate the annotated HTML + notes.js{lock}")
+        print(" 4) Show the annotation text format")
+        print(" 0) Quit")
+        print("-" * 64)
+        choice = input("> ").strip()
+
+        if choice == '1':
+            action_set_source(state)
+        elif choice == '2':
+            action_set_annotations(state)
+        elif choice == '3':
+            if not ready:
+                print("\nSet both the source text and annotations first.")
+            else:
+                action_generate(state)
+        elif choice == '4':
+            print(ANNOTATION_FORMAT_HELP)
+        elif choice == '0':
+            print("Bye.")
+            return
+        else:
+            print("\nNot a valid option.")
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.parse_args()
+    try:
+        menu_loop()
+    except (KeyboardInterrupt, EOFError):
+        print("\nBye.")
 
 
 if __name__ == '__main__':

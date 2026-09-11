@@ -26,6 +26,8 @@ most environments that can open PDFs at all).
 """
 
 import argparse
+import difflib
+import hashlib
 import html
 import json
 import re
@@ -76,10 +78,11 @@ PDF_HEADING_RE = re.compile(
 PDF_MARKER_RE = re.compile(
     r'^(?:'
     r'(?P<num>\d+)[.\)]'
+    r'|\((?P<pnum>\d+)\)'
     r'|\((?P<letter>[a-z]{1,3})\)'
     r'|\((?P<roman>[ivxlcdm]{1,6})\)'
     r'|(?P<pilcrow>¶)'
-    r')\s+(?P<rest>.*)$',
+    r')(?:\s+(?P<rest>.*))?$',
     re.IGNORECASE,
 )
 
@@ -188,22 +191,65 @@ def normalize_text(s: str) -> str:
     return re.sub(r'[^a-z0-9]+', ' ', s.lower()).strip()
 
 
+# A marker that shows up *after* some other text on the same physical line
+# (e.g. "...as follows: (2) Each Party shall...") is invisible to
+# PDF_MARKER_RE, which only checks the start of a line -- pdftotext often
+# runs numbered sub-clauses together like this when a PDF's line breaks
+# don't line up with paragraph breaks. MID_LINE_MARKER_RE finds those and
+# pdf_presplit_inline_markers() breaks the line apart at each one, so every
+# marker ends up at the start of its own line where the normal grouping
+# logic (PDF_MARKER_RE, above) already knows how to handle it.
+MID_LINE_MARKER_RE = re.compile(
+    r'(?<=[.;:)\u2014\u2013,])\s+(?='
+    r'(?:\d+[.\)]\s+\S)'
+    r'|(?:\(\d+\)\s+\S)'
+    r'|(?:\([a-z]{1,3}\)\s+\S)'
+    r'|(?:\([ivxlcdm]{1,6}\)\s+\S)'
+    r')',
+    re.IGNORECASE,
+)
+
+
+def pdf_presplit_inline_markers(lines):
+    """Break lines containing a mid-line "(2)"/"3."/"(iv)" marker into
+    separate lines, one marker per line, WITHOUT touching a marker that's
+    already alone at the start of its line."""
+    out = []
+    for line in lines:
+        if not line:
+            out.append(line)
+            continue
+        pieces = MID_LINE_MARKER_RE.split(line)
+        out.extend(p.strip() for p in pieces if p.strip())
+    return out
+
+
 def pdf_group_paragraphs(raw_text: str, skip_title: str = None, split_recitals_enabled: bool = True):
     lines = [l.strip() for l in raw_text.replace('\x0c', '\n').split('\n')]
+    lines = pdf_presplit_inline_markers(lines)
     skip_norm = normalize_text(skip_title) if skip_title else None
 
     paragraphs = []
     buf_text = None
     buf_label = None
+    buf_empty_marker = False  # buffer holds only a bare marker, no text yet
 
     def flush():
-        nonlocal buf_text, buf_label
+        nonlocal buf_text, buf_label, buf_empty_marker
         if buf_text:
             paragraphs.append({'type': 'para', 'label': buf_label, 'text': buf_text.strip()})
-        buf_text, buf_label = None, None
+        buf_text, buf_label, buf_empty_marker = None, None, False
 
     for line in lines:
         if not line:
+            # A bare marker line (e.g. "(2)" alone, with the clause text
+            # following on the next non-blank line -- common when a PDF
+            # renderer breaks right after a numbered/lettered marker) must
+            # not be flushed away by the blank line that can follow it;
+            # otherwise the marker becomes an empty paragraph and the real
+            # text that follows gets orphaned onto whatever comes after.
+            if buf_empty_marker:
+                continue
             flush()
             continue
 
@@ -220,20 +266,28 @@ def pdf_group_paragraphs(raw_text: str, skip_title: str = None, split_recitals_e
             flush()
             if mm.group('num') is not None:
                 buf_label = f"{mm.group('num')}."
+            elif mm.group('pnum') is not None:
+                buf_label = f"({mm.group('pnum')})"
             elif mm.group('letter') is not None:
                 buf_label = f"({mm.group('letter')})"
             elif mm.group('roman') is not None:
                 buf_label = f"({mm.group('roman')})"
             else:
                 buf_label = '¶'
-            buf_text = mm.group('rest')
+            buf_text = mm.group('rest') or ''
+            buf_empty_marker = not buf_text.strip()
             continue
 
         if buf_text is None:
             buf_label = '¶'
             buf_text = line
+        elif buf_empty_marker:
+            # First real text arriving after a bare marker line -- this is
+            # the marker's own clause, not a continuation to dehyphenate.
+            buf_text = line
         else:
             buf_text = pdf_dehyphenate_join(buf_text, line)
+        buf_empty_marker = False
 
     flush()
 
@@ -312,11 +366,22 @@ def convert_pdf_to_source(pdf_path: Path, meta: dict, layout: bool = False):
 #
 # ANNOTATION TEXT FORMAT  (suggested default -- see menu option 4)
 # ---------------------------------------------------------------------
-# One block per note. A block starts with a line of the form "@<id>",
-# where <id> matches a paragraph id from the source text (with or
-# without the "para-" prefix, or the bare sequential number). Inside a
-# block, optional "Author:", "Title:", and "Source:" lines come first;
-# everything after that, up to the next "@" line, is the note text
+# One block per note. A block starts EITHER with:
+#
+#   * a line of the form "@<id>", where <id> matches a paragraph id from
+#     the source text (with or without the "para-" prefix, or the bare
+#     sequential number) -- for when you already know the internal id, or
+#
+#   * a quoted excerpt from the document, wrapped in a line of three
+#     double-quotes above and below it -- for contributors who don't know
+#     (and shouldn't need to know) any internal ids. Paste the full
+#     sentence or paragraph you're annotating, as it appears in the
+#     document; the tool matches it to the right paragraph automatically.
+#     Small typos/whitespace differences are tolerated, but paste the
+#     whole sentence (not a short fragment) so the match is unambiguous.
+#
+# Inside a block, optional "Author:", "Title:", and "Source:" lines come
+# next; everything after that, up to the next block, is the note text
 # (reflowed -- wrap it across as many lines as you like).
 #
 #     @def-cop
@@ -326,24 +391,38 @@ def convert_pdf_to_source(pdf_path: Path, meta: dict, layout: bool = False):
 #     The Protocol folds the COP into its own machinery rather than
 #     creating a rival body.
 #
-#     @art2-chapeau
+#     """
+#     Each Party included in Annex I shall ensure that its aggregate
+#     anthropogenic carbon dioxide equivalent emissions do not exceed
+#     its assigned amount.
+#     """
 #     Author: A. Nguyen
 #     The word "shall" here is generally read as imposing a binding
 #     obligation on Annex I parties.
 #
-# Repeat "@same-id" for a second note on the same paragraph.
+# Repeat "@same-id" (or paste the same quote again) for a second note on
+# the same paragraph.
 #
 # JSON FORMAT (also accepted -- a list of note objects)
 # ---------------------------------------------------------------------
 #     [
 #       {"para": "def-cop", "author": "J. Smith", "title": "...",
-#        "text": "...", "source": "..."}
+#        "text": "...", "source": "..."},
+#       {"quote": "Each Party included in Annex I shall ensure...",
+#        "author": "A. Nguyen", "text": "..."}
 #     ]
 #
-# Only "para" and "text" are required either way.
+# Give either "para" (an id) or "quote" (an excerpt to match), plus "text".
 
 ANN_BLOCK_START_RE = re.compile(r'^@([\w-]+)\s*$')
+ANN_QUOTE_FENCE_RE = re.compile(r'^"{3,}\s*$')
 ANN_FIELD_RE = re.compile(r'^(Author|Title|Source):\s*(.*)$', re.IGNORECASE)
+
+# How close a pasted excerpt must be to a paragraph's text to count as a
+# match. Comparisons run on normalized text (lowercased, punctuation and
+# whitespace collapsed), so this only has to absorb things like retyped
+# quotation marks or a missed word, not formatting noise.
+QUOTE_MATCH_THRESHOLD = 0.85
 
 
 def parse_annotations_text(path: Path):
@@ -352,6 +431,8 @@ def parse_annotations_text(path: Path):
     cur = None
     body_lines = []
     body_started = False
+    in_quote = False
+    quote_lines = []
 
     def flush():
         nonlocal cur, body_lines, body_started
@@ -364,6 +445,23 @@ def parse_annotations_text(path: Path):
 
     for raw in lines:
         stripped = raw.strip()
+
+        if in_quote:
+            if ANN_QUOTE_FENCE_RE.match(stripped):
+                in_quote = False
+                cur['quote'] = ' '.join(l.strip() for l in quote_lines if l.strip())
+                quote_lines = []
+            else:
+                quote_lines.append(raw)
+            continue
+
+        if ANN_QUOTE_FENCE_RE.match(stripped):
+            flush()
+            cur = {}
+            in_quote = True
+            quote_lines = []
+            continue
+
         bm = ANN_BLOCK_START_RE.match(stripped)
         if bm:
             flush()
@@ -389,25 +487,103 @@ def normalize_para_ref(ref: str) -> str:
     return ref if ref.startswith('para-') else f'para-{ref}'
 
 
-def build_notes(items, valid_ids=None):
+def match_quote_to_paragraph(quote: str, paragraphs_by_id: dict):
+    """Match a pasted excerpt to a paragraph id by normalized text
+    similarity. paragraphs_by_id maps para id -> paragraph text.
+
+    Returns (matched_id_or_None, status) where status is one of:
+      'ok'        -- a single confident match
+      'ambiguous' -- two or more paragraphs matched closely enough that
+                     picking one would be a guess
+      'no_match'  -- nothing cleared the similarity threshold
+    """
+    norm_quote = normalize_text(quote)
+    if not norm_quote:
+        return None, 'no_match'
+
+    scored = []
+    for pid, ptext in paragraphs_by_id.items():
+        norm_para = normalize_text(ptext)
+        if not norm_para:
+            continue
+        # A quote that's fully contained in the paragraph (or vice versa,
+        # for a contributor who pasted a slightly longer chunk spanning
+        # into neighboring text) is treated as a confident match outright.
+        if norm_quote in norm_para or norm_para in norm_quote:
+            scored.append((pid, 1.0))
+            continue
+        ratio = difflib.SequenceMatcher(None, norm_quote, norm_para).ratio()
+        if ratio >= QUOTE_MATCH_THRESHOLD:
+            scored.append((pid, ratio))
+
+    if not scored:
+        return None, 'no_match'
+
+    scored.sort(key=lambda x: x[1], reverse=True)
+    if len(scored) > 1 and (scored[0][1] - scored[1][1]) < 0.03:
+        return None, 'ambiguous'
+    return scored[0][0], 'ok'
+
+
+def build_notes(items, valid_ids=None, paragraphs_by_id=None):
+    """Returns (notes, warnings, dropped_count, unmatched_quotes).
+
+    Notes whose paragraph id doesn't match anything in valid_ids are
+    reported in `warnings` but are NOT written into the output -- a note
+    attached to an id with no matching <div id="..."> in the HTML has
+    nowhere to attach to and will never be shown, so silently keeping it
+    around just hides the problem instead of fixing it.
+
+    Notes given as a quoted excerpt (no explicit "para"/"id") are resolved
+    against `paragraphs_by_id` (id -> paragraph text). Quotes that can't be
+    matched confidently are reported in `unmatched_quotes` -- as with
+    mismatched ids, they are dropped rather than guessed at, because a
+    wrong guess would attach someone's note to the wrong sentence.
+    """
     notes = {}
     warnings = []
+    unmatched_quotes = []
+    dropped = 0
     for item in items:
-        ref = item.get('para') or item.get('id')
-        if not ref:
-            continue
-        para_id = normalize_para_ref(ref)
-        if valid_ids is not None and para_id not in valid_ids:
-            warnings.append(para_id)
         entry = {k: item[k] for k in ('author', 'title', 'text', 'source') if item.get(k)}
         if not entry.get('text'):
             continue
-        notes.setdefault(para_id, []).append(entry)
-    return notes, warnings
+
+        ref = item.get('para') or item.get('id')
+        quote = item.get('quote')
+
+        if ref:
+            para_id = normalize_para_ref(ref)
+            mismatched = valid_ids is not None and para_id not in valid_ids
+            if mismatched:
+                warnings.append(para_id)
+                dropped += 1
+                continue
+            notes.setdefault(para_id, []).append(entry)
+            continue
+
+        if quote:
+            if not paragraphs_by_id:
+                unmatched_quotes.append((quote, 'no_match'))
+                dropped += 1
+                continue
+            para_id, status = match_quote_to_paragraph(quote, paragraphs_by_id)
+            if status != 'ok':
+                unmatched_quotes.append((quote, status))
+                dropped += 1
+                continue
+            notes.setdefault(para_id, []).append(entry)
+            continue
+
+        # Neither a "para"/"id" nor a "quote" -- nothing to attach to.
+        continue
+
+    return notes, warnings, dropped, unmatched_quotes
 
 
-def load_annotations_any(path: Path, valid_ids=None):
-    """Detects plain-text vs JSON and returns (notes_dict, warnings_list)."""
+def load_annotations_any(path: Path, valid_ids=None, paragraphs_by_id=None):
+    """Detects plain-text vs JSON and returns
+    (notes_dict, warnings_list, dropped_count, unmatched_quotes)."""
     text = path.read_text(encoding='utf-8')
     stripped = text.strip()
     if path.suffix.lower() == '.json' or stripped.startswith('['):
@@ -419,14 +595,14 @@ def load_annotations_any(path: Path, valid_ids=None):
         items = parse_annotations_text(path)
     if not items:
         raise ValueError("no notes found in this file")
-    return build_notes(items, valid_ids)
+    return build_notes(items, valid_ids, paragraphs_by_id)
 
 
 # ========================================================================
 #  PART 3 -- source .txt + notes -> HTML + notes.js
 # ========================================================================
 
-SRC_MARKER_RE = re.compile(r'^(¶|\d+\.|\([a-z]+\)|\([ivxlcdm]+\))\s+(.*)$', re.IGNORECASE)
+SRC_MARKER_RE = re.compile(r'^(¶|\d+\.|\(\d+\)|\([a-z]+\)|\([ivxlcdm]+\))\s+(.*)$', re.IGNORECASE)
 SRC_KEY_RE = re.compile(r'^\{([\w-]+)\}\s*(.*)$')
 SRC_HEADER_RE = re.compile(r'^##\s+(.*)$')
 SRC_META_RE = re.compile(r'^([A-Z_]+):\s*(.*)$')
@@ -1002,6 +1178,29 @@ def prompt(msg, default=None):
     return input(f"{msg}: ").strip()
 
 
+def clean_path_str(raw: str) -> str:
+    """Tidy up a pasted/typed path before it hits Path().
+
+    input() reads the raw line with no shell involved, so two very common
+    habits silently break Path.exists() and are otherwise easy to miss:
+      * surrounding quotes ("... .pdf" or '... .pdf') typed or pasted in
+      * backslash-escaped spaces (My\\ File.pdf) left over from dragging a
+        file into a terminal that does shell-style quoting
+    Both leave literal characters in the string that aren't part of the
+    real filename, so the file "doesn't exist" even though it does.
+    """
+    s = raw.strip()
+    if len(s) >= 2 and s[0] == s[-1] and s[0] in ('"', "'"):
+        s = s[1:-1].strip()
+    if '\\' in s:
+        s = re.sub(r'\\(.)', r'\1', s)
+    return s
+
+
+def resolve_path(raw: str) -> Path:
+    return Path(clean_path_str(raw)).expanduser()
+
+
 def prompt_yes_no(msg, default=False):
     d = 'y/N' if not default else 'Y/n'
     raw = input(f"{msg} [{d}]: ").strip().lower()
@@ -1014,13 +1213,24 @@ ANNOTATION_FORMAT_HELP = """
 ------------------------------------------------------------------
  Annotation text format
 ------------------------------------------------------------------
-One block per note. A block starts with a line "@<id>", where <id>
-matches a paragraph id from the source text -- with or without the
-"para-" prefix, or the bare sequential number if you didn't give
-that paragraph a {key} in the source file.
+One block per note. A block starts EITHER way:
+
+  (a) a line "@<id>", where <id> matches a paragraph id from the
+      source text -- with or without the "para-" prefix, or the bare
+      sequential number if you didn't give that paragraph a {key} in
+      the source file. Use this if you already know the id.
+
+  (b) a quoted excerpt, fenced above and below by a line of three
+      double-quotes ('\"\"\"'). Paste the full sentence or paragraph
+      you're annotating, exactly as it reads in the document -- the
+      tool will find the matching paragraph automatically. This is
+      the format to hand to a contributor who doesn't know (and
+      shouldn't need to know) any internal ids -- e.g. give them a
+      little form: "paste the sentence you're annotating, your name,
+      and your note," and their answers slot straight into this.
 
 Inside a block, optional "Author:", "Title:", and "Source:" lines
-come first. Everything after that, up to the next "@" line, is the
+come next. Everything after that, up to the next block, is the
 note text -- wrap it across as many lines as you like.
 
     @def-cop
@@ -1030,16 +1240,27 @@ note text -- wrap it across as many lines as you like.
     The Protocol folds the COP into its own machinery rather than
     creating a rival body.
 
-    @art2-chapeau
+    \"\"\"
+    Each Party included in Annex I shall ensure that its aggregate
+    anthropogenic carbon dioxide equivalent emissions do not exceed
+    its assigned amount.
+    \"\"\"
     Author: A. Nguyen
     The word "shall" here is generally read as imposing a binding
     obligation on Annex I parties.
 
-Repeat "@same-id" again for a second note on the same paragraph.
+Repeat "@same-id" (or paste the same quote again) for a second note
+on the same paragraph.
 
-A .json file (a list of {"para", "author", "title", "text", "source"}
-objects) is also accepted -- it's auto-detected by the .json
-extension or by the file starting with "[".
+Paste the WHOLE sentence or paragraph, not a short fragment -- a
+short snippet can match more than one place in the document, and
+when that happens the note is reported as unmatched and dropped
+rather than guessed at, so nothing gets silently attached to the
+wrong passage.
+
+A .json file (a list of {"para" or "quote", "author", "title",
+"text", "source"} objects) is also accepted -- it's auto-detected
+by the .json extension or by the file starting with "[".
 ------------------------------------------------------------------
 """
 
@@ -1061,9 +1282,12 @@ def action_set_source(state):
     path_str = prompt("Path to a PDF to convert, or an existing source .txt (blank to cancel)")
     if not path_str:
         return
-    path = Path(path_str).expanduser()
+    path = resolve_path(path_str)
     if not path.exists():
-        print(f"\n'{path}' does not exist.")
+        print(f"\nCouldn't find a file at:\n    {path}")
+        print("(resolved from the input you gave -- check for a typo, a wrong")
+        print(" working directory, or stray quotes/escaped spaces left over")
+        print(" from dragging the file into the terminal)")
         return
 
     if path.suffix.lower() == '.pdf':
@@ -1086,6 +1310,13 @@ def action_set_source(state):
             source_text, paragraphs, flags = convert_pdf_to_source(path, meta, layout=layout)
         except RuntimeError as e:
             print(f"\nCouldn't convert this PDF: {e}")
+            return
+        except FileNotFoundError:
+            print(
+                "\nCouldn't find 'pdftotext' -- this script relies on poppler-utils "
+                "for PDF extraction. Install it (e.g. 'apt install poppler-utils' "
+                "or 'brew install poppler') and try again."
+            )
             return
 
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1125,23 +1356,30 @@ def action_set_annotations(state):
     path_str = prompt("Path to your annotations file -- text format or .json (blank to cancel)")
     if not path_str:
         return
-    path = Path(path_str).expanduser()
+    path = resolve_path(path_str)
     if not path.exists():
-        print(f"\n'{path}' does not exist.")
+        print(f"\nCouldn't find a file at:\n    {path}")
+        print("(resolved from the input you gave -- check for a typo, a wrong")
+        print(" working directory, or stray quotes/escaped spaces left over")
+        print(" from dragging the file into the terminal)")
         return
 
     valid_ids = None
+    paragraphs_by_id = None
     if state.get('source_txt'):
         src = Path(state['source_txt'])
         if src.exists():
             try:
                 _, paragraphs = parse_source(src)
                 valid_ids = {p['id'] for p in paragraphs if p['type'] == 'para'}
+                paragraphs_by_id = {p['id']: p['text'] for p in paragraphs if p['type'] == 'para'}
             except ValueError:
                 pass
 
     try:
-        notes, warnings = load_annotations_any(path, valid_ids)
+        notes, warnings, dropped, unmatched_quotes = load_annotations_any(
+            path, valid_ids, paragraphs_by_id
+        )
     except (ValueError, json.JSONDecodeError) as e:
         print(f"\nCouldn't parse '{path}': {e}")
         return
@@ -1150,8 +1388,26 @@ def action_set_annotations(state):
     print(f"\nParsed {n_notes} note(s) across {len(notes)} paragraph id(s).")
     if warnings:
         uniq = sorted(set(warnings))
-        print(f"Warning: {len(uniq)} id(s) don't match any paragraph in the current source text:")
-        print("  " + ", ".join(uniq))
+        print(f"\n*** {len(warnings)} note(s) will be DROPPED -- their id(s) don't match any")
+        print(f"*** paragraph in the current source text, so they have nothing to")
+        print(f"*** attach to and would never show up on the page:")
+        print("      " + ", ".join(uniq))
+        if state.get('source_txt'):
+            print("If the source text was edited (paragraphs added/removed/reordered)")
+            print("after these ids were written, auto-numbered ids (para-1, para-2, ...)")
+            print("will have shifted under them. Add a stable {key} to that paragraph in")
+            print("the source .txt and reference it as @key instead to avoid this.")
+    if unmatched_quotes:
+        print(f"\n*** {len(unmatched_quotes)} quoted note(s) will be DROPPED -- couldn't match")
+        print(f"*** the excerpt to exactly one paragraph in the source text:")
+        for quote, status in unmatched_quotes[:10]:
+            reason = "no close match found" if status == 'no_match' else "matched more than one paragraph"
+            snippet = quote if len(quote) <= 70 else quote[:67] + '...'
+            print(f"      - [{reason}] \"{snippet}\"")
+        if len(unmatched_quotes) > 10:
+            print(f"      ... and {len(unmatched_quotes) - 10} more")
+        print("Paste the full sentence/paragraph exactly as it appears in the")
+        print("document, or use @id instead if you know the paragraph's id.")
 
     state['annotations'] = str(path)
     save_state(state)
@@ -1169,9 +1425,9 @@ def action_generate(state):
         return
 
     default_html = source_path.with_suffix('.html')
-    out_html = Path(prompt("Output HTML path", str(default_html))).expanduser()
+    out_html = resolve_path(prompt("Output HTML path", str(default_html)))
     default_notes = out_html.with_name(out_html.stem + '-notes.js')
-    out_notes = Path(prompt("Output notes .js path", str(default_notes))).expanduser()
+    out_notes = resolve_path(prompt("Output notes .js path", str(default_notes)))
 
     try:
         meta, paragraphs = parse_source(source_path)
@@ -1180,31 +1436,52 @@ def action_generate(state):
         return
 
     valid_ids = {p['id'] for p in paragraphs if p['type'] == 'para'}
+    paragraphs_by_id = {p['id']: p['text'] for p in paragraphs if p['type'] == 'para'}
     try:
-        notes, warnings = load_annotations_any(ann_path, valid_ids)
+        notes, warnings, dropped, unmatched_quotes = load_annotations_any(
+            ann_path, valid_ids, paragraphs_by_id
+        )
     except (ValueError, json.JSONDecodeError) as e:
         print(f"\nCouldn't parse the annotations: {e}")
         return
 
     if warnings:
         uniq = sorted(set(warnings))
-        print(f"Warning: {len(uniq)} annotation id(s) don't match any paragraph: {', '.join(uniq)}")
+        print(f"\n*** {len(warnings)} note(s) DROPPED -- their id(s) don't match any paragraph")
+        print(f"*** in the source text, so they won't appear on the page:")
+        print("      " + ", ".join(uniq))
+    if unmatched_quotes:
+        print(f"\n*** {len(unmatched_quotes)} quoted note(s) DROPPED -- couldn't match the excerpt")
+        print(f"*** to exactly one paragraph in the source text:")
+        for quote, status in unmatched_quotes[:10]:
+            reason = "no close match found" if status == 'no_match' else "matched more than one paragraph"
+            snippet = quote if len(quote) <= 70 else quote[:67] + '...'
+            print(f"      - [{reason}] \"{snippet}\"")
+        if len(unmatched_quotes) > 10:
+            print(f"      ... and {len(unmatched_quotes) - 10} more")
 
     body_html = render_body(paragraphs)
-    page = build_page(meta, body_html, out_notes.name)
+    # Cache-bust notes.js with a content hash, so a browser tab you already
+    # had open picks up the new notes instead of serving a stale cached
+    # copy of the previous version at the same filename.
+    notes_js_text = render_notes_js(notes)
+    notes_hash = hashlib.sha1(notes_js_text.encode('utf-8')).hexdigest()[:10]
+    page = build_page(meta, body_html, f"{out_notes.name}?v={notes_hash}")
 
     out_html.parent.mkdir(parents=True, exist_ok=True)
     out_notes.parent.mkdir(parents=True, exist_ok=True)
     out_html.write_text(page, encoding='utf-8')
-    out_notes.write_text(render_notes_js(notes), encoding='utf-8')
+    out_notes.write_text(notes_js_text, encoding='utf-8')
 
     n_paras = sum(1 for p in paragraphs if p['type'] == 'para')
     n_annotated = sum(1 for pid in valid_ids if pid in notes)
     n_notes_total = sum(len(v) for v in notes.values())
+    n_dropped_total = len(warnings) + len(unmatched_quotes)
 
     print(f"\nWrote {out_html}")
     print(f"Wrote {out_notes}")
-    print(f"{n_paras} paragraph(s), {n_annotated} annotated, {n_notes_total} note(s) total.")
+    print(f"{n_paras} paragraph(s), {n_annotated} annotated, {n_notes_total} note(s) total"
+          + (f", {n_dropped_total} dropped." if n_dropped_total else "."))
 
     state['out_html'] = str(out_html)
     state['out_notes'] = str(out_notes)

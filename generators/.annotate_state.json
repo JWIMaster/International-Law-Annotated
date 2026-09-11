@@ -1,6 +1,6 @@
 {
-  "source_txt": "/Users/jwalr/International-Law-Annotated/generators/ARSIWA.txt",
+  "source_txt": "/Users/jwalr/International-Law-Annotated/materials/CISG/HTML version pdf_source.txt",
   "annotations": "a.txt",
-  "out_html": "/Users/jwalr/International-Law-Annotated/generators/ARSIWA.html",
-  "out_notes": "/Users/jwalr/International-Law-Annotated/generators/ARSIWA-notes.js"
+  "out_html": "/Users/jwalr/International-Law-Annotated/materials/CISG/HTML version pdf_source.html",
+  "out_notes": "/Users/jwalr/International-Law-Annotated/materials/CISG/HTML version pdf_source-notes.js"
 }

@@ -16,9 +16,16 @@ come back later, or re-run after editing a file by hand:
        existing source .txt you already have (e.g. one you edited after
        a previous conversion).
     2) Set the annotations -- a plain-text file in the format described
-       under option 4 in the menu, or a JSON file if you already have one.
+       under option 4 in the menu, a JSON file, or an existing notes.js
+       file to use as-is (skips matching entirely).
     3) Generate the final HTML + notes.js -- unlocked once both 1 and 2
-       are set.
+       are set. Defaults to writing into a "texts" folder alongside
+       index.html, one directory up from this script. If a file already
+       exists at the target path, you'll be asked to cancel, overwrite,
+       or rename.
+
+    Option 5 toggles an extra step (off by default): after generating,
+    add or update this text's card in texts/all.html automatically.
 
 Nothing here talks to the network or needs installing anything beyond
 Python 3 and poppler-utils' `pdftotext`/`pdfinfo` (already present in
@@ -37,6 +44,66 @@ from collections import Counter
 from pathlib import Path
 
 STATE_FILE = Path('.annotate_state.json')
+
+# Directory the script itself lives in -- used to anchor default output
+# paths (see action_generate) regardless of the current working directory.
+SCRIPT_DIR = Path(__file__).resolve().parent
+
+
+# ========================================================================
+#  Terminal colors
+# ========================================================================
+# A minimal ANSI helper -- no dependency needed for a handful of colors.
+# Disabled automatically when stdout isn't a real terminal (e.g. piped to
+# a file or captured by another program) or when NO_COLOR is set, per the
+# https://no-color.org convention, so output stays clean in those cases.
+
+class _Color:
+    _enabled = sys.stdout.isatty() and not __import__('os').environ.get('NO_COLOR')
+
+    RESET = '\033[0m'
+    BOLD = '\033[1m'
+    DIM = '\033[2m'
+    RED = '\033[31m'
+    GREEN = '\033[32m'
+    YELLOW = '\033[33m'
+    BLUE = '\033[34m'
+    MAGENTA = '\033[35m'
+    CYAN = '\033[36m'
+
+    @classmethod
+    def wrap(cls, text, *codes):
+        if not cls._enabled:
+            return text
+        return ''.join(codes) + text + cls.RESET
+
+
+def c_title(text):
+    return _Color.wrap(text, _Color.BOLD, _Color.CYAN)
+
+
+def c_ok(text):
+    return _Color.wrap(text, _Color.GREEN)
+
+
+def c_warn(text):
+    return _Color.wrap(text, _Color.YELLOW)
+
+
+def c_err(text):
+    return _Color.wrap(text, _Color.BOLD, _Color.RED)
+
+
+def c_path(text):
+    return _Color.wrap(text, _Color.MAGENTA)
+
+
+def c_dim(text):
+    return _Color.wrap(text, _Color.DIM)
+
+
+def c_menu(text):
+    return _Color.wrap(text, _Color.BLUE)
 
 
 # ========================================================================
@@ -1152,6 +1219,74 @@ def build_page(meta: dict, body_html: str, notes_js_filename: str) -> str:
 
 
 # ========================================================================
+#  PART 3b -- adding a text as a card to texts/all.html
+# ========================================================================
+#
+# all.html holds its list of texts as a plain JS array of object literals
+# (Alpine's `cases: [ ... ]`), right after a "// Add further text entries
+# here" marker comment. To add a new card without a full HTML/JS parser,
+# this finds that marker and splices in one more `{ title, subtitle, desc,
+# href }` object in the same style as the existing entries.
+
+ALL_HTML_MARKER = '// Add further text entries here'
+ALL_HTML_CASE_RE = re.compile(
+    r"""\{\s*
+        title:\s*'(?P<title>(?:[^'\\]|\\.)*)'\s*,\s*
+        subtitle:\s*'(?P<subtitle>(?:[^'\\]|\\.)*)'\s*,\s*
+        desc:\s*'(?P<desc>(?:[^'\\]|\\.)*)'\s*,\s*
+        href:\s*'(?P<href>(?:[^'\\]|\\.)*)'\s*
+    \}""",
+    re.VERBOSE | re.DOTALL,
+)
+
+
+def js_str_escape(s: str) -> str:
+    return s.replace('\\', '\\\\').replace("'", "\\'").replace('\n', ' ')
+
+
+def find_all_html_cases(all_html_text: str):
+    """Returns a list of dicts (title/subtitle/desc/href) for every card
+    currently in all.html's `cases` array."""
+    return [m.groupdict() for m in ALL_HTML_CASE_RE.finditer(all_html_text)]
+
+
+def add_case_to_all_html(all_html_text: str, title: str, subtitle: str, desc: str, href: str) -> str:
+    """Returns updated all.html text with one more case object spliced in
+    right after the marker comment, matching the existing entries' style."""
+    if ALL_HTML_MARKER not in all_html_text:
+        raise ValueError(
+            f"couldn't find the marker comment ('{ALL_HTML_MARKER}') in all.html -- "
+            "has the file's structure changed?"
+        )
+    entry = (
+        "\n{\n"
+        f"  title: '{js_str_escape(title)}',\n"
+        f"  subtitle: '{js_str_escape(subtitle)}',\n"
+        f"  desc: '{js_str_escape(desc)}',\n"
+        f"  href: '{js_str_escape(href)}'\n"
+        "},"
+    )
+    return all_html_text.replace(ALL_HTML_MARKER, ALL_HTML_MARKER + entry, 1)
+
+
+def replace_case_in_all_html(all_html_text: str, href: str, title: str, subtitle: str, desc: str) -> str:
+    """Replace an existing case object (matched by href) in-place, keeping
+    its position in the array rather than appending a duplicate."""
+    def repl(m):
+        if m.group('href') != href:
+            return m.group(0)
+        return (
+            "{\n"
+            f"  title: '{js_str_escape(title)}',\n"
+            f"  subtitle: '{js_str_escape(subtitle)}',\n"
+            f"  desc: '{js_str_escape(desc)}',\n"
+            f"  href: '{js_str_escape(href)}'\n"
+            "}"
+        )
+    return ALL_HTML_CASE_RE.sub(repl, all_html_text, count=0)
+
+
+# ========================================================================
 #  PART 4 -- interactive menu
 # ========================================================================
 
@@ -1207,6 +1342,31 @@ def prompt_yes_no(msg, default=False):
     if not raw:
         return default
     return raw.startswith('y')
+
+
+def resolve_path_collision(path: Path, what: str = "file"):
+    """If `path` already exists, ask the user to cancel, overwrite, or
+    rename. Returns the Path to actually write to, or None if cancelled.
+
+    Renaming asks for a new name and re-checks it for collisions too, so
+    the user can't accidentally rename straight into another collision.
+    """
+    while path.exists():
+        print(c_warn(f"\nA {what} already exists at:\n    {path}"))
+        print(c_menu("  [c] Cancel   [o] Overwrite   [r] Rename"))
+        choice = input("> ").strip().lower()
+        if choice in ('c', 'cancel', ''):
+            return None
+        if choice in ('o', 'overwrite'):
+            return path
+        if choice in ('r', 'rename'):
+            new_str = prompt(f"New name for the {what}", path.name)
+            if not new_str:
+                continue
+            path = path.with_name(new_str)
+            continue
+        print(c_err("Not a valid option -- enter c, o, or r."))
+    return path
 
 
 ANNOTATION_FORMAT_HELP = """
@@ -1267,14 +1427,24 @@ by the .json extension or by the file starting with "[".
 
 def print_status(state):
     print()
-    print("=" * 64)
-    print(" Annotated Text Builder")
-    print("=" * 64)
-    print(f" 1. Source text : {state.get('source_txt') or '(not set)'}")
-    print(f" 2. Annotations : {state.get('annotations') or '(not set)'}")
+    print(c_title("=" * 64))
+    print(c_title(" Annotated Text Builder"))
+    print(c_title("=" * 64))
+    print(f" 1. Source text : {c_path(state.get('source_txt')) if state.get('source_txt') else c_dim('(not set)')}")
+    ann_label = state.get('annotations')
+    if ann_label and state.get('annotations_is_js'):
+        ann_label = f"{ann_label} {c_dim('(notes.js, used as-is)')}"
+    elif ann_label:
+        ann_label = c_path(ann_label)
+    else:
+        ann_label = c_dim('(not set)')
+    print(f" 2. Annotations : {ann_label}")
     out_html = state.get('out_html')
-    print(f" 3. Output      : {out_html or '(not generated yet)'}")
-    print("-" * 64)
+    print(f" 3. Output      : {c_path(out_html) if out_html else c_dim('(not generated yet)')}")
+    add_all = state.get('add_to_all_html', False)
+    toggle_label = c_ok('ON') if add_all else c_dim('off')
+    print(f" 4. Add to all.html after generating : {toggle_label}")
+    print(c_dim("-" * 64))
 
 
 def action_set_source(state):
@@ -1284,10 +1454,10 @@ def action_set_source(state):
         return
     path = resolve_path(path_str)
     if not path.exists():
-        print(f"\nCouldn't find a file at:\n    {path}")
-        print("(resolved from the input you gave -- check for a typo, a wrong")
-        print(" working directory, or stray quotes/escaped spaces left over")
-        print(" from dragging the file into the terminal)")
+        print(c_err(f"\nCouldn't find a file at:\n    {path}"))
+        print(c_dim("(resolved from the input you gave -- check for a typo, a wrong"))
+        print(c_dim(" working directory, or stray quotes/escaped spaces left over"))
+        print(c_dim(" from dragging the file into the terminal)"))
         return
 
     if path.suffix.lower() == '.pdf':
@@ -1309,14 +1479,14 @@ def action_set_source(state):
         try:
             source_text, paragraphs, flags = convert_pdf_to_source(path, meta, layout=layout)
         except RuntimeError as e:
-            print(f"\nCouldn't convert this PDF: {e}")
+            print(c_err(f"\nCouldn't convert this PDF: {e}"))
             return
         except FileNotFoundError:
-            print(
+            print(c_err(
                 "\nCouldn't find 'pdftotext' -- this script relies on poppler-utils "
                 "for PDF extraction. Install it (e.g. 'apt install poppler-utils' "
                 "or 'brew install poppler') and try again."
-            )
+            ))
             return
 
         out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1325,43 +1495,64 @@ def action_set_source(state):
         n_headers = sum(1 for p in paragraphs if p['type'] == 'header')
         n_paras = sum(1 for p in paragraphs if p['type'] == 'para')
 
-        print(f"\nWrote {out_path}")
+        print(c_ok(f"\nWrote {out_path}"))
         print(f"{n_headers} heading(s), {n_paras} paragraph(s) parsed.")
         if flags:
-            print(f"{len(flags)} paragraph(s) worth a manual check:")
+            print(c_warn(f"{len(flags)} paragraph(s) worth a manual check:"))
             for _, snippet, reason in flags[:10]:
-                print(f"  - [{reason}] \"{snippet}\"")
+                print(c_warn(f"  - [{reason}] \"{snippet}\""))
             if len(flags) > 10:
-                print(f"  ... and {len(flags) - 10} more")
+                print(c_dim(f"  ... and {len(flags) - 10} more"))
 
-        print("\nOpen this file now if you want to fix paragraph breaks, tidy the")
-        print("preamble, or add {key} tags to paragraphs you plan to annotate.")
-        print("This path is already remembered -- come back whenever you're ready.")
+        print(c_dim("\nOpen this file now if you want to fix paragraph breaks, tidy the"))
+        print(c_dim("preamble, or add {key} tags to paragraphs you plan to annotate."))
+        print(c_dim("This path is already remembered -- come back whenever you're ready."))
 
         state['source_txt'] = str(out_path)
     else:
         try:
             parse_source(path)
         except ValueError as e:
-            print(f"\n'{path}' doesn't look like a valid source file: {e}")
+            print(c_err(f"\n'{path}' doesn't look like a valid source file: {e}"))
             return
         state['source_txt'] = str(path)
-        print(f"\nUsing '{path}' as the source text.")
+        print(c_ok(f"\nUsing '{path}' as the source text."))
 
     save_state(state)
 
 
 def action_set_annotations(state):
     print()
-    path_str = prompt("Path to your annotations file -- text format or .json (blank to cancel)")
+    path_str = prompt(
+        "Path to your annotations file -- text format, JSON, or an existing "
+        "notes.js to use as-is (blank to cancel)"
+    )
     if not path_str:
         return
     path = resolve_path(path_str)
     if not path.exists():
-        print(f"\nCouldn't find a file at:\n    {path}")
-        print("(resolved from the input you gave -- check for a typo, a wrong")
-        print(" working directory, or stray quotes/escaped spaces left over")
-        print(" from dragging the file into the terminal)")
+        print(c_err(f"\nCouldn't find a file at:\n    {path}"))
+        print(c_dim("(resolved from the input you gave -- check for a typo, a wrong"))
+        print(c_dim(" working directory, or stray quotes/escaped spaces left over"))
+        print(c_dim(" from dragging the file into the terminal)"))
+        return
+
+    if path.suffix.lower() == '.js':
+        # A ready-made notes.js -- skip the whole annotations pipeline and
+        # just use this file's content verbatim at generation time. This is
+        # for "I already have a notes.js from a previous build and don't
+        # want to touch it" -- no re-matching, no re-parsing.
+        text = path.read_text(encoding='utf-8')
+        if 'window.NOTES' not in text:
+            print(c_err(f"\n'{path}' doesn't look like a notes.js file (no 'window.NOTES' found)."))
+            print(c_dim("If this is meant to be a plain-text or JSON annotations file, rename"))
+            print(c_dim("it away from .js and set it again."))
+            return
+        state['annotations'] = str(path)
+        state['annotations_is_js'] = True
+        save_state(state)
+        print(c_ok(f"\nUsing '{path}' as notes.js directly -- it will be copied through as-is"))
+        print(c_ok("at generation time, with no re-matching against the source text."))
         return
 
     valid_ids = None
@@ -1381,35 +1572,36 @@ def action_set_annotations(state):
             path, valid_ids, paragraphs_by_id
         )
     except (ValueError, json.JSONDecodeError) as e:
-        print(f"\nCouldn't parse '{path}': {e}")
+        print(c_err(f"\nCouldn't parse '{path}': {e}"))
         return
 
     n_notes = sum(len(v) for v in notes.values())
-    print(f"\nParsed {n_notes} note(s) across {len(notes)} paragraph id(s).")
+    print(c_ok(f"\nParsed {n_notes} note(s) across {len(notes)} paragraph id(s)."))
     if warnings:
         uniq = sorted(set(warnings))
-        print(f"\n*** {len(warnings)} note(s) will be DROPPED -- their id(s) don't match any")
-        print(f"*** paragraph in the current source text, so they have nothing to")
-        print(f"*** attach to and would never show up on the page:")
-        print("      " + ", ".join(uniq))
+        print(c_warn(f"\n*** {len(warnings)} note(s) will be DROPPED -- their id(s) don't match any"))
+        print(c_warn(f"*** paragraph in the current source text, so they have nothing to"))
+        print(c_warn(f"*** attach to and would never show up on the page:"))
+        print(c_warn("      " + ", ".join(uniq)))
         if state.get('source_txt'):
-            print("If the source text was edited (paragraphs added/removed/reordered)")
-            print("after these ids were written, auto-numbered ids (para-1, para-2, ...)")
-            print("will have shifted under them. Add a stable {key} to that paragraph in")
-            print("the source .txt and reference it as @key instead to avoid this.")
+            print(c_dim("If the source text was edited (paragraphs added/removed/reordered)"))
+            print(c_dim("after these ids were written, auto-numbered ids (para-1, para-2, ...)"))
+            print(c_dim("will have shifted under them. Add a stable {key} to that paragraph in"))
+            print(c_dim("the source .txt and reference it as @key instead to avoid this."))
     if unmatched_quotes:
-        print(f"\n*** {len(unmatched_quotes)} quoted note(s) will be DROPPED -- couldn't match")
-        print(f"*** the excerpt to exactly one paragraph in the source text:")
+        print(c_warn(f"\n*** {len(unmatched_quotes)} quoted note(s) will be DROPPED -- couldn't match"))
+        print(c_warn(f"*** the excerpt to exactly one paragraph in the source text:"))
         for quote, status in unmatched_quotes[:10]:
             reason = "no close match found" if status == 'no_match' else "matched more than one paragraph"
             snippet = quote if len(quote) <= 70 else quote[:67] + '...'
-            print(f"      - [{reason}] \"{snippet}\"")
+            print(c_warn(f"      - [{reason}] \"{snippet}\""))
         if len(unmatched_quotes) > 10:
-            print(f"      ... and {len(unmatched_quotes) - 10} more")
-        print("Paste the full sentence/paragraph exactly as it appears in the")
-        print("document, or use @id instead if you know the paragraph's id.")
+            print(c_dim(f"      ... and {len(unmatched_quotes) - 10} more"))
+        print(c_dim("Paste the full sentence/paragraph exactly as it appears in the"))
+        print(c_dim("document, or use @id instead if you know the paragraph's id."))
 
     state['annotations'] = str(path)
+    state['annotations_is_js'] = False
     save_state(state)
 
 
@@ -1418,53 +1610,85 @@ def action_generate(state):
     source_path = Path(state['source_txt'])
     ann_path = Path(state['annotations'])
     if not source_path.exists():
-        print(f"'{source_path}' no longer exists -- set the source text again (option 1).")
+        print(c_err(f"'{source_path}' no longer exists -- set the source text again (option 1)."))
         return
     if not ann_path.exists():
-        print(f"'{ann_path}' no longer exists -- set the annotations again (option 2).")
+        print(c_err(f"'{ann_path}' no longer exists -- set the annotations again (option 2)."))
         return
 
-    default_html = source_path.with_suffix('.html')
+    # Default output location: a "texts" folder alongside index.html, in
+    # the same directory this script lives in --
+    #   project/
+    #     index.html
+    #     annotate.py        <- SCRIPT_DIR
+    #     texts/             <- SCRIPT_DIR / 'texts'
+    #       all.html
+    #       <stem>.html       <- default_html
+    #       <stem>-notes.js   <- default_notes
+    texts_dir = SCRIPT_DIR / 'texts'
+    default_html = texts_dir / (source_path.stem + '.html')
     out_html = resolve_path(prompt("Output HTML path", str(default_html)))
+
+    out_html = resolve_path_collision(out_html, "text")
+    if out_html is None:
+        print(c_dim("\nCancelled."))
+        return
+
     default_notes = out_html.with_name(out_html.stem + '-notes.js')
     out_notes = resolve_path(prompt("Output notes .js path", str(default_notes)))
+    if out_notes != default_notes or out_notes.exists():
+        # Only re-check for a collision if it wasn't already resolved by
+        # renaming the html (which renames notes.js to match by default,
+        # above) -- or if the user typed a different notes.js path by hand.
+        out_notes = resolve_path_collision(out_notes, "notes.js file")
+        if out_notes is None:
+            print(c_dim("\nCancelled."))
+            return
 
     try:
         meta, paragraphs = parse_source(source_path)
     except ValueError as e:
-        print(f"\nCouldn't parse the source text: {e}")
+        print(c_err(f"\nCouldn't parse the source text: {e}"))
         return
 
     valid_ids = {p['id'] for p in paragraphs if p['type'] == 'para'}
     paragraphs_by_id = {p['id']: p['text'] for p in paragraphs if p['type'] == 'para'}
-    try:
-        notes, warnings, dropped, unmatched_quotes = load_annotations_any(
-            ann_path, valid_ids, paragraphs_by_id
-        )
-    except (ValueError, json.JSONDecodeError) as e:
-        print(f"\nCouldn't parse the annotations: {e}")
-        return
 
-    if warnings:
-        uniq = sorted(set(warnings))
-        print(f"\n*** {len(warnings)} note(s) DROPPED -- their id(s) don't match any paragraph")
-        print(f"*** in the source text, so they won't appear on the page:")
-        print("      " + ", ".join(uniq))
-    if unmatched_quotes:
-        print(f"\n*** {len(unmatched_quotes)} quoted note(s) DROPPED -- couldn't match the excerpt")
-        print(f"*** to exactly one paragraph in the source text:")
-        for quote, status in unmatched_quotes[:10]:
-            reason = "no close match found" if status == 'no_match' else "matched more than one paragraph"
-            snippet = quote if len(quote) <= 70 else quote[:67] + '...'
-            print(f"      - [{reason}] \"{snippet}\"")
-        if len(unmatched_quotes) > 10:
-            print(f"      ... and {len(unmatched_quotes) - 10} more")
+    warnings, unmatched_quotes = [], []
+    if state.get('annotations_is_js'):
+        # Ready-made notes.js -- copy through as-is, no matching pipeline.
+        notes_js_text = ann_path.read_text(encoding='utf-8')
+        notes = {}  # only used below for the annotated/notes-count summary
+    else:
+        try:
+            notes, warnings, dropped, unmatched_quotes = load_annotations_any(
+                ann_path, valid_ids, paragraphs_by_id
+            )
+        except (ValueError, json.JSONDecodeError) as e:
+            print(c_err(f"\nCouldn't parse the annotations: {e}"))
+            return
+
+        if warnings:
+            uniq = sorted(set(warnings))
+            print(c_warn(f"\n*** {len(warnings)} note(s) DROPPED -- their id(s) don't match any paragraph"))
+            print(c_warn(f"*** in the source text, so they won't appear on the page:"))
+            print(c_warn("      " + ", ".join(uniq)))
+        if unmatched_quotes:
+            print(c_warn(f"\n*** {len(unmatched_quotes)} quoted note(s) DROPPED -- couldn't match the excerpt"))
+            print(c_warn(f"*** to exactly one paragraph in the source text:"))
+            for quote, status in unmatched_quotes[:10]:
+                reason = "no close match found" if status == 'no_match' else "matched more than one paragraph"
+                snippet = quote if len(quote) <= 70 else quote[:67] + '...'
+                print(c_warn(f"      - [{reason}] \"{snippet}\""))
+            if len(unmatched_quotes) > 10:
+                print(c_dim(f"      ... and {len(unmatched_quotes) - 10} more"))
+
+        notes_js_text = render_notes_js(notes)
 
     body_html = render_body(paragraphs)
     # Cache-bust notes.js with a content hash, so a browser tab you already
     # had open picks up the new notes instead of serving a stale cached
     # copy of the previous version at the same filename.
-    notes_js_text = render_notes_js(notes)
     notes_hash = hashlib.sha1(notes_js_text.encode('utf-8')).hexdigest()[:10]
     page = build_page(meta, body_html, f"{out_notes.name}?v={notes_hash}")
 
@@ -1478,14 +1702,84 @@ def action_generate(state):
     n_notes_total = sum(len(v) for v in notes.values())
     n_dropped_total = len(warnings) + len(unmatched_quotes)
 
-    print(f"\nWrote {out_html}")
-    print(f"Wrote {out_notes}")
-    print(f"{n_paras} paragraph(s), {n_annotated} annotated, {n_notes_total} note(s) total"
-          + (f", {n_dropped_total} dropped." if n_dropped_total else "."))
+    print(c_ok(f"\nWrote {out_html}"))
+    print(c_ok(f"Wrote {out_notes}"))
+    if state.get('annotations_is_js'):
+        print(c_dim("(notes.js copied through as-is -- no annotation matching was run)"))
+    else:
+        summary = f"{n_paras} paragraph(s), {n_annotated} annotated, {n_notes_total} note(s) total"
+        if n_dropped_total:
+            print(c_warn(summary + f", {n_dropped_total} dropped."))
+        else:
+            print(summary + ".")
 
     state['out_html'] = str(out_html)
     state['out_notes'] = str(out_notes)
     save_state(state)
+
+    if state.get('add_to_all_html'):
+        action_add_to_all_html(state, meta, out_html, texts_dir)
+
+
+def action_add_to_all_html(state, meta: dict, out_html: Path, texts_dir: Path):
+    """Adds/updates a card for the just-generated text in texts/all.html.
+    Called from action_generate only when the toggle is enabled."""
+    all_html_path = texts_dir / 'all.html'
+    print()
+    if not all_html_path.exists():
+        print(c_warn(f"'add to all.html' is on, but no all.html was found at:\n    {all_html_path}"))
+        print(c_dim("Skipping -- add the card by hand, or set the texts folder up first."))
+        return
+
+    try:
+        all_html_text = all_html_path.read_text(encoding='utf-8')
+    except OSError as e:
+        print(c_err(f"Couldn't read '{all_html_path}': {e}"))
+        return
+
+    title = meta.get('HEADER') or meta.get('TITLE') or out_html.stem
+    subtitle = prompt("Card subtitle for all.html (e.g. 'ICJ — 2024')", "")
+    desc = prompt("Card description for all.html", meta.get('DESC', ''))
+    href = f'./{out_html.name}'
+
+    try:
+        existing_cases = find_all_html_cases(all_html_text)
+    except Exception:
+        existing_cases = []
+    existing = next((c for c in existing_cases if c['href'] == href), None)
+
+    if existing:
+        print(c_warn(f"\nA card for '{href}' already exists in all.html:"))
+        print(c_warn(f"    title: {existing['title']}"))
+        print(c_menu("  [c] Cancel   [o] Overwrite existing card   [r] Rename this text's link"))
+        choice = input("> ").strip().lower()
+        if choice in ('c', 'cancel', ''):
+            print(c_dim("Cancelled -- all.html left unchanged."))
+            return
+        if choice in ('r', 'rename'):
+            new_href = prompt("New href for this text (relative to texts/)", href)
+            href = new_href if new_href.startswith('./') or '/' in new_href else f'./{new_href}'
+            existing = next((c for c in existing_cases if c['href'] == href), None)
+            if existing:
+                print(c_warn(f"'{href}' is also already in use -- cancelling to avoid another collision."))
+                return
+            updated = add_case_to_all_html(all_html_text, title, subtitle, desc, href)
+        else:  # overwrite
+            updated = replace_case_in_all_html(all_html_text, href, title, subtitle, desc)
+    else:
+        try:
+            updated = add_case_to_all_html(all_html_text, title, subtitle, desc, href)
+        except ValueError as e:
+            print(c_err(f"Couldn't update all.html: {e}"))
+            return
+
+    try:
+        all_html_path.write_text(updated, encoding='utf-8')
+    except OSError as e:
+        print(c_err(f"Couldn't write '{all_html_path}': {e}"))
+        return
+
+    print(c_ok(f"Updated {all_html_path} with a card for '{title}' -> {href}"))
 
 
 def menu_loop():
@@ -1493,13 +1787,16 @@ def menu_loop():
     while True:
         print_status(state)
         ready = bool(state.get('source_txt')) and bool(state.get('annotations'))
-        lock = "" if ready else "   [locked -- complete 1 and 2 first]"
-        print(" 1) Set source text (convert a PDF, or point at an existing .txt)")
-        print(" 2) Set annotations (a formatted text file, or JSON)")
-        print(f" 3) Generate the annotated HTML + notes.js{lock}")
-        print(" 4) Show the annotation text format")
-        print(" 0) Quit")
-        print("-" * 64)
+        lock = c_dim("   [locked -- complete 1 and 2 first]") if not ready else ""
+        add_all = state.get('add_to_all_html', False)
+        toggle_label = c_ok('ON') if add_all else c_dim('off')
+        print(c_menu(" 1) Set source text (convert a PDF, or point at an existing .txt)"))
+        print(c_menu(" 2) Set annotations (a formatted text file, JSON, or an existing notes.js)"))
+        print(c_menu(f" 3) Generate the annotated HTML + notes.js") + lock)
+        print(c_menu(" 4) Show the annotation text format"))
+        print(c_menu(" 5) Toggle 'add to all.html' after generating -- currently ") + toggle_label)
+        print(c_menu(" 0) Quit"))
+        print(c_dim("-" * 64))
         choice = input("> ").strip()
 
         if choice == '1':
@@ -1508,16 +1805,21 @@ def menu_loop():
             action_set_annotations(state)
         elif choice == '3':
             if not ready:
-                print("\nSet both the source text and annotations first.")
+                print(c_err("\nSet both the source text and annotations first."))
             else:
                 action_generate(state)
         elif choice == '4':
             print(ANNOTATION_FORMAT_HELP)
+        elif choice == '5':
+            state['add_to_all_html'] = not add_all
+            save_state(state)
+            new_label = c_ok('ON') if state['add_to_all_html'] else c_dim('off')
+            print(f"\n'Add to all.html' is now " + new_label + ".")
         elif choice == '0':
-            print("Bye.")
+            print(c_dim("Bye."))
             return
         else:
-            print("\nNot a valid option.")
+            print(c_err("\nNot a valid option."))
 
 
 def main():
@@ -1526,7 +1828,7 @@ def main():
     try:
         menu_loop()
     except (KeyboardInterrupt, EOFError):
-        print("\nBye.")
+        print(c_dim("\nBye."))
 
 
 if __name__ == '__main__':

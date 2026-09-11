@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -7,85 +8,229 @@
   <meta name="description" content="Browse all annotated texts from the International Law Annotated project." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap"
+    rel="stylesheet">
   <style>
-    .hover-lift {
-      transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+    :root {
+      --paper: #F7F5EF;
+      --paper-card: #FDFCF9;
+      --ink: #1C2233;
+      --ink-soft: #565C6E;
+      --ink-faint: #8B8F9C;
+      --rule: #DDD6C4;
+      --annot: #A3341F;
+      --annot-soft: #C6684F;
+      --seal: #8A6D1C;
     }
-    .hover-lift:hover {
-      box-shadow: 0 10px 24px rgba(0,0,0,.06);
-      border-color: rgb(163 163 163);
-      transform: translateY(-1px);
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .font-display {
+      font-family: "Source Serif 4", Georgia, serif;
+    }
+
+    .font-ui {
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+    }
+
+    .font-mono {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+    }
+
+    .font-hand {
+      font-family: "Caveat", cursive;
+    }
+
+    .focus-ring {
+      outline: none;
+    }
+
+    .focus-ring:focus-visible {
+      box-shadow: 0 0 0 3px rgba(163, 52, 31, .35);
+      border-radius: 2px;
+    }
+
+    .seal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.9rem;
+      height: 1.9rem;
+      border-radius: 9999px;
+      border: 1.5px solid var(--ink);
+      flex-shrink: 0;
+    }
+
+    /* Card lift + margin flag on hover, matching the homepage's featured cards */
+    .case-card {
+      transition: box-shadow .25s ease, border-color .25s ease, transform .25s ease;
+      position: relative;
+    }
+
+    .case-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.9rem;
+      bottom: 0.9rem;
+      width: 3px;
+      background: var(--annot);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform .25s ease;
+    }
+
+    .case-card:hover {
+      box-shadow: 0 14px 30px rgba(28, 34, 51, .08);
+      border-color: var(--ink-faint);
+      transform: translateY(-2px);
+    }
+
+    .case-card:hover::before {
+      transform: scaleY(1);
+    }
+
+    .case-card .read-more {
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .case-card:hover .read-more {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "IBM Plex Sans", sans-serif;
+    }
+
+    .btn-primary:hover {
+      background: #2A3145;
+    }
+
+    .btn-secondary {
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", sans-serif;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--ink);
+      background: var(--paper-card);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      .case-card,
+      .case-card::before,
+      .case-card .read-more {
+        transition: none;
+      }
     }
   </style>
 </head>
 
-<body class="min-h-screen bg-white text-neutral-900">
+<body class="min-h-screen font-ui" style="background: var(--paper); color: var(--ink);">
   <!-- Header -->
-  <header class="sticky top-0 z-40 bg-white/90 border-b border-neutral-200">
-    <div class="mx-auto max-w-7xl px-4 py-2 flex items-center justify-between">
-      <a href="../index.html" class="flex items-center gap-2 shrink-0 text-neutral-900" aria-label="International Law Annotated">
-        <svg aria-hidden="true" viewBox="0 0 32 32" class="h-7 w-auto">
-          <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 8h6M12 24h6M12 8v16" />
-          </g>
-          <circle cx="23" cy="16" r="3" fill="currentColor"/>
-        </svg>
-        <span class="hidden sm:block font-medium tracking-tight">International Law Annotated</span>
+  <header class="sticky top-0 z-40 backdrop-blur border-b"
+    style="background: color-mix(in srgb, var(--paper) 92%, transparent); border-color: var(--rule);">
+    <div class="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-4">
+      <a href="../index.html" class="flex items-center gap-3 shrink-0" style="color: var(--ink);"
+        aria-label="International Law Annotated">
+        <span class="seal" aria-hidden="true">
+          <span class="font-display" style="color: var(--annot); font-size: 1.05rem; line-height: 1;">¶</span>
+        </span>
+        <span class="font-display font-medium tracking-tight text-[17px]">International Law Annotated</span>
       </a>
-      <nav class="hidden sm:flex items-center gap-6 text-sm">
-        <a class="text-neutral-700 hover:text-neutral-900" href="../index.html#what">About</a>
-        <a class="text-neutral-700 hover:text-neutral-900 focus-ring" href="all.html">Texts</a>
-        <a class="text-neutral-700 hover:text-neutral-900" href="../index.html#contribute">Contribute</a>
+
+      <nav class="hidden sm:flex items-center gap-7 text-[13px] uppercase tracking-wide font-ui">
+        <a class="focus-ring transition-colors" style="color: var(--ink-soft);"
+          onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'"
+          href="../index.html#what">About</a>
+        <a class="focus-ring transition-colors" style="color: var(--ink);" href="all.html">Texts</a>
+        <a class="focus-ring transition-colors" style="color: var(--ink-soft);"
+          onmouseover="this.style.color='var(--ink)'" onmouseout="this.style.color='var(--ink-soft)'"
+          href="../index.html#contribute">Contribute</a>
       </nav>
     </div>
   </header>
 
   <!-- Main -->
-  <main x-data="caseBrowser()" x-init="init()" class="max-w-7xl mx-auto px-4 py-14">
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
-      <h1 class="font-semibold text-3xl tracking-tight">All Texts</h1>
+  <main x-data="caseBrowser()" x-init="init()" class="mx-auto max-w-7xl px-4 py-14 md:py-16">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10 border-b pb-8"
+      style="border-color: var(--rule);">
+      <div>
+        <p class="font-mono text-[12px] uppercase tracking-[0.18em] mb-2" style="color: var(--annot);">§&nbsp; The
+          archive</p>
+        <h1 class="font-display font-semibold tracking-tight text-[clamp(1.9rem,4vw,3rem)] leading-[1.1]">All texts</h1>
+      </div>
       <div class="max-w-sm w-full">
         <label class="sr-only" for="search">Search texts</label>
-        <div class="flex items-center gap-3 border border-neutral-300 rounded-full px-4 py-2.5">
-          <svg viewBox="0 0 20 20" fill="none" class="w-5 h-5 text-neutral-500" aria-hidden="true">
-            <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-            <circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.6"/>
+        <div
+          class="flex items-center gap-3 border px-4 py-3 bg-[var(--paper-card)] focus-within:border-[var(--ink)] transition-colors"
+          style="border-color: var(--rule);">
+          <svg viewBox="0 0 20 20" fill="none" class="w-4 h-4 shrink-0" style="color: var(--ink-faint);"
+            aria-hidden="true">
+            <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.6" />
           </svg>
-          <input
-            id="search"
-            type="search"
-            placeholder="Search texts…"
-            x-model="query"
-            class="w-full bg-transparent outline-none text-[15px] placeholder:text-neutral-400"
-          />
+          <input id="search" type="search" placeholder="Search e.g. “Nicaragua v Germany” or “Art. 38”" x-model="query"
+            class="w-full bg-transparent outline-none text-[14px] font-mono placeholder:text-[var(--ink-faint)]" />
         </div>
       </div>
     </div>
 
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5">
       <template x-for="c in filtered" :key="c.href">
-        <a :href="c.href" class="block rounded-2xl border border-neutral-200 p-5 hover-lift">
-          <div class="text-xs uppercase tracking-wider text-neutral-500 mb-1" x-text="c.subtitle"></div>
-          <h3 class="font-medium text-neutral-900 mb-1" x-html="c.title"></h3>
-          <p class="text-sm text-neutral-600" x-text="c.desc"></p>
+        <a :href="c.href" class="case-card block border bg-[var(--paper-card)] p-5 pl-6 focus-ring"
+          style="border-color: var(--rule);">
+          <div class="font-mono text-[11px] uppercase tracking-wider mb-2" style="color: var(--ink-faint);"
+            x-text="c.subtitle"></div>
+          <h3 class="font-display font-medium text-[17px] mb-1.5" x-html="c.title"></h3>
+          <p class="text-[13.5px] leading-relaxed mb-3" style="color: var(--ink-soft);" x-text="c.desc"></p>
+          <span class="read-more font-mono text-[12px]" style="color: var(--annot);">Read annotations →</span>
         </a>
       </template>
 
       <!-- Placeholder / invitation card -->
-      <div class="rounded-2xl border border-dashed border-neutral-300 p-5 flex items-center">
-        <p class="text-sm text-neutral-600">
+      <div class="border border-dashed p-5 pl-6 flex items-center" style="border-color: var(--rule);">
+        <p class="text-[13.5px] leading-relaxed" style="color: var(--ink-soft);">
           More texts coming soon. Want to suggest one?
-          <a class="underline hover:no-underline whitespace-nowrap" href="https://forms.gle/amHbxFtxHikAEBk47">
+          <a class="underline hover:no-underline whitespace-nowrap" style="color: var(--annot);"
+            href="https://forms.gle/amHbxFtxHikAEBk47">
             Contribute an annotation&nbsp;→
           </a>
         </p>
       </div>
     </div>
 
-    <div x-show="filtered.length === 0" class="text-center text-sm text-neutral-500 mt-10">
+    <div x-show="filtered.length === 0" x-cloak class="text-center font-mono text-[13px] mt-14"
+      style="color: var(--ink-faint);">
       No matches found.
     </div>
   </main>
+
+  <footer class="border-t" style="border-color: var(--rule);">
+    <div class="mx-auto max-w-7xl px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="seal" style="width:1.5rem; height:1.5rem;" aria-hidden="true">
+          <span class="font-display" style="color: var(--annot); font-size: .85rem; line-height: 1;">¶</span>
+        </span>
+        <span class="font-mono text-[12px]" style="color: var(--ink-faint);">International Law Annotated</span>
+      </div>
+      <p class="font-mono text-[12px]" style="color: var(--ink-faint);">Open access &middot; unaffiliated &middot; not
+        legal advice</p>
+    </div>
+  </footer>
 
   <!-- Alpine Data -->
   <script>
@@ -106,37 +251,38 @@
             href: './opt-advisory-opinion.html'
           },
           // Add further text entries here
-          
 
-{
-  title: 'Paris Agreement',
-  subtitle: 'United Nations – 2015',
-  desc: 'Paris Agreement Under the United Nations Framework Convention on Climate Change',
-  href: './paris.html'
-},
-{
-  title: 'Kyoto Protocol',
-  subtitle: 'United Nations – 1998',
-  desc: 'Kyoto Protocol to the United Nations Framework Convention on Climate Change',
-  href: './kyoto.html'
-},
-{
-  title: 'UNFCCC',
-  subtitle: 'United Nations – 1992',
-  desc: 'United Nations Framework Convention on Climate Change',
-  href: './unfccc.html'
-},
-{
-  title: 'CISG',
-  subtitle: 'United Nations — 1980',
-  desc: 'United Nations Convention on Contracts for the International Sale of Goods',
-  href: './cisg.html'
-},
-{
-  title: 'Reparations Advisory Opinion',
-  subtitle: 'ICJ — 1949',
-  desc: 'Reparations for Injuries Suffered in the Service of the United Nations',
-  href: './reparations.html'}
+
+          {
+            title: 'Paris Agreement',
+            subtitle: 'United Nations – 2015',
+            desc: 'Paris Agreement Under the United Nations Framework Convention on Climate Change',
+            href: './paris.html'
+          },
+          {
+            title: 'Kyoto Protocol',
+            subtitle: 'United Nations – 1998',
+            desc: 'Kyoto Protocol to the United Nations Framework Convention on Climate Change',
+            href: './kyoto.html'
+          },
+          {
+            title: 'UNFCCC',
+            subtitle: 'United Nations – 1992',
+            desc: 'United Nations Framework Convention on Climate Change',
+            href: './unfccc.html'
+          },
+          {
+            title: 'CISG',
+            subtitle: 'United Nations — 1980',
+            desc: 'United Nations Convention on Contracts for the International Sale of Goods',
+            href: './cisg.html'
+          },
+          {
+            title: 'Reparations Advisory Opinion',
+            subtitle: 'ICJ — 1949',
+            desc: 'Reparations for Injuries Suffered in the Service of the United Nations',
+            href: './reparations.html'
+          }
 
         ],
         init() {
@@ -154,4 +300,5 @@
     });
   </script>
 </body>
+
 </html>

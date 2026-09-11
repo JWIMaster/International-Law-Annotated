@@ -1,1 +1,0 @@
-Tool will walk you through the HTML creation process. Make sure to read how to format annotations. Remember to add to the index.html

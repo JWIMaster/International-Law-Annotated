@@ -1,0 +1,3376 @@
+{
+  "format": "ila-pdf-fixtures/1",
+  "generator": "tests/fixtures/make_fixtures.py",
+  "pdf_version": "1.7",
+  "units": "points",
+  "coordinate_system": "PDF user space; origin bottom-left of the unrotated MediaBox. Annotation rects/quad points are recorded as stored in the PDF (unrotated), even when the page carries /Rotate.",
+  "field_notes": {
+    "pages[].width/height": "unrotated MediaBox in points",
+    "pages[].rotation": "the page /Rotate value in degrees (0, 90 or 270)",
+    "paragraphs[].pages": "every page the paragraph appears on, so cross-page paragraphs have more than one entry",
+    "paragraphs[].column": "'left'/'right' for twocolumn.pdf, else null",
+    "paragraphs[].lines[].page": "page the individual physical line was drawn on",
+    "annotations[].rect": "the raw /Rect array, unrotated user space",
+    "annotations[].quad_points": "the raw /QuadPoints array where present, else null",
+    "annotations[].covers": "exact body text enclosed by the rect; null for margin notes and the Square",
+    "annotations[].refers_to": "anchor paragraph for margin notes that cover no body text; else null",
+    "annotations[] order": "annotated.pdf page 1 stores its /Annots array deliberately out of vertical order",
+    "running_elements": "running headers, footers and standalone page numbers that a body-text parser must discard"
+  },
+  "fonts": {
+    "F1": "Helvetica",
+    "F2": "Helvetica-Bold",
+    "F3": "Times-Roman",
+    "F4": "Times-Italic"
+  },
+  "fixture_count": 15,
+  "fixtures": [
+    {
+      "file": "simple.pdf",
+      "description": "One A4 page: a Helvetica-Bold 16 title followed by three short plain paragraphs with no numbering or markers.",
+      "guards": "Baseline text extraction: fonts, sizes, one Tj per line, paragraph joining and page/paragraph attribution on the simplest possible input.",
+      "page_count": 1,
+      "bytes": 1707,
+      "sha256": "c2ed6834fb2ca40cf88f0deb026045e430433a73f93ee540407b902fd25b2de3",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "A Short Note on Treaties",
+              "x": 72.0,
+              "y": 750.0,
+              "font": "F2",
+              "size": 16.0,
+              "angle": 0
+            },
+            {
+              "text": "The first paragraph makes a short and plain statement about treaties.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "The second paragraph adds a little more detail about customary",
+              "x": 72.0,
+              "y": 660.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "international law and the way that it slowly develops over time.",
+              "x": 72.0,
+              "y": 646.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "The third paragraph closes the page with three lines of ordinary",
+              "x": 72.0,
+              "y": 600.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "running text that a parser should be able to join back into",
+              "x": 72.0,
+              "y": 586.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "a single block without any trouble at all.",
+              "x": 72.0,
+              "y": 572.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [
+        {
+          "text": "A Short Note on Treaties",
+          "level": 1,
+          "page": 1,
+          "font": "F2",
+          "size": 16.0,
+          "x": 72.0,
+          "y": 750.0
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "The first paragraph makes a short and plain statement about treaties.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "The first paragraph makes a short and plain statement about treaties.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "The second paragraph adds a little more detail about customary international law and the way that it slowly develops over time.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "The second paragraph adds a little more detail about customary",
+              "x": 72.0,
+              "y": 660.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "international law and the way that it slowly develops over time.",
+              "x": 72.0,
+              "y": 646.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "The third paragraph closes the page with three lines of ordinary running text that a parser should be able to join back into a single block without any trouble at all.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "The third paragraph closes the page with three lines of ordinary",
+              "x": 72.0,
+              "y": 600.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "running text that a parser should be able to join back into",
+              "x": 72.0,
+              "y": 586.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "a single block without any trouble at all.",
+              "x": 72.0,
+              "y": 572.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "paragraphs.pdf",
+      "description": "One A4 page: a heading, three numbered paragraphs ('1.', '2.', '3.') with several lines each, and a lettered sub-list under paragraph 3.",
+      "guards": "Numbered-paragraph detection, hanging-indent line joining, and distinguishing a sub-list from the numbered paragraphs.",
+      "page_count": 1,
+      "bytes": 2145,
+      "sha256": "c7eba2595d8f90f346d09396bab1c4849bbef7c6645bfb46b9d441a428d7cc57",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Article 3",
+              "x": 72.0,
+              "y": 770.0,
+              "font": "F2",
+              "size": 13.0,
+              "angle": 0
+            },
+            {
+              "text": "1. The present Convention shall apply to treaties between States.",
+              "x": 72.0,
+              "y": 725.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "This paragraph is short but still occupies more than a single line",
+              "x": 86.0,
+              "y": 711.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "so that line-joining behaviour can be checked.",
+              "x": 86.0,
+              "y": 697.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "2. For the purposes of the present Convention, a treaty means an",
+              "x": 72.0,
+              "y": 660.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "international agreement concluded between States in written form",
+              "x": 86.0,
+              "y": 646.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "and governed by international law, whether embodied in a single",
+              "x": 86.0,
+              "y": 632.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "instrument or in two or more related instruments.",
+              "x": 86.0,
+              "y": 618.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "3. The provisions of this Article do not apply to agreements",
+              "x": 72.0,
+              "y": 575.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "concluded between a State and an international organisation.",
+              "x": 86.0,
+              "y": 561.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "(a) unless the parties have so agreed in writing; and",
+              "x": 90.0,
+              "y": 535.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "(b) unless the agreement is deposited with the depositary.",
+              "x": 90.0,
+              "y": 510.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [
+        {
+          "text": "Article 3",
+          "level": 1,
+          "page": 1,
+          "font": "F2",
+          "size": 13.0,
+          "x": 72.0,
+          "y": 770.0
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "1. The present Convention shall apply to treaties between States. This paragraph is short but still occupies more than a single line so that line-joining behaviour can be checked.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "1. The present Convention shall apply to treaties between States.",
+              "x": 72.0,
+              "y": 725.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "This paragraph is short but still occupies more than a single line",
+              "x": 86.0,
+              "y": 711.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "so that line-joining behaviour can be checked.",
+              "x": 86.0,
+              "y": 697.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "2. For the purposes of the present Convention, a treaty means an international agreement concluded between States in written form and governed by international law, whether embodied in a single instrument or in two or more related instruments.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "2. For the purposes of the present Convention, a treaty means an",
+              "x": 72.0,
+              "y": 660.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "international agreement concluded between States in written form",
+              "x": 86.0,
+              "y": 646.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "and governed by international law, whether embodied in a single",
+              "x": 86.0,
+              "y": 632.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "instrument or in two or more related instruments.",
+              "x": 86.0,
+              "y": 618.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "3. The provisions of this Article do not apply to agreements concluded between a State and an international organisation.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "3. The provisions of this Article do not apply to agreements",
+              "x": 72.0,
+              "y": 575.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "concluded between a State and an international organisation.",
+              "x": 86.0,
+              "y": 561.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "(a) unless the parties have so agreed in writing; and",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "(a) unless the parties have so agreed in writing; and",
+              "x": 90.0,
+              "y": 535.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "(b) unless the agreement is deposited with the depositary.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "(b) unless the agreement is deposited with the depositary.",
+              "x": 90.0,
+              "y": 510.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "paragraphs_paged.pdf",
+      "description": "Two A4 pages. Paragraph 2 starts near the bottom of page 1 and its text continues at the top of page 2, with a running header on page 2 between the two halves.",
+      "guards": "Cross-page paragraph continuation: a naive parser inserts the running header into the paragraph and splits it, so line/paragraph joining must recognise headers and mid-sentence continuations.",
+      "page_count": 2,
+      "bytes": 2328,
+      "sha256": "18e6bf530e369da3ad9669cc9f6779095b4630c958e34bd4a9d7103562cab7b0",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Article 9",
+              "x": 72.0,
+              "y": 780.0,
+              "font": "F2",
+              "size": 13.0,
+              "angle": 0
+            },
+            {
+              "text": "1. A treaty shall be interpreted in good faith and in accordance",
+              "x": 72.0,
+              "y": 745.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "with the ordinary meaning to be given to its terms.",
+              "x": 86.0,
+              "y": 731.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "2. A treaty shall be interpreted in good faith in accordance with the",
+              "x": 72.0,
+              "y": 690.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "ordinary meaning to be given to the terms of the treaty in their",
+              "x": 86.0,
+              "y": 676.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "context and in the light of its object and purpose, and this",
+              "x": 86.0,
+              "y": 662.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "example sentence is deliberately made long enough that it has to",
+              "x": 86.0,
+              "y": 648.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Article 9 (continued)",
+              "x": 72.0,
+              "y": 800.0,
+              "font": "F2",
+              "size": 10.0,
+              "angle": 0
+            },
+            {
+              "text": "continue onto the following page.",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "3. The context for the purpose of the interpretation of a treaty",
+              "x": 86.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "shall comprise, in addition to the text, its preamble and annexes.",
+              "x": 86.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [
+        {
+          "text": "Article 9",
+          "level": 1,
+          "page": 1,
+          "font": "F2",
+          "size": 13.0,
+          "x": 72.0,
+          "y": 780.0
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "1. A treaty shall be interpreted in good faith and in accordance with the ordinary meaning to be given to its terms.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "1. A treaty shall be interpreted in good faith and in accordance",
+              "x": 72.0,
+              "y": 745.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "with the ordinary meaning to be given to its terms.",
+              "x": 86.0,
+              "y": 731.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "2. A treaty shall be interpreted in good faith in accordance with the ordinary meaning to be given to the terms of the treaty in their context and in the light of its object and purpose, and this example sentence is deliberately made long enough that it has to continue onto the following page.",
+          "pages": [
+            1,
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "2. A treaty shall be interpreted in good faith in accordance with the",
+              "x": 72.0,
+              "y": 690.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "ordinary meaning to be given to the terms of the treaty in their",
+              "x": 86.0,
+              "y": 676.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "context and in the light of its object and purpose, and this",
+              "x": 86.0,
+              "y": 662.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "example sentence is deliberately made long enough that it has to",
+              "x": 86.0,
+              "y": 648.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "continue onto the following page.",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "3. The context for the purpose of the interpretation of a treaty",
+              "x": 86.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "shall comprise, in addition to the text, its preamble and annexes.",
+              "x": 86.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": [
+        {
+          "kind": "running_header",
+          "text": "Article 9 (continued)",
+          "page": 2,
+          "font": "F2",
+          "size": 10.0,
+          "x": 72.0,
+          "y": 800.0
+        }
+      ]
+    },
+    {
+      "file": "twocolumn.pdf",
+      "description": "One A4 page with a full-width title and two clearly separated columns (left x=50..280, right x=315..545). The content stream emits every left-column line before any right-column line, but the y positions of the two columns interleave.",
+      "guards": "Column detection: a naive y-descending sort interleaves the two columns into nonsense, so the parser must separate columns by x before ordering lines within each column.",
+      "page_count": 1,
+      "bytes": 1924,
+      "sha256": "072a0c412110331236d94acd61934afba18d2d83ab7f274035f3cb7c82de814a",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Two Column Layout Test",
+              "x": 150.0,
+              "y": 775.0,
+              "font": "F2",
+              "size": 14.0,
+              "angle": 0
+            },
+            {
+              "text": "LEFT alpha begins the first left",
+              "x": 50.0,
+              "y": 720.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "column paragraph and continues.",
+              "x": 50.0,
+              "y": 706.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "LEFT beta opens the second left",
+              "x": 50.0,
+              "y": 664.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "paragraph with more of its text.",
+              "x": 50.0,
+              "y": 650.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "LEFT gamma is the third and it",
+              "x": 50.0,
+              "y": 608.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "closes the left column of text.",
+              "x": 50.0,
+              "y": 594.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "RIGHT alpha begins the first right",
+              "x": 315.0,
+              "y": 713.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "column paragraph and continues.",
+              "x": 315.0,
+              "y": 699.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "RIGHT beta opens the second right",
+              "x": 315.0,
+              "y": 657.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "paragraph with more of its text.",
+              "x": 315.0,
+              "y": 643.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "RIGHT gamma is the third and it",
+              "x": 315.0,
+              "y": 601.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "closes the right column of text.",
+              "x": 315.0,
+              "y": 587.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [
+        {
+          "text": "Two Column Layout Test",
+          "level": 1,
+          "page": 1,
+          "font": "F2",
+          "size": 14.0,
+          "x": 150.0,
+          "y": 775.0
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "LEFT alpha begins the first left column paragraph and continues.",
+          "pages": [
+            1
+          ],
+          "column": "left",
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "LEFT alpha begins the first left",
+              "x": 50.0,
+              "y": 720.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "column paragraph and continues.",
+              "x": 50.0,
+              "y": 706.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "LEFT beta opens the second left paragraph with more of its text.",
+          "pages": [
+            1
+          ],
+          "column": "left",
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "LEFT beta opens the second left",
+              "x": 50.0,
+              "y": 664.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "paragraph with more of its text.",
+              "x": 50.0,
+              "y": 650.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "LEFT gamma is the third and it closes the left column of text.",
+          "pages": [
+            1
+          ],
+          "column": "left",
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "LEFT gamma is the third and it",
+              "x": 50.0,
+              "y": 608.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "closes the left column of text.",
+              "x": 50.0,
+              "y": 594.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "RIGHT alpha begins the first right column paragraph and continues.",
+          "pages": [
+            1
+          ],
+          "column": "right",
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "RIGHT alpha begins the first right",
+              "x": 315.0,
+              "y": 713.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "column paragraph and continues.",
+              "x": 315.0,
+              "y": 699.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "RIGHT beta opens the second right paragraph with more of its text.",
+          "pages": [
+            1
+          ],
+          "column": "right",
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "RIGHT beta opens the second right",
+              "x": 315.0,
+              "y": 657.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "paragraph with more of its text.",
+              "x": 315.0,
+              "y": 643.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "RIGHT gamma is the third and it closes the right column of text.",
+          "pages": [
+            1
+          ],
+          "column": "right",
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "RIGHT gamma is the third and it",
+              "x": 315.0,
+              "y": 601.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "closes the right column of text.",
+              "x": 315.0,
+              "y": 587.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "fontsizes.pdf",
+      "description": "One A4 page mixing a 20pt Helvetica-Bold title, a 14pt Helvetica-Bold section heading, an 11pt Helvetica body paragraph, a 9pt footnote and one Times-Italic run.",
+      "guards": "Font and size recovery: heading detection from size, body versus footnote classification, and italic run detection.",
+      "page_count": 1,
+      "bytes": 1526,
+      "sha256": "b6ef1779be7faf6de07c9ae718072620a0fb9a7f54920e58dbdbb9c9a1bec8c8",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Type Size Title",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F2",
+              "size": 20.0,
+              "angle": 0
+            },
+            {
+              "text": "Section 1. Type Sizes",
+              "x": 72.0,
+              "y": 720.0,
+              "font": "F2",
+              "size": 14.0,
+              "angle": 0
+            },
+            {
+              "text": "This body paragraph is set in eleven point Helvetica and it",
+              "x": 72.0,
+              "y": 688.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "spans two short lines for the parser to join.",
+              "x": 72.0,
+              "y": 674.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "This run is set in Times Italic at eleven point.",
+              "x": 72.0,
+              "y": 645.0,
+              "font": "F4",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "1. This footnote is set in nine point Helvetica.",
+              "x": 72.0,
+              "y": 605.0,
+              "font": "F1",
+              "size": 9.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [
+        {
+          "text": "Type Size Title",
+          "level": 1,
+          "page": 1,
+          "font": "F2",
+          "size": 20.0,
+          "x": 72.0,
+          "y": 760.0
+        },
+        {
+          "text": "Section 1. Type Sizes",
+          "level": 2,
+          "page": 1,
+          "font": "F2",
+          "size": 14.0,
+          "x": 72.0,
+          "y": 720.0
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "This body paragraph is set in eleven point Helvetica and it spans two short lines for the parser to join.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "This body paragraph is set in eleven point Helvetica and it",
+              "x": 72.0,
+              "y": 688.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "spans two short lines for the parser to join.",
+              "x": 72.0,
+              "y": 674.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "This run is set in Times Italic at eleven point.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F4",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "This run is set in Times Italic at eleven point.",
+              "x": 72.0,
+              "y": 645.0,
+              "font": "F4",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "1. This footnote is set in nine point Helvetica.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 9.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "1. This footnote is set in nine point Helvetica.",
+              "x": 72.0,
+              "y": 605.0,
+              "font": "F1",
+              "size": 9.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "image.pdf",
+      "description": "Two A4 pages. Page 1 has a paragraph plus an image XObject in the middle third of the page. Page 2 is a single image covering almost the whole page with no text at all (a scanned page).",
+      "guards": "Image XObject discovery and image-only / scanned pages: text extraction returns nothing for page 2 and image coverage must be measured.",
+      "page_count": 2,
+      "bytes": 2411,
+      "sha256": "c0f7de42f0b30d5a2aef8c99ef614136b1628f27b5d73e68dc605b2021dd9748",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": true,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "The first page carries a short paragraph of text together",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "with an image in the middle third of the page.",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": false,
+          "has_images": true,
+          "has_vector_graphics": false,
+          "text_lines": []
+        }
+      ],
+      "headings": [],
+      "paragraphs": [
+        {
+          "text": "The first page carries a short paragraph of text together with an image in the middle third of the page.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "The first page carries a short paragraph of text together",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "with an image in the middle third of the page.",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [
+        {
+          "x": 100.0,
+          "y": 320.0,
+          "width": 400.0,
+          "height": 200.0,
+          "pixel_width": 8,
+          "pixel_height": 8,
+          "colorspace": "DeviceRGB",
+          "page": 1
+        },
+        {
+          "x": 20.0,
+          "y": 20.0,
+          "width": 555.0,
+          "height": 800.0,
+          "pixel_width": 8,
+          "pixel_height": 8,
+          "colorspace": "DeviceRGB",
+          "page": 2
+        }
+      ],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "vector.pdf",
+      "description": "One A4 page containing a simple vector diagram: stroked and filled rectangles, connecting lines and a filled triangular path, with a caption paragraph underneath.",
+      "guards": "Vector graphics detection (re/f/S/m/l) as distinct from text and images, plus caption placement below a figure.",
+      "page_count": 1,
+      "bytes": 1480,
+      "sha256": "7423cf42aabe3c7084257cb460fcddb51ee490fdee620ffd12d5aee45de137db",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": true,
+          "text_lines": [
+            {
+              "text": "Figure 1. A simple vector diagram drawn with rectangles,",
+              "x": 72.0,
+              "y": 500.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "strokes and a filled path.",
+              "x": 72.0,
+              "y": 486.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [],
+      "paragraphs": [
+        {
+          "text": "Figure 1. A simple vector diagram drawn with rectangles, strokes and a filled path.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "Figure 1. A simple vector diagram drawn with rectangles,",
+              "x": 72.0,
+              "y": 500.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "strokes and a filled path.",
+              "x": 72.0,
+              "y": 486.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [
+        {
+          "page": 1,
+          "type": "rect",
+          "x": 72.0,
+          "y": 700.0,
+          "width": 120.0,
+          "height": 80.0,
+          "style": "stroke",
+          "stroke_gray": 0.0
+        },
+        {
+          "page": 1,
+          "type": "rect",
+          "x": 220.0,
+          "y": 700.0,
+          "width": 120.0,
+          "height": 80.0,
+          "style": "fill+stroke",
+          "fill_gray": 0.75,
+          "stroke_gray": 0.0
+        },
+        {
+          "page": 1,
+          "type": "line",
+          "x1": 192.0,
+          "y1": 740.0,
+          "x2": 220.0,
+          "y2": 740.0
+        },
+        {
+          "page": 1,
+          "type": "line",
+          "x1": 340.0,
+          "y1": 740.0,
+          "x2": 420.0,
+          "y2": 740.0
+        },
+        {
+          "page": 1,
+          "type": "line",
+          "x1": 420.0,
+          "y1": 740.0,
+          "x2": 420.0,
+          "y2": 640.0
+        },
+        {
+          "page": 1,
+          "type": "polyline",
+          "points": [
+            [
+              72,
+              620
+            ],
+            [
+              160,
+              620
+            ],
+            [
+              160,
+              560
+            ]
+          ]
+        },
+        {
+          "page": 1,
+          "type": "filled_path",
+          "points": [
+            [
+              220,
+              560
+            ],
+            [
+              300,
+              620
+            ],
+            [
+              380,
+              560
+            ]
+          ],
+          "fill_gray": 0.4
+        }
+      ],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "rotated.pdf",
+      "description": "Two A4 pages. Page 1 has /Rotate 90 and page 2 has /Rotate 270; each carries two lines of text drawn so that they read left-to-right after rotation. Page 1 also carries a Highlight annotation.",
+      "guards": "Rotated-page text and annotation coordinate mapping: /Rect values are stored in unrotated user space but displayed rotated, so callers must map between the two frames.",
+      "page_count": 2,
+      "bytes": 2016,
+      "sha256": "fada368a5a30a125fc941403e5295108663a7e9a71f1dca0366bdf26d6148a99",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 90,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Rotated page one reads left to right.",
+              "x": 72.0,
+              "y": 72.0,
+              "font": "F1",
+              "size": 12.0,
+              "angle": 90
+            },
+            {
+              "text": "A second line on the rotated page.",
+              "x": 100.0,
+              "y": 72.0,
+              "font": "F1",
+              "size": 12.0,
+              "angle": 90
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 270,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Rotated page two reads left to right.",
+              "x": 500.0,
+              "y": 769.89,
+              "font": "F1",
+              "size": 12.0,
+              "angle": 270
+            },
+            {
+              "text": "Its rotation is two hundred and seventy.",
+              "x": 470.0,
+              "y": 769.89,
+              "font": "F1",
+              "size": 12.0,
+              "angle": 270
+            }
+          ]
+        }
+      ],
+      "headings": [],
+      "paragraphs": [],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [
+        {
+          "page": 1,
+          "subtype": "Highlight",
+          "rect": [
+            60.0,
+            72.0,
+            84.0,
+            267.448
+          ],
+          "author": "A. Researcher",
+          "contents": "Rotated annotation anchor.",
+          "color": [
+            1,
+            0.85,
+            0.2
+          ],
+          "quad_points": [
+            72.0,
+            83.04,
+            267.448,
+            83.04,
+            72.0,
+            68.64,
+            267.448,
+            68.64
+          ],
+          "covers": "Rotated page one reads left to right.",
+          "refers_to": null
+        }
+      ],
+      "running_elements": []
+    },
+    {
+      "file": "pagesizes.pdf",
+      "description": "Three pages with different media boxes: A4 portrait, US Letter portrait and a true A4 landscape MediaBox with /Rotate 0.",
+      "guards": "Page-size handling and landscape detection from the MediaBox rather than from /Rotate.",
+      "page_count": 3,
+      "bytes": 1926,
+      "sha256": "3b6faa44251806bfde64ad95fd44f4e61262a0ce99fee1c00a1cbed09c6ccf5a",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Page one uses A4 portrait dimensions.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "width": 612.0,
+          "height": 792.0,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Page two uses US Letter portrait dimensions.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 3,
+          "width": 841.89,
+          "height": 595.276,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Page three uses A4 landscape dimensions.",
+              "x": 72.0,
+              "y": 450.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [],
+      "paragraphs": [
+        {
+          "text": "Page one uses A4 portrait dimensions.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "Page one uses A4 portrait dimensions.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "Page two uses US Letter portrait dimensions.",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "Page two uses US Letter portrait dimensions.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "Page three uses A4 landscape dimensions.",
+          "pages": [
+            3
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 3,
+              "text": "Page three uses A4 landscape dimensions.",
+              "x": 72.0,
+              "y": 450.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "headers.pdf",
+      "description": "Four A4 pages. Every page carries the running header 'International Law Review', the running footer 'Page N of 4', and body text that flows continuously across page breaks. Page 2 also carries a standalone centred page number line '- 2 -'.",
+      "guards": "Running header/footer removal and continuous body flow: the body paragraph is one logical block spanning four pages and each page after the first starts mid-sentence.",
+      "page_count": 4,
+      "bytes": 4134,
+      "sha256": "94f61320d9344d5f19075e20a5394f82118ab7d55bc31a6a10197a1f75c8d25e",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "International Law Review",
+              "x": 72.0,
+              "y": 800.0,
+              "font": "F2",
+              "size": 10.0,
+              "angle": 0
+            },
+            {
+              "text": "Page 1 of 4",
+              "x": 72.0,
+              "y": 50.0,
+              "font": "F1",
+              "size": 9.0,
+              "angle": 0
+            },
+            {
+              "text": "The development of international law has always depended upon the patient",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "accumulation of State practice and the considered reflection of scholars and",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "tribunals alike. Treaties record the settled will of States, while custom grows",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "from conduct that is both widespread and accepted as law. When a dispute",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "International Law Review",
+              "x": 72.0,
+              "y": 800.0,
+              "font": "F2",
+              "size": 10.0,
+              "angle": 0
+            },
+            {
+              "text": "Page 2 of 4",
+              "x": 72.0,
+              "y": 50.0,
+              "font": "F1",
+              "size": 9.0,
+              "angle": 0
+            },
+            {
+              "text": "- 2 -",
+              "x": 285.0,
+              "y": 100.0,
+              "font": "F1",
+              "size": 10.0,
+              "angle": 0
+            },
+            {
+              "text": "arises, the parties look first to their own agreements, then to the general",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "principles that the community of nations has come to treat as binding. In this",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "way the legal order expands, not by sudden invention, but by the slow and",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "careful extension of rules that have already proved their worth in practice.",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 3,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "International Law Review",
+              "x": 72.0,
+              "y": 800.0,
+              "font": "F2",
+              "size": 10.0,
+              "angle": 0
+            },
+            {
+              "text": "Page 3 of 4",
+              "x": 72.0,
+              "y": 50.0,
+              "font": "F1",
+              "size": 9.0,
+              "angle": 0
+            },
+            {
+              "text": "The same process can be seen in the work of codification, where settled rules",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "are restated with greater precision and the gaps between them are filled by",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "agreement. Each generation inherits a body of doctrine and adds to it,",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "sometimes by treaty, sometimes by the quiet weight of consistent conduct.",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 4,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "International Law Review",
+              "x": 72.0,
+              "y": 800.0,
+              "font": "F2",
+              "size": 10.0,
+              "angle": 0
+            },
+            {
+              "text": "Page 4 of 4",
+              "x": 72.0,
+              "y": 50.0,
+              "font": "F1",
+              "size": 9.0,
+              "angle": 0
+            },
+            {
+              "text": "The result is a legal order that is neither static nor wholly new but always",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "growing at the edges, and for the student of the subject the lesson is that",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "no single instrument tells the whole story; the careful reader must attend",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "to practice as closely as to the text itself.",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [],
+      "paragraphs": [
+        {
+          "text": "The development of international law has always depended upon the patient accumulation of State practice and the considered reflection of scholars and tribunals alike. Treaties record the settled will of States, while custom grows from conduct that is both widespread and accepted as law. When a dispute arises, the parties look first to their own agreements, then to the general principles that the community of nations has come to treat as binding. In this way the legal order expands, not by sudden invention, but by the slow and careful extension of rules that have already proved their worth in practice. The same process can be seen in the work of codification, where settled rules are restated with greater precision and the gaps between them are filled by agreement. Each generation inherits a body of doctrine and adds to it, sometimes by treaty, sometimes by the quiet weight of consistent conduct. The result is a legal order that is neither static nor wholly new but always growing at the edges, and for the student of the subject the lesson is that no single instrument tells the whole story; the careful reader must attend to practice as closely as to the text itself.",
+          "pages": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "The development of international law has always depended upon the patient",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "accumulation of State practice and the considered reflection of scholars and",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "tribunals alike. Treaties record the settled will of States, while custom grows",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "from conduct that is both widespread and accepted as law. When a dispute",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "arises, the parties look first to their own agreements, then to the general",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "principles that the community of nations has come to treat as binding. In this",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "way the legal order expands, not by sudden invention, but by the slow and",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "careful extension of rules that have already proved their worth in practice.",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 3,
+              "text": "The same process can be seen in the work of codification, where settled rules",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 3,
+              "text": "are restated with greater precision and the gaps between them are filled by",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 3,
+              "text": "agreement. Each generation inherits a body of doctrine and adds to it,",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 3,
+              "text": "sometimes by treaty, sometimes by the quiet weight of consistent conduct.",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 4,
+              "text": "The result is a legal order that is neither static nor wholly new but always",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 4,
+              "text": "growing at the edges, and for the student of the subject the lesson is that",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 4,
+              "text": "no single instrument tells the whole story; the careful reader must attend",
+              "x": 72.0,
+              "y": 732.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 4,
+              "text": "to practice as closely as to the text itself.",
+              "x": 72.0,
+              "y": 718.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": [
+        {
+          "kind": "running_header",
+          "text": "International Law Review",
+          "page": 1,
+          "font": "F2",
+          "size": 10.0,
+          "x": 72.0,
+          "y": 800.0
+        },
+        {
+          "kind": "running_footer",
+          "text": "Page 1 of 4",
+          "page": 1,
+          "font": "F1",
+          "size": 9.0,
+          "x": 72.0,
+          "y": 50.0
+        },
+        {
+          "kind": "running_header",
+          "text": "International Law Review",
+          "page": 2,
+          "font": "F2",
+          "size": 10.0,
+          "x": 72.0,
+          "y": 800.0
+        },
+        {
+          "kind": "running_footer",
+          "text": "Page 2 of 4",
+          "page": 2,
+          "font": "F1",
+          "size": 9.0,
+          "x": 72.0,
+          "y": 50.0
+        },
+        {
+          "kind": "page_number",
+          "text": "- 2 -",
+          "page": 2,
+          "font": "F1",
+          "size": 10.0,
+          "x": 285.0,
+          "y": 100.0
+        },
+        {
+          "kind": "running_header",
+          "text": "International Law Review",
+          "page": 3,
+          "font": "F2",
+          "size": 10.0,
+          "x": 72.0,
+          "y": 800.0
+        },
+        {
+          "kind": "running_footer",
+          "text": "Page 3 of 4",
+          "page": 3,
+          "font": "F1",
+          "size": 9.0,
+          "x": 72.0,
+          "y": 50.0
+        },
+        {
+          "kind": "running_header",
+          "text": "International Law Review",
+          "page": 4,
+          "font": "F2",
+          "size": 10.0,
+          "x": 72.0,
+          "y": 800.0
+        },
+        {
+          "kind": "running_footer",
+          "text": "Page 4 of 4",
+          "page": 4,
+          "font": "F1",
+          "size": 9.0,
+          "x": 72.0,
+          "y": 50.0
+        }
+      ]
+    },
+    {
+      "file": "empty.pdf",
+      "description": "Two A4 pages whose content streams are completely empty.",
+      "guards": "Empty content streams: no text, no images, no annotations; parsers must not crash and must report two blank pages.",
+      "page_count": 2,
+      "bytes": 1405,
+      "sha256": "8dfd8628b8c70cf0017885b2555d80fb876d5f19e05dc8acd53fbf0ca45b2f5e",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": false,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": []
+        },
+        {
+          "page": 2,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": false,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": []
+        }
+      ],
+      "headings": [],
+      "paragraphs": [],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "minimal.pdf",
+      "description": "One A4 page whose content stream draws nothing but a single tiny '.' character.",
+      "guards": "Degenerate-but-valid input: a page with one punctuation glyph should be reported as having (almost) no text rather than as an error.",
+      "page_count": 1,
+      "bytes": 1165,
+      "sha256": "5f6577bf9fd0f00158e6e9a9a4f3e874d5086423144fe268710f03c6819fea11",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": ".",
+              "x": 300.0,
+              "y": 400.0,
+              "font": "F1",
+              "size": 12.0,
+              "angle": 0
+            },
+            {
+              "text": ".",
+              "x": 300.0,
+              "y": 400.0,
+              "font": "F1",
+              "size": 12.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [],
+      "paragraphs": [
+        {
+          "text": ".",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 12.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": ".",
+              "x": 300.0,
+              "y": 400.0,
+              "font": "F1",
+              "size": 12.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "generic.pdf",
+      "description": "Two A4 pages of ordinary non-legal prose: a cover page with a contents list, then three numbered steps and a quoted specification, with a running header and footer.",
+      "guards": "Generality guard: the parser must not assume legal structure. The back-matter rule in particular must not delete a short document that merely has a contents list on its first page.",
+      "page_count": 2,
+      "bytes": 3816,
+      "sha256": "e6f76c565a44382c3a8ae90f120fcf7b249b9a01bc09c4135a5e13d620d51e68",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "AUTUMN CATALOGUE 2024",
+              "x": 200.0,
+              "y": 700.0,
+              "font": "F2",
+              "size": 16.0,
+              "angle": 0
+            },
+            {
+              "text": "Kitchen Tools and Utensils",
+              "x": 200.0,
+              "y": 670.0,
+              "font": "F1",
+              "size": 12.0,
+              "angle": 0
+            },
+            {
+              "text": "Contents",
+              "x": 72.0,
+              "y": 600.0,
+              "font": "F2",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "Saucepans .......... 4",
+              "x": 72.0,
+              "y": 580.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "Skillets .......... 9",
+              "x": 72.0,
+              "y": 566.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "Utensils .......... 17",
+              "x": 72.0,
+              "y": 552.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "Care instructions .......... 24",
+              "x": 72.0,
+              "y": 538.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Autumn Catalogue 2024 - Kitchen Tools",
+              "x": 72.0,
+              "y": 800.0,
+              "font": "F1",
+              "size": 9.0,
+              "angle": 0
+            },
+            {
+              "text": "1. Saucepans are made from three-ply stainless steel and they are",
+              "x": 72.0,
+              "y": 740.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "1. Saucepans are made from three-ply stainless steel and they are",
+              "x": 72.0,
+              "y": 740.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "suitable for all hob types including induction, and they carry a",
+              "x": 72.0,
+              "y": 724.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "suitable for all hob types including induction, and they carry a",
+              "x": 72.0,
+              "y": 724.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "lifetime guarantee against manufacturing defects.",
+              "x": 72.0,
+              "y": 708.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "lifetime guarantee against manufacturing defects.",
+              "x": 72.0,
+              "y": 708.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "2. Skillets share the same construction but have a lower profile,",
+              "x": 72.0,
+              "y": 680.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "2. Skillets share the same construction but have a lower profile,",
+              "x": 72.0,
+              "y": 680.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "which makes them better suited to searing and to reducing sauces",
+              "x": 72.0,
+              "y": 664.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "which makes them better suited to searing and to reducing sauces",
+              "x": 72.0,
+              "y": 664.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "quickly over a high heat.",
+              "x": 72.0,
+              "y": 648.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "quickly over a high heat.",
+              "x": 72.0,
+              "y": 648.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "3. Handles stay cool on the hob and are secured with a riveted",
+              "x": 72.0,
+              "y": 620.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "3. Handles stay cool on the hob and are secured with a riveted",
+              "x": 72.0,
+              "y": 620.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "fixing that can be tightened with a standard screwdriver.",
+              "x": 72.0,
+              "y": 604.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "fixing that can be tightened with a standard screwdriver.",
+              "x": 72.0,
+              "y": 604.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "The manufacturer states: \"(1) the warranty covers manufacturing",
+              "x": 72.0,
+              "y": 576.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "The manufacturer states: \"(1) the warranty covers manufacturing",
+              "x": 72.0,
+              "y": 576.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "defects only; (2) it excludes damage from misuse; and (3) it",
+              "x": 72.0,
+              "y": 560.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "defects only; (2) it excludes damage from misuse; and (3) it",
+              "x": 72.0,
+              "y": 560.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "requires proof of purchase.\"",
+              "x": 72.0,
+              "y": 544.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "requires proof of purchase.\"",
+              "x": 72.0,
+              "y": 544.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "Page 2 of 2",
+              "x": 72.0,
+              "y": 50.0,
+              "font": "F1",
+              "size": 9.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [],
+      "paragraphs": [
+        {
+          "text": "1. Saucepans are made from three-ply stainless steel and they are",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "1. Saucepans are made from three-ply stainless steel and they are",
+              "x": 72.0,
+              "y": 740.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "suitable for all hob types including induction, and they carry a",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "suitable for all hob types including induction, and they carry a",
+              "x": 72.0,
+              "y": 724.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "lifetime guarantee against manufacturing defects.",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "lifetime guarantee against manufacturing defects.",
+              "x": 72.0,
+              "y": 708.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "2. Skillets share the same construction but have a lower profile,",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "2. Skillets share the same construction but have a lower profile,",
+              "x": 72.0,
+              "y": 680.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "which makes them better suited to searing and to reducing sauces",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "which makes them better suited to searing and to reducing sauces",
+              "x": 72.0,
+              "y": 664.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "quickly over a high heat.",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "quickly over a high heat.",
+              "x": 72.0,
+              "y": 648.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "3. Handles stay cool on the hob and are secured with a riveted",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "3. Handles stay cool on the hob and are secured with a riveted",
+              "x": 72.0,
+              "y": 620.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "fixing that can be tightened with a standard screwdriver.",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "fixing that can be tightened with a standard screwdriver.",
+              "x": 72.0,
+              "y": 604.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "The manufacturer states: \"(1) the warranty covers manufacturing",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "The manufacturer states: \"(1) the warranty covers manufacturing",
+              "x": 72.0,
+              "y": 576.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "defects only; (2) it excludes damage from misuse; and (3) it",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "defects only; (2) it excludes damage from misuse; and (3) it",
+              "x": 72.0,
+              "y": 560.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "requires proof of purchase.\"",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "requires proof of purchase.\"",
+              "x": 72.0,
+              "y": 544.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "hiddentext.pdf",
+      "description": "One A4 page whose text is drawn with the invisible text rendering mode (3 Tr), as an OCR layer over a scanned image.",
+      "guards": "Regression guard: invisible (OCR) text must still be extracted. Both backends must return the two lines; a parser that silently drops render-mode-3 text reports the page as having no text at all.",
+      "page_count": 1,
+      "bytes": 1704,
+      "sha256": "d7cd1dc6866eb6aa59ce5cf26bb41822fd18394e118f5a8f3f9ff118915d724f",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": true,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "The Court finds that the Treaty is still in force.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "Both Parties are under an obligation to negotiate in good faith.",
+              "x": 72.0,
+              "y": 684.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [],
+      "paragraphs": [
+        {
+          "text": "The Court finds that the Treaty is still in force.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "The Court finds that the Treaty is still in force.",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "Both Parties are under an obligation to negotiate in good faith.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "Both Parties are under an obligation to negotiate in good faith.",
+              "x": 72.0,
+              "y": 684.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [],
+      "running_elements": []
+    },
+    {
+      "file": "annotated.pdf",
+      "description": "Two A4 pages of numbered body paragraphs (six in total) carrying every required annotation subtype. Page 1: a Highlight over the middle of paragraph 2, a Text sticky note in the right margin beside paragraph 3, an Underline over paragraph 4 and a Square in the margin. Page 2: a StrikeOut over paragraph 5 and two overlapping annotations (Highlight plus Text note) over paragraph 6.",
+      "guards": "Annotation parsing: subtype, /Rect, /QuadPoints, /Contents, /T author and colour; rect-to-text mapping; overlapping annotations; and input-order versus sorted-order of the /Annots array.",
+      "page_count": 2,
+      "bytes": 4675,
+      "sha256": "ed98a679a6081fa42b35398e0e3ac412803c9db07f2f4a7b79d6fdf1f3150974",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "Article 14",
+              "x": 72.0,
+              "y": 780.0,
+              "font": "F2",
+              "size": 13.0,
+              "angle": 0
+            },
+            {
+              "text": "1. The first paragraph is short and occupies a single line of this page.",
+              "x": 72.0,
+              "y": 745.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "2. The second paragraph is deliberately longer so that it has a middle line",
+              "x": 72.0,
+              "y": 710.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "which a highlight annotation can be placed over without covering the whole",
+              "x": 72.0,
+              "y": 696.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "of the paragraph, and it finishes here with a final line that remains",
+              "x": 72.0,
+              "y": 682.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "entirely unmarked by any annotation at all.",
+              "x": 72.0,
+              "y": 668.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "3. The third paragraph sits below the highlighted one and it is used as",
+              "x": 72.0,
+              "y": 630.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "the anchor for a sticky note placed in the right margin.",
+              "x": 72.0,
+              "y": 616.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "4. The fourth paragraph is underlined in full so that an underline",
+              "x": 72.0,
+              "y": 578.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "annotation can be checked against a known pair of sentences.",
+              "x": 72.0,
+              "y": 564.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "width": 595.276,
+          "height": 841.89,
+          "rotation": 0,
+          "has_text": true,
+          "has_images": false,
+          "has_vector_graphics": false,
+          "text_lines": [
+            {
+              "text": "5. The fifth paragraph is struck out because it is treated as",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "having been superseded by a later agreement between the parties.",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "6. The sixth paragraph carries two overlapping annotations, a highlight",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "and a sticky note, whose rectangles are deliberately intended to",
+              "x": 72.0,
+              "y": 686.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            },
+            {
+              "text": "intersect each other on this page.",
+              "x": 72.0,
+              "y": 672.0,
+              "font": "F1",
+              "size": 11.0,
+              "angle": 0
+            }
+          ]
+        }
+      ],
+      "headings": [
+        {
+          "text": "Article 14",
+          "level": 1,
+          "page": 1,
+          "font": "F2",
+          "size": 13.0,
+          "x": 72.0,
+          "y": 780.0
+        }
+      ],
+      "paragraphs": [
+        {
+          "text": "1. The first paragraph is short and occupies a single line of this page.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "1. The first paragraph is short and occupies a single line of this page.",
+              "x": 72.0,
+              "y": 745.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "2. The second paragraph is deliberately longer so that it has a middle line which a highlight annotation can be placed over without covering the whole of the paragraph, and it finishes here with a final line that remains entirely unmarked by any annotation at all.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "2. The second paragraph is deliberately longer so that it has a middle line",
+              "x": 72.0,
+              "y": 710.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "which a highlight annotation can be placed over without covering the whole",
+              "x": 72.0,
+              "y": 696.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "of the paragraph, and it finishes here with a final line that remains",
+              "x": 72.0,
+              "y": 682.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "entirely unmarked by any annotation at all.",
+              "x": 72.0,
+              "y": 668.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "3. The third paragraph sits below the highlighted one and it is used as the anchor for a sticky note placed in the right margin.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "3. The third paragraph sits below the highlighted one and it is used as",
+              "x": 72.0,
+              "y": 630.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "the anchor for a sticky note placed in the right margin.",
+              "x": 72.0,
+              "y": 616.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "4. The fourth paragraph is underlined in full so that an underline annotation can be checked against a known pair of sentences.",
+          "pages": [
+            1
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 1,
+              "text": "4. The fourth paragraph is underlined in full so that an underline",
+              "x": 72.0,
+              "y": 578.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 1,
+              "text": "annotation can be checked against a known pair of sentences.",
+              "x": 72.0,
+              "y": 564.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "5. The fifth paragraph is struck out because it is treated as having been superseded by a later agreement between the parties.",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "5. The fifth paragraph is struck out because it is treated as",
+              "x": 72.0,
+              "y": 760.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "having been superseded by a later agreement between the parties.",
+              "x": 72.0,
+              "y": 746.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        },
+        {
+          "text": "6. The sixth paragraph carries two overlapping annotations, a highlight and a sticky note, whose rectangles are deliberately intended to intersect each other on this page.",
+          "pages": [
+            2
+          ],
+          "column": null,
+          "font": "F1",
+          "size": 11.0,
+          "lines": [
+            {
+              "page": 2,
+              "text": "6. The sixth paragraph carries two overlapping annotations, a highlight",
+              "x": 72.0,
+              "y": 700.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "and a sticky note, whose rectangles are deliberately intended to",
+              "x": 72.0,
+              "y": 686.0,
+              "font": "F1",
+              "size": 11.0
+            },
+            {
+              "page": 2,
+              "text": "intersect each other on this page.",
+              "x": 72.0,
+              "y": 672.0,
+              "font": "F1",
+              "size": 11.0
+            }
+          ]
+        }
+      ],
+      "images": [],
+      "vector_elements": [],
+      "annotations": [
+        {
+          "page": 1,
+          "subtype": "Square",
+          "rect": [
+            500.0,
+            556.0,
+            540.0,
+            596.0
+          ],
+          "author": "C. Reviewer",
+          "contents": "Margin box placed beside paragraph 4.",
+          "color": [
+            0,
+            0.6,
+            0
+          ],
+          "quad_points": null,
+          "covers": null,
+          "refers_to": "4. The fourth paragraph is underlined in full so that an underline annotation can be checked against a known pair of sentences."
+        },
+        {
+          "page": 1,
+          "subtype": "Underline",
+          "rect": [
+            70.0,
+            561.0,
+            385.386,
+            590.0
+          ],
+          "author": "A. Researcher",
+          "contents": "Paragraph 4 is the key holding of the decision.",
+          "color": [
+            0,
+            0,
+            1
+          ],
+          "quad_points": [
+            70.0,
+            588.12,
+            385.386,
+            588.12,
+            70.0,
+            574.92,
+            385.386,
+            574.92,
+            70.0,
+            574.12,
+            385.386,
+            574.12,
+            70.0,
+            560.92,
+            385.386,
+            560.92
+          ],
+          "covers": "4. The fourth paragraph is underlined in full so that an underline annotation can be checked against a known pair of sentences.",
+          "refers_to": null
+        },
+        {
+          "page": 1,
+          "subtype": "Highlight",
+          "rect": [
+            70.0,
+            693.0,
+            440.408,
+            708.0
+          ],
+          "author": "A. Researcher",
+          "contents": "Middle line of paragraph 2 - verify the quotation.",
+          "color": [
+            1,
+            0.85,
+            0.2
+          ],
+          "quad_points": [
+            70.0,
+            706.12,
+            440.408,
+            706.12,
+            70.0,
+            692.92,
+            440.408,
+            692.92
+          ],
+          "covers": "which a highlight annotation can be placed over without covering the whole",
+          "refers_to": null
+        },
+        {
+          "page": 1,
+          "subtype": "Text",
+          "rect": [
+            500.0,
+            616.0,
+            522.0,
+            638.0
+          ],
+          "author": "B. Editor",
+          "contents": "Sticky note beside paragraph 3 in the right margin.",
+          "color": [
+            0.9,
+            0.8,
+            0.1
+          ],
+          "quad_points": null,
+          "covers": null,
+          "refers_to": "3. The third paragraph sits below the highlighted one and it is used as the anchor for a sticky note placed in the right margin."
+        },
+        {
+          "page": 2,
+          "subtype": "StrikeOut",
+          "rect": [
+            70.0,
+            743.0,
+            402.513,
+            772.0
+          ],
+          "author": "B. Editor",
+          "contents": "Paragraph 5 is superseded by the later agreement.",
+          "color": [
+            1,
+            0,
+            0
+          ],
+          "quad_points": [
+            70.0,
+            770.12,
+            402.513,
+            770.12,
+            70.0,
+            756.92,
+            402.513,
+            756.92,
+            70.0,
+            756.12,
+            402.513,
+            756.12,
+            70.0,
+            742.92,
+            402.513,
+            742.92
+          ],
+          "covers": "5. The fifth paragraph is struck out because it is treated as having been superseded by a later agreement between the parties.",
+          "refers_to": null
+        },
+        {
+          "page": 2,
+          "subtype": "Highlight",
+          "rect": [
+            70.0,
+            697.0,
+            418.386,
+            712.0
+          ],
+          "author": "A. Researcher",
+          "contents": "Highlight that overlaps the sticky note.",
+          "color": [
+            1,
+            0.85,
+            0.2
+          ],
+          "quad_points": [
+            70.0,
+            710.12,
+            418.386,
+            710.12,
+            70.0,
+            696.92,
+            418.386,
+            696.92
+          ],
+          "covers": "6. The sixth paragraph carries two overlapping annotations, a highlight",
+          "refers_to": null
+        },
+        {
+          "page": 2,
+          "subtype": "Text",
+          "rect": [
+            400.0,
+            694.0,
+            422.0,
+            716.0
+          ],
+          "author": "C. Reviewer",
+          "contents": "Sticky note whose rect overlaps the highlight.",
+          "color": [
+            0.9,
+            0.8,
+            0.1
+          ],
+          "quad_points": null,
+          "covers": null,
+          "refers_to": "6. The sixth paragraph carries two overlapping annotations, a highlight"
+        }
+      ],
+      "running_elements": []
+    }
+  ]
+}

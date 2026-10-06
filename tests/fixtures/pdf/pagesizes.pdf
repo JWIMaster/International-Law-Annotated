@@ -1,0 +1,70 @@
+%PDF-1.7
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R] /Count 3 >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 595.276 841.89] /Resources << /ProcSet [/PDF /Text /ImageB /ImageC /ImageI] /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 69 >>
+stream
+BT /F1 11 Tf 72 700 Td (Page one uses A4 portrait dimensions.) Tj ET
+
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 612 792] /Resources << /ProcSet [/PDF /Text /ImageB /ImageC /ImageI] /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 76 >>
+stream
+BT /F1 11 Tf 72 700 Td (Page two uses US Letter portrait dimensions.) Tj ET
+
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 841.89 595.276] /Resources << /ProcSet [/PDF /Text /ImageB /ImageC /ImageI] /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 72 >>
+stream
+BT /F1 11 Tf 72 450 Td (Page three uses A4 landscape dimensions.) Tj ET
+
+endstream
+endobj
+12 0 obj
+<< /Type /Catalog /Pages 5 0 R >>
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000015 00000 n 
+0000000112 00000 n 
+0000000214 00000 n 
+0000000313 00000 n 
+0000000413 00000 n 
+0000000483 00000 n 
+0000000692 00000 n 
+0000000811 00000 n 
+0000001013 00000 n 
+0000001139 00000 n 
+0000001350 00000 n 
+0000001473 00000 n 
+trailer
+<< /Size 13 /Root 12 0 R /ID [<0123456789abcdef0123456789abcdef> <0123456789abcdef0123456789abcdef>] >>
+startxref
+1523
+%%EOF

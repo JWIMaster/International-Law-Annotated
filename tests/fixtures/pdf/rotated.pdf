@@ -1,0 +1,64 @@
+%PDF-1.7
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+2 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Italic /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Pages /Kids [6 0 R 9 0 R] /Count 2 >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 595.276 841.89] /Resources << /ProcSet [/PDF /Text /ImageB /ImageC /ImageI] /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 8 0 R /Rotate 90 /Annots [7 0 R] >>
+endobj
+7 0 obj
+<< /Type /Annot /Subtype /Highlight /Rect [60 72 84 267.448] /F 4 /P 6 0 R /QuadPoints [72 83.04 267.448 83.04 72 68.64 267.448 68.64] /Contents (Rotated annotation anchor.) /T (A. Researcher) /C [1 0.85 0.2] >>
+endobj
+8 0 obj
+<< /Length 152 >>
+stream
+BT /F1 12 Tf 0 1 -1 0 72 72 Tm (Rotated page one reads left to right.) Tj ET
+BT /F1 12 Tf 0 1 -1 0 100 72 Tm (A second line on the rotated page.) Tj ET
+
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 595.276 841.89] /Resources << /ProcSet [/PDF /Text /ImageB /ImageC /ImageI] /Font << /F1 1 0 R /F2 2 0 R /F3 3 0 R /F4 4 0 R >> >> /Contents 10 0 R /Rotate 270 >>
+endobj
+10 0 obj
+<< /Length 167 >>
+stream
+BT /F1 12 Tf 0 -1 1 0 500 769.89 Tm (Rotated page two reads left to right.) Tj ET
+BT /F1 12 Tf 0 -1 1 0 470 769.89 Tm (Its rotation is two hundred and seventy.) Tj ET
+
+endstream
+endobj
+11 0 obj
+<< /Type /Catalog /Pages 5 0 R >>
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000015 00000 n 
+0000000112 00000 n 
+0000000214 00000 n 
+0000000313 00000 n 
+0000000413 00000 n 
+0000000476 00000 n 
+0000000712 00000 n 
+0000000939 00000 n 
+0000001142 00000 n 
+0000001364 00000 n 
+0000001583 00000 n 
+trailer
+<< /Size 12 /Root 11 0 R /ID [<0123456789abcdef0123456789abcdef> <0123456789abcdef0123456789abcdef>] >>
+startxref
+1633
+%%EOF

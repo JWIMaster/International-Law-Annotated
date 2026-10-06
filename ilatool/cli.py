@@ -117,6 +117,7 @@ def cmd_build(args: argparse.Namespace) -> int:
         ),
         build=pipeline.BuildOptions(
             backend=args.backend,
+            migrate_from=Path(args.migrate_from).expanduser() if args.migrate_from else None,
             validate=not args.no_validate,
             write_diagnostics=not args.no_report,
         ),
@@ -288,6 +289,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help="do not write the structured layout JSON")
     p.add_argument("--no-report", action="store_true",
                    help="do not write the build report JSON")
+    p.add_argument("--migrate-from", metavar="PAGE",
+                   help="an existing published page whose paragraph ids should "
+                        "be carried over, so notes keyed to them still attach")
     p.add_argument("--no-validate", action="store_true")
     p.set_defaults(func=cmd_build)
 

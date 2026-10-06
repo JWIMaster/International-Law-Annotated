@@ -77,6 +77,9 @@ class Annotation:
     page: int = 0
     bbox: Optional[Rect] = None
     created: str = ""
+    #: Where the annotation sat in its source document, 0..1, or -1 if unknown.
+    #: Used only to break ties between equally good matches.
+    position: float = -1.0
     #: annotation order in the source file / annotation array
     order: int = 0
     meta: Dict[str, Any] = field(default_factory=dict)
@@ -97,6 +100,7 @@ class Annotation:
             "page": self.page,
             "bbox": self.bbox.as_dict() if self.bbox else None,
             "created": self.created,
+            "position": self.position,
             "order": self.order,
         }
 
@@ -107,6 +111,38 @@ class Annotation:
         return {k: v for k, v in note.items() if v}
 
 
+#: Two notes are "the same note" when one is almost entirely present in the
+#: other as a single unbroken run.  That distinguishes a copy-edit ("Cybrus"
+#: corrected to "Cyprus" somewhere in a 950-character note: the run is ~99% of
+#: the text) from a *series* of similar notes ("See Opinion No 14 …", "… No 15
+#: …": whole-text similarity is 97%, but the longest shared run is under half
+#: the text, because the difference falls in the middle).
+SAME_NOTE_RUN_RATIO = 0.9
+SAME_NOTE_MIN_CHARS = 60
+
+
+def _is_same_note(a: str, b: str) -> bool:
+    if a == b:
+        return True
+    if len(a) < SAME_NOTE_MIN_CHARS or len(b) < SAME_NOTE_MIN_CHARS:
+        return False
+    shorter, longer = (a, b) if len(a) <= len(b) else (b, a)
+    matcher = difflib.SequenceMatcher(None, shorter, longer, autojunk=False)
+    run = matcher.find_longest_match(0, len(shorter), 0, len(longer)).size
+    return run >= SAME_NOTE_RUN_RATIO * len(longer)
+
+
+def _already_placed(ann: Annotation, attached: Sequence[Tuple[str, str]]) -> Optional[str]:
+    """Is this same note already on the page via a different source?"""
+    text_norm = textutil.normalize_for_match(ann.text)
+    if not text_norm:
+        return None
+    for earlier_text, target in attached:
+        if _is_same_note(text_norm, earlier_text):
+            return target
+    return None
+
+
 @dataclass
 class MatchResult:
     notes: Dict[str, List[Dict[str, str]]] = field(default_factory=dict)
@@ -115,6 +151,9 @@ class MatchResult:
     unplaced: List[Tuple[Annotation, str]] = field(default_factory=list)
     dropped_ids: List[str] = field(default_factory=list)
     duplicates: int = 0
+    #: notes that could not be placed themselves but were already on the page
+    #: through another source
+    absorbed: int = 0
 
     @property
     def note_count(self) -> int:
@@ -352,40 +391,130 @@ def parse_annotations_csv(text: str, delimiter: str = ",") -> List[Annotation]:
 # notes.js
 # ---------------------------------------------------------------------------
 
-_NOTES_JS_RE = re.compile(r"window\.NOTES\s*=\s*(\{.*?\})\s*;", re.DOTALL)
+_NOTES_JS_RE = re.compile(r"window\.NOTES\s*=\s*(?=\{)")
+_ADD_NOTE_RE = re.compile(r"\baddNote\s*\(")
+
+
+def _balanced_object(text: str, start: int) -> Optional[str]:
+    """Extract the ``{...}`` starting at ``start``, ignoring braces in strings."""
+    if start >= len(text) or text[start] != "{":
+        return None
+    depth = 0
+    in_string = False
+    quote = ""
+    escaped = False
+    for index in range(start, len(text)):
+        ch = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == quote:
+                in_string = False
+            continue
+        if ch in ("'", '"'):
+            in_string, quote = True, ch
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start:index + 1]
+    return None
+
+
+def _string_arguments(text: str, start: int) -> List[str]:
+    """Read the string literals in the call whose ``(`` is at ``start``."""
+    args: List[str] = []
+    index = start + 1
+    depth = 1
+    while index < len(text) and depth:
+        ch = text[index]
+        if ch in ("'", '"'):
+            quote = ch
+            index += 1
+            buffer: List[str] = []
+            while index < len(text):
+                ch = text[index]
+                if ch == "\\" and index + 1 < len(text):
+                    buffer.append(text[index:index + 2])
+                    index += 2
+                    continue
+                if ch == quote:
+                    break
+                buffer.append(ch)
+                index += 1
+            try:
+                args.append(json.loads(f'"{buffer and "".join(buffer) or ""}"'))
+            except Exception:
+                args.append("".join(buffer))
+        elif ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth -= 1
+        index += 1
+    return args
 
 
 def parse_notes_js(text: str) -> Dict[str, List[Dict[str, str]]]:
     """Read a generated ``notes.js`` back into a plain dict.
 
-    Accepts the ``window.NOTES = {...};`` wrapper; anything else is rejected
-    rather than guessed at.
+    Two shapes are accepted, because both are in use in this project:
+
+    * ``window.NOTES = { "para-1": [ {...} ] };`` -- what this tool writes;
+    * ``addNote("para-1", "Author", "text")`` calls -- how the hand-maintained
+      pages were written, and the shape a contributor is most likely to edit.
+
+    A file that is neither is rejected rather than guessed at.
     """
-    match = _NOTES_JS_RE.search(text)
-    payload = match.group(1) if match else None
-    if payload is None:
-        start = text.find("{")
-        end = text.rfind("}")
-        if start < 0 or end <= start:
-            raise AnnotationError("this does not look like a notes.js file")
-        payload = text[start:end + 1]
-    try:
-        data = json.loads(payload)
-    except json.JSONDecodeError as exc:
-        raise AnnotationError(
-            "this notes.js file could not be read back as JSON",
-            detail=str(exc),
-            hint="Only files generated by this tool (or written in the same "
-                 "JSON-compatible style) can be re-read.",
-        ) from exc
-    if not isinstance(data, dict):
-        raise AnnotationError("notes.js must assign an object to window.NOTES")
     out: Dict[str, List[Dict[str, str]]] = {}
-    for key, value in data.items():
-        if isinstance(value, list):
-            out[str(key)] = [v for v in value if isinstance(v, dict)]
-        elif isinstance(value, dict):
-            out[str(key)] = [value]
+    # An empty notes file is legitimate: a text can genuinely have none.  Only
+    # a file with no recognisable structure at all is an error.
+    recognised = False
+
+    match = _NOTES_JS_RE.search(text)
+    if match:
+        payload = _balanced_object(text, match.end())
+        recognised = payload is not None
+        if payload:
+            data = None
+            for kwargs in ({}, {"strict": False}):
+                try:
+                    data = json.loads(payload, **kwargs)
+                    break
+                except json.JSONDecodeError:
+                    continue
+            if isinstance(data, dict):
+                for key, value in data.items():
+                    if isinstance(value, list):
+                        entries = [v for v in value if isinstance(v, dict)]
+                    elif isinstance(value, dict):
+                        entries = [value]
+                    else:
+                        continue
+                    out.setdefault(str(key), []).extend(entries)
+
+    for call in _ADD_NOTE_RE.finditer(text):
+        args = _string_arguments(text, call.end() - 1)
+        if not args:
+            continue
+        recognised = True
+        para = args[0].strip()
+        if not para:
+            continue
+        entry: Dict[str, str] = {}
+        for name, value in zip(("author", "text", "title", "source"), args[1:]):
+            if value:
+                entry[name] = value
+        if entry.get("text") or entry.get("author"):
+            out.setdefault(para, []).append(entry)
+
+    if not recognised:
+        raise AnnotationError(
+            "this does not look like a notes.js file",
+            hint="Expected 'window.NOTES = {...}' or addNote(...) calls.",
+        )
     return out
 
 
@@ -737,6 +866,25 @@ def paragraph_after_heading(quote: str, source: SourceDocument) -> Optional[str]
     return None
 
 
+def _closest_by_position(runners: Sequence[Tuple[str, float]],
+                         paragraphs: Sequence[Block],
+                         position: float) -> Optional[str]:
+    """Pick the candidate nearest a position in the document.
+
+    A Word comment anchored to a single word ("review", "developed") matches
+    dozens of paragraphs.  Its position in the document is what tells them
+    apart, and the position is exact -- it is where the author put the
+    comment, not an inference.
+    """
+    total = max(1, len(paragraphs) - 1)
+    index_of = {block.id: i for i, block in enumerate(paragraphs)}
+    candidates = [(abs(index_of[pid] / total - position), pid)
+                  for pid, _score in runners if pid in index_of]
+    if not candidates:
+        return None
+    return min(candidates)[1]
+
+
 def attach(annotations: Sequence[Annotation], source: SourceDocument,
            diagnostics: Optional[Diagnostics] = None) -> MatchResult:
     """Resolve every annotation onto a paragraph id.
@@ -749,6 +897,7 @@ def attach(annotations: Sequence[Annotation], source: SourceDocument,
     paragraphs = source.paragraphs
     paragraphs_by_id = {b.id: b for b in paragraphs}
     seen: Counter = Counter()
+    attached_texts: List[Tuple[str, str]] = []
 
     for ann in annotations:
         if ann.is_empty() and not ann.quote:
@@ -764,6 +913,10 @@ def attach(annotations: Sequence[Annotation], source: SourceDocument,
                 result.dropped_ids.append(ann.para)
         elif ann.quote:
             target, status, score, runners = match_quote(ann.quote, paragraphs, ann.page)
+            if status == "ambiguous" and ann.position >= 0 and runners:
+                chosen = _closest_by_position(runners, paragraphs, ann.position)
+                if chosen is not None:
+                    target, status = chosen, "ok"
             if status == "ambiguous":
                 target = None
                 why = ("the excerpt matches several paragraphs equally well "
@@ -789,6 +942,15 @@ def attach(annotations: Sequence[Annotation], source: SourceDocument,
             why = "the annotation has neither an id nor an excerpt to match"
 
         if target is None:
+            # The same note may have arrived from a second source whose anchor
+            # *did* resolve -- the author's Word comment and the copy already
+            # published, say.  If so the note is on the page already; it just
+            # reached it by the other route.  Losing it because this copy's
+            # anchor failed would be a silent disappearance.
+            absorbed = _already_placed(ann, attached_texts)
+            if absorbed is not None:
+                result.absorbed += 1
+                continue
             result.unplaced.append((ann, why))
             continue
 
@@ -800,6 +962,26 @@ def attach(annotations: Sequence[Annotation], source: SourceDocument,
         if seen[key]:
             result.duplicates += 1
             continue
+
+        # The same note often exists in two places: the author's Word comment
+        # and the copy already published on the page.  Keep the first source's
+        # version, so "Word comments first" means the comment's own anchor
+        # wins, and the published copy is not shown twice.
+        text_norm = textutil.normalize_for_match(note.get("text", ""))
+        if text_norm and len(text_norm) > 40:
+            duplicate_of = None
+            for earlier_text, earlier_origin in attached_texts:
+                if earlier_origin == ann.origin:
+                    continue
+                if _is_same_note(text_norm, earlier_text):
+                    duplicate_of = earlier_text
+                    break
+            if duplicate_of is not None:
+                result.duplicates += 1
+                continue
+            attached_texts.append((text_norm, ann.origin))
+
+        attached_texts.append((textutil.normalize_for_match(note.get("text", "")), target))
         seen[key] += 1
         result.notes.setdefault(target, []).append(note)
         ann.para = target

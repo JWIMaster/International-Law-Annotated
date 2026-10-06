@@ -35,6 +35,10 @@ class WordComment:
     text: str = ""
     quote: str = ""
     paragraph_index: int = -1
+    #: Where the anchor sits in the document, 0.0 (top) to 1.0 (bottom).
+    #: A one-word anchor ("developed", "review") matches many paragraphs, and
+    #: this is what tells them apart.
+    position: float = -1.0
 
     def as_dict(self) -> Dict[str, Any]:
         return {
@@ -44,6 +48,7 @@ class WordComment:
             "date": self.date,
             "text": self.text,
             "quote": self.quote,
+            "position": self.position,
         }
 
 
@@ -122,8 +127,10 @@ def _collect_ranges(xml: bytes, comments: Dict[str, WordComment]) -> None:
         return
 
     buffers: Dict[str, List[str]] = {}
+    anchor_paragraph: Dict[str, int] = {}
     active: List[str] = []
     paragraph_texts: List[str] = []
+    paragraph_index = 0
 
     # A single pre-order walk both follows document order (so a range's text
     # lands in its buffer) and lets us note paragraph boundaries.
@@ -134,6 +141,7 @@ def _collect_ranges(xml: bytes, comments: Dict[str, WordComment]) -> None:
             if cid:
                 active.append(cid)
                 buffers.setdefault(cid, [])
+                anchor_paragraph.setdefault(cid, paragraph_index)
         elif tag == f"{W}commentRangeEnd":
             cid = node.get(f"{W}id", "")
             if cid in active:
@@ -144,12 +152,17 @@ def _collect_ranges(xml: bytes, comments: Dict[str, WordComment]) -> None:
                 buffers.setdefault(cid, []).append(text)
         elif tag == f"{W}p":
             paragraph_texts.append(_element_text(node))
+            paragraph_index += 1
 
+    total = max(1, paragraph_index)
     for cid, parts in buffers.items():
         comment = comments.get(cid)
         if comment is None:
             continue
         comment.quote = re.sub(r"\s+", " ", "".join(parts)).strip()
+        comment.paragraph_index = anchor_paragraph.get(cid, -1)
+        if comment.paragraph_index >= 0:
+            comment.position = min(1.0, comment.paragraph_index / total)
 
     # Comments with no range (or an empty one) fall back to the paragraph
     # holding their reference mark.
@@ -180,6 +193,7 @@ def annotations_from_docx(path: Path) -> List[Annotation]:
             kind="comment",
             origin=ORIGIN_DOCX,
             created=comment.date,
+            position=comment.position,
             order=order,
             meta={"initials": comment.initials, "comment_id": comment.comment_id},
         ))

@@ -605,11 +605,18 @@ class PopplerBackend:
                 if not text.strip() and not hrefs:
                     continue
                 font = fonts.get(ta.get("font", ""), {})
+                top = _f(ta.get("top"))
+                height = _f(ta.get("height"))
                 chunks_found.append({
-                    "top": _f(ta.get("top")),
+                    "top": top,
+                    # Text of different sizes shares a *baseline*, not a top
+                    # edge.  Grouping lines by the top splits small caps into
+                    # two lines ("T C" and "HE OURT"); the bottom edge keeps
+                    # them together ("THE COURT").
+                    "bottom": top + height,
                     "left": _f(ta.get("left")),
                     "width": _f(ta.get("width")),
-                    "height": _f(ta.get("height")),
+                    "height": height,
                     "text": text,
                     "size": _f(font.get("size"), 10.0),
                     "family": str(font.get("family", "")),
@@ -843,7 +850,7 @@ def _horizontally_close(cluster: Sequence[Dict[str, Any]],
     # Republic of" + "HE Mr John Silk, ..."), producing sentences that were
     # never in the document and hiding the column boundary from the layout
     # stage.
-    gap_allowed = max(15.0, size * 2.0)
+    gap_allowed = max(15.0, size * 3.0)
     left = min(c["left"] for c in cluster)
     right = max(c["left"] + max(c["width"], 0.0) for c in cluster)
     start = chunk["left"]

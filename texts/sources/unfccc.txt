@@ -1,0 +1,433 @@
+TITLE: United Nations Framework Convention on Climate Change
+DESC: Annotated UNFCCC text with inline author-filtered notes.
+HEADER: UNFCCC
+HOME: ../index.html
+IDMAP para-1=k005cc060
+IDMAP para-10=k85ee9313
+IDMAP para-100=k135e8b77
+IDMAP para-101=kfde8b810
+IDMAP para-102=kd48d653a
+IDMAP para-103=k117de2e8
+IDMAP para-104=k89a8a6bd
+IDMAP para-105=k3c09ec70
+IDMAP para-106=kc3354df1
+IDMAP para-107=k9a0718bc
+IDMAP para-108=k3af4aeb4
+IDMAP para-109=k61bcbfb4
+IDMAP para-11=k0f44ee35
+IDMAP para-110=k27605b9d
+IDMAP para-111=ka1315868
+IDMAP para-112=k178ce5d5
+IDMAP para-113=kecd45198
+IDMAP para-114=k80c968b5
+IDMAP para-115=kf0a5eafe
+IDMAP para-116=k2473ee58
+IDMAP para-117=k2ef99cad
+IDMAP para-118=k0acca531
+IDMAP para-119=k4a841b06
+IDMAP para-12=kda517d22
+IDMAP para-120=ke1eace60
+IDMAP para-121=k42d531b6
+IDMAP para-122=k3b1d9299
+IDMAP para-123=kf29293f5
+IDMAP para-124=kdc60fbf2
+IDMAP para-125=ke790ccba
+IDMAP para-126=k6e033c96
+IDMAP para-127=kc4fa4f05
+IDMAP para-128=k20037bd3
+IDMAP para-129=kf4062847
+IDMAP para-13=k9c1fab85
+IDMAP para-130=k26ff5310
+IDMAP para-131=k74da12ce
+IDMAP para-132=k29645b96
+IDMAP para-133=kc617a275
+IDMAP para-134=k7ba66176
+IDMAP para-135=ke7637773
+IDMAP para-136=k76a4032c
+IDMAP para-137=kd43de74e
+IDMAP para-138=k9104cb1f
+IDMAP para-139=kb7a3c15c
+IDMAP para-14=kb1bf9473
+IDMAP para-140=k08794ef1
+IDMAP para-141=kc75e297e
+IDMAP para-142=k1d79a904
+IDMAP para-143=k0465d41c
+IDMAP para-144=k1a818d1a
+IDMAP para-145=k97364e9c
+IDMAP para-146=kb87bee72
+IDMAP para-147=kbea6bd9e
+IDMAP para-148=k3e0de6be
+IDMAP para-149=k4bf74fa6
+IDMAP para-15=kbc35e067
+IDMAP para-150=k788f5a6b
+IDMAP para-151=ke0340d1d
+IDMAP para-152=k77e8f1b7
+IDMAP para-153=k0551a954
+IDMAP para-154=kf9d03c72
+IDMAP para-155=ka82a8a36
+IDMAP para-156=ka2d12997
+IDMAP para-157=kbc84925d
+IDMAP para-158=k4efce5fa
+IDMAP para-159=k46c762dc
+IDMAP para-16=kada21d94
+IDMAP para-160=ka66b8242
+IDMAP para-161=kbe9a72ab
+IDMAP para-162=k6698aa79
+IDMAP para-163=kb353e917
+IDMAP para-164=k70ce193f
+IDMAP para-165=kcce81896
+IDMAP para-166=kfae97a14
+IDMAP para-167=ke46c5240
+IDMAP para-168=k68ed271a
+IDMAP para-169=kd5b2b40c
+IDMAP para-17=kf2ed8f00
+IDMAP para-170=kbaa24337
+IDMAP para-171=k264729fa
+IDMAP para-172=k990144d2
+IDMAP para-173=k55e54cdb
+IDMAP para-174=ka629b272
+IDMAP para-175=kfc6b48d1
+IDMAP para-176=kf161018b
+IDMAP para-177=k00368f86
+IDMAP para-178=k3f5ad24d
+IDMAP para-179=k6c02c5ea
+IDMAP para-18=kbf84d6da
+IDMAP para-180=kde22b263
+IDMAP para-181=k4fc03d34
+IDMAP para-182=k7f2ea8b4
+IDMAP para-183=k60aa6198
+IDMAP para-184=kc90bbccb
+IDMAP para-185=k892291e5
+IDMAP para-186=kefaa82ea
+IDMAP para-187=k751cd49e
+IDMAP para-188=k77ca55cb
+IDMAP para-189=kba5e343f
+IDMAP para-19=k8d077122
+IDMAP para-190=k81d82d9e
+IDMAP para-191=k0bed4713
+IDMAP para-192=kdef06f83
+IDMAP para-193=ka9a317af
+IDMAP para-194=kdd6cfae3
+IDMAP para-195=k4a066ea6
+IDMAP para-196=k39b85432
+IDMAP para-197=k3be8fc97
+IDMAP para-198=kb2464f34
+IDMAP para-199=kfdb725e1
+IDMAP para-2=ke7144f8a
+IDMAP para-20=k993a934e
+IDMAP para-21=k4a84a239
+IDMAP para-22=kcd0cb201
+IDMAP para-23=kcb2baf55
+IDMAP para-24=kfeaed60d
+IDMAP para-25=k79d9ba3b
+IDMAP para-26=k67cde292
+IDMAP para-27=k76d2d576
+IDMAP para-28=k93118578
+IDMAP para-29=kd25ba184
+IDMAP para-3=k8547234d
+IDMAP para-30=kce5f89e1
+IDMAP para-31=k4a61489a
+IDMAP para-32=k856bc80d
+IDMAP para-33=k4c9b067a
+IDMAP para-34=kd2fbaa0f
+IDMAP para-35=kdeb62916
+IDMAP para-36=ka4c1250b
+IDMAP para-37=k75e16dfd
+IDMAP para-38=k6acc49bf
+IDMAP para-39=k804bcbfc
+IDMAP para-4=k83ffd119
+IDMAP para-40=k4616a27b
+IDMAP para-41=kb15383cd
+IDMAP para-42=k14cb1b81
+IDMAP para-43=ka7cba9a6
+IDMAP para-44=k77ff3d56
+IDMAP para-45=k0ae5c657
+IDMAP para-46=kc901942b
+IDMAP para-47=k6e9f18ea
+IDMAP para-48=k9c762557
+IDMAP para-49=kaa36768e
+IDMAP para-5=kdbf5ee5c
+IDMAP para-50=kc3de2f74
+IDMAP para-51=k9df64bc0
+IDMAP para-52=kf129a4c9
+IDMAP para-53=k19766751
+IDMAP para-54=k5c6a8e68
+IDMAP para-55=k40666896
+IDMAP para-56=kc26bc7e3
+IDMAP para-57=k92719ee1
+IDMAP para-58=kdbdd9fd8
+IDMAP para-59=k0aae4b27
+IDMAP para-6=kd908627d
+IDMAP para-60=k51883db2
+IDMAP para-61=k3d1992b1
+IDMAP para-62=k5cfb80b2
+IDMAP para-63=k15d17d34
+IDMAP para-64=k45e4207d
+IDMAP para-65=k23a8d69d
+IDMAP para-66=k98618a24
+IDMAP para-67=k81094342
+IDMAP para-68=k10f34776
+IDMAP para-69=k55aefe60
+IDMAP para-7=kd56ee55a
+IDMAP para-70=k7b3fa113
+IDMAP para-71=k79204b92
+IDMAP para-72=kdd8c8f2e
+IDMAP para-73=k7ddb81af
+IDMAP para-74=k5794bae8
+IDMAP para-75=ka4e27a9c
+IDMAP para-76=k4445e001
+IDMAP para-77=kc4926b9d
+IDMAP para-78=keea5c7e4
+IDMAP para-79=k7efdab5f
+IDMAP para-8=kb29b44a9
+IDMAP para-80=kbcee084e
+IDMAP para-81=kca124942
+IDMAP para-82=k0c3fe363
+IDMAP para-83=kb2d6a3e8
+IDMAP para-84=kd77d5f06
+IDMAP para-85=k6f91cfe0
+IDMAP para-86=k0b7781d5
+IDMAP para-87=k57e48e19
+IDMAP para-88=k684c11e0
+IDMAP para-89=k67161860
+IDMAP para-9=ka9586457
+IDMAP para-90=ka539ee06
+IDMAP para-91=k490bfa56
+IDMAP para-92=k9ddfcefa
+IDMAP para-93=k91d7b8ef
+IDMAP para-94=k4bc7b899
+IDMAP para-95=ka2efe4ba
+IDMAP para-96=k5882cf16
+IDMAP para-97=k2681a44c
+IDMAP para-98=kebbc8a83
+IDMAP para-99=kb7ebb18f
+---
+
+## UNITED NATIONS FRAMEWORK CONVENTION ON CLIMATE CHANGE
+{k005cc060} ¶ UNITED NATIONS 1992
+## UNITED NATIONS FRAMEWORK CONVENTION ON CLIMATE CHANGE
+{ke7144f8a} ¶ The Parties to this Convention,
+{k8547234d} ¶ Acknowledging that change in the Earth's climate and its adverse effects are a common concern of humankind,
+{k83ffd119} ¶ Concerned that human activities have been substantially increasing the atmospheric concentrations of greenhouse gases, that these increases enhance the natural greenhouse effect, and that this will result on average in an additional warming of the Earth's surface and atmosphere and may adversely affect natural ecosystems and humankind,
+{kdbf5ee5c} ¶ Noting that the largest share of historical and current global emissions of greenhouse gases has originated in developed countries, that per capita emissions in developing countries are still relatively low and that the share of global emissions originating in developing countries will grow to meet their social and development needs,
+{kd908627d} ¶ Aware of the role and importance in terrestrial and marine ecosystems of sinks and reservoirs of greenhouse gases,
+{kd56ee55a} ¶ Noting that there are many uncertainties in predictions of climate change, particularly with regard to the timing, magnitude and regional patterns thereof,
+{kb29b44a9} ¶ Acknowledging that the global nature of climate change calls for the widest possible cooperation by all countries and their participation in an effective and appropriate international response, in accordance with their common but differentiated responsibilities and respective capabilities and their social and economic conditions,
+{ka9586457} ¶ Recalling the pertinent provisions of the Declaration of the United Nations Conference on the Human Environment, adopted at Stockholm on 16 June 1972,
+{k85ee9313} ¶ Recalling also that States have, in accordance with the Charter of the United Nations and the principles of international law, the sovereign right to exploit their own resources pursuant to their own environmental and developmental policies, and the responsibility to ensure that activities within their jurisdiction or control do not cause damage to the environment of other States or of areas beyond the limits of national jurisdiction,
+{k0f44ee35} ¶ Reaffirming the principle of sovereignty of States in international cooperation to address climate change,
+{kda517d22} ¶ Recognizing that States should enact effective environmental legislation, that environmental standards, management objectives and priorities should reflect the environmental and developmental context to which they apply, and that standards applied by some countries may be inappropriate and of unwarranted economic and social cost to other countries, in particular developing countries,
+{k9c1fab85} ¶ Recalling the provisions of General Assembly resolution 44/228 of 22 December 1989 on the United Nations Conference on Environment and Development, and resolutions 43/53 of 6 December 1988, 44/207 of 22 December 1989, 45/212 of 21 December 1990 and 46/169 of 19 December 1991 on protection of global climate for present and future generations of mankind,
+{kb1bf9473} ¶ Recalling also the provisions of General Assembly resolution 44/206 of 22 December 1989 on the possible adverse effects of sea-level rise on islands and coastal areas, particularly low-lying coastal areas and the pertinent provisions of General Assembly resolution 44/172 of 19 December 1989 on the implementation of the Plan of Action to Combat Desertification,
+{kbc35e067} ¶ Recalling further the Vienna Convention for the Protection of the Ozone Layer, 1985, and the Montreal Protocol on Substances that Deplete the Ozone Layer, 1987, as adjusted and amended on 29 June 1990,
+{kada21d94} ¶ Noting the Ministerial Declaration of the Second World Climate Conference adopted on 7 November 1990,
+{kf2ed8f00} ¶ Conscious of the valuable analytical work being conducted by many States on climate change and of the important contributions of the World Meteorological Organization, the United Nations Environment Programme and other organs, organizations and bodies of the United Nations system, as well as other international and intergovernmental bodies, to the exchange of results of scientific research and the coordination of research,
+{kbf84d6da} ¶ Recognizing that steps required to understand and address climate change will be environmentally, socially and economically most effective if they are based on relevant scientific, technical and economic considerations and continually re-evaluated in the light of new findings in these areas,
+{k8d077122} ¶ Recognizing that various actions to address climate change can be justified economically in their own right and can also help in solving other environmental problems,
+{k993a934e} ¶ Recognizing also the need for developed countries to take immediate action in a flexible manner on the basis of clear priorities, as a first step towards comprehensive response strategies at the global, national and, where agreed, regional levels that take into account all greenhouse gases, with due consideration of their relative contributions to the enhancement of the greenhouse effect,
+{k4a84a239} ¶ Recognizing further that low-lying and other small island countries, countries with low-lying coastal, arid and semi- arid areas or areas liable to floods, drought and desertification, and developing countries with fragile mountainous ecosystems are particularly vulnerable to the adverse effects of climate change,
+{kcd0cb201} ¶ Recognizing the special difficulties of those countries, especially developing countries, whose economies are particularly dependent on fossil fuel production, use and exportation, as a consequence of action taken on limiting greenhouse gas emissions,
+{kcb2baf55} ¶ Affirming that responses to climate change should be coordinated with social and economic development in an integrated manner with a view to avoiding adverse impacts on the latter, taking into full account the legitimate priority needs of developing countries for the achievement of sustained economic growth and the eradication of poverty,
+{kfeaed60d} ¶ Recognizing that all countries, especially developing countries, need access to resources required to achieve sustainable social and economic development and that, in order for developing countries to progress towards that goal, their energy consumption will need to grow taking into account the possibilities for achieving greater energy efficiency and for controlling greenhouse gas emissions in general, including through the application of new technologies on terms which make such an application economically and socially beneficial,
+{k79d9ba3b} ¶ Determined to protect the climate system for present and future generations,
+{k67cde292} ¶ Have agreed as follows:
+## ARTICLE 1
+{k76d2d576} ¶ DEFINITIONS * For the purposes of this Convention:
+{k93118578} ¶ "Adverse effects of climate change" means changes in the physical environment or biota resulting from climate change which have significant deleterious effects on the composition, resilience or productivity of natural and managed ecosystems or on the operation of socio-economic systems or on human health and welfare.
+{kd25ba184} ¶ "Climate change" means a change of climate which is attributed directly or indirectly to human activity that alters the composition of the global atmosphere and which is in addition to natural climate variability observed over comparable time periods.
+{kce5f89e1} ¶ "Climate system" means the totality of the atmosphere, hydrosphere, biosphere and geosphere and their interactions.
+{k4a61489a} ¶ "Emissions" means the release of greenhouse gases and/or their precursors into the atmosphere over a specified area and period of time.
+{k856bc80d} ¶ "Greenhouse gases" means those gaseous constituents of the atmosphere, both natural and anthropogenic, that absorb and re-emit infrared radiation.
+{k4c9b067a} ¶ "Regional economic integration organization" means an organization constituted by sovereign States of a given region which has competence in respect of matters governed by this Convention or its protocols and has been duly authorized, in accordance with its internal procedures, to sign, ratify, accept, approve or accede to the instruments concerned.
+{kd2fbaa0f} ¶ "Reservoir" means a component or components of the climate system where a greenhouse gas or a precursor of a greenhouse gas is stored.
+{kdeb62916} ¶ "Sink" means any process, activity or mechanism which removes a greenhouse gas, an aerosol or a precursor of a greenhouse gas from the atmosphere.
+{ka4c1250b} ¶ "Source" means any process or activity which releases a greenhouse gas, an aerosol or a precursor of a greenhouse gas into the atmosphere.
+{k75e16dfd} • Titles of articles are included solely to assist the reader.
+## ARTICLE 2 OBJECTIVE
+{k6acc49bf} ¶ The ultimate objective of this Convention and any related legal instruments that the Conference of the Parties may adopt is to achieve, in accordance with the relevant provisions of the Convention, stabilization of greenhouse gas concentrations in the atmosphere at a level that would prevent dangerous anthropogenic interference with the climate system. Such a level should be achieved within a time-frame sufficient to allow ecosystems to adapt naturally to climate change, to ensure that food production is not threatened and to enable economic development to proceed in a sustainable manner.
+## ARTICLE 3 PRINCIPLES
+{k804bcbfc} ¶ In their actions to achieve the objective of the Convention and to implement its provisions, the Parties shall be guided, inter alia, by the following:
+{k4616a27b} ¶ The Parties should protect the climate system for the benefit of present and future generations of humankind, on the basis of equity and in accordance with their common but differentiated responsibilities and respective capabilities. Accordingly, the developed country Parties should take the lead in combating climate change and the adverse effects thereof.
+{kb15383cd} ¶ The specific needs and special circumstances of developing country Parties, especially those that are particularly vulnerable to the adverse effects of climate change, and of those Parties, especially developing country Parties, that would have to bear a disproportionate or abnormal burden under the Convention, should be given full consideration.
+{k14cb1b81} ¶ The Parties should take precautionary measures to anticipate, prevent or minimize the causes of climate change and mitigate its adverse effects. Where there are threats of serious or irreversible damage, lack of full scientific certainty should not be used as a reason for postponing such measures, taking into account that policies and measures to deal with climate change should be cost-effective so as to ensure global benefits at the lowest possible cost. To achieve this, such policies and measures should take into account different socio-economic contexts, be comprehensive, cover all relevant sources, sinks and reservoirs of greenhouse gases and adaptation, and comprise all economic sectors. Efforts to address climate change may be carried out cooperatively by interested Parties.
+{ka7cba9a6} ¶ The Parties have a right to, and should, promote sustainable development. Policies and measures to protect the climate system against human-induced change should be appropriate for the specific conditions of each Party and should be integrated with national development programmes, taking into account that economic development is essential for adopting measures to address climate change.
+{k77ff3d56} ¶ The Parties should cooperate to promote a supportive and open international economic system that would lead to sustainable economic growth and development in all Parties, particularly developing country Parties, thus enabling them better to address the problems of climate change. Measures taken to combat climate change, including unilateral ones, should not constitute a means of arbitrary or unjustifiable discrimination or a disguised restriction on international trade.
+## ARTICLE 4 COMMITMENTS
+{k0ae5c657} ¶ All Parties, taking into account their common but differentiated responsibilities and their specific national and regional development priorities, objectives and circumstances, shall:
+{kc901942b} ¶ Develop, periodically update, publish and make available to the Conference of the Parties, in accordance with Article 12, national inventories of anthropogenic emissions by sources and removals by sinks of all greenhouse gases not controlled by the Montreal Protocol, using comparable methodologies to be agreed upon by the Conference of the Parties;
+{k6e9f18ea} ¶ Formulate, implement, publish and regularly update national and, where appropriate, regional programmes containing measures to mitigate climate change by addressing anthropogenic emissions by sources and removals by sinks of all greenhouse gases not controlled by the Montreal Protocol, and measures to facilitate adequate adaptation to climate change;
+{k9c762557} ¶ Promote and cooperate in the development, application and diffusion, including transfer, of technologies, practices and processes that control, reduce or prevent anthropogenic emissions of greenhouse gases not controlled by the Montreal Protocol in all relevant sectors, including the energy, transport, industry, agriculture, forestry and waste management sectors;
+{kaa36768e} ¶ Promote sustainable management, and promote and cooperate in the conservation and enhancement, as appropriate, of sinks and reservoirs of all greenhouse gases not controlled by the Montreal Protocol, including biomass, forests and oceans as well as other terrestrial, coastal and marine ecosystems;
+{kc3de2f74} ¶ Cooperate in preparing for adaptation to the impacts of climate change; develop and elaborate appropriate and integrated plans for coastal zone management, water resources and agriculture, and for the protection and rehabilitation of areas, particularly in Africa, affected by drought and desertification, as well as floods;
+{k9df64bc0} ¶ Take climate change considerations into account, to the extent feasible, in their relevant social, economic and environmental policies and actions, and employ appropriate methods, for example impact assessments, formulated and determined nationally, with a view to minimizing adverse effects on the economy, on public health and on the quality of the environment, of projects or measures undertaken by them to mitigate or adapt to climate change;
+{kf129a4c9} ¶ Promote and cooperate in scientific, technological, technical, socio-economic and other research, systematic observation and development of data archives related to the climate system and intended to further the understanding and to reduce or eliminate the remaining uncertainties regarding the causes, effects, magnitude and timing of climate change and the economic and social consequences of various response strategies;
+{k19766751} ¶ Promote and cooperate in the full, open and prompt exchange of relevant scientific, technological, technical, socio-economic and legal information related to the climate system and climate change, and to the economic and social consequences of various response strategies;
+{k5c6a8e68} ¶ Promote and cooperate in education, training and public awareness related to climate change and encourage the widest participation in this process, including that of non-governmental organizations; and Communicate to the Conference of the Parties information related to implementation, in accordance with Article 12.
+{k40666896} ¶ The developed country Parties and other Parties included in Annex I commit themselves specifically as provided for in the following:
+{kc26bc7e3} ¶ Each of these Parties shall adopt national1 policies and take corresponding measures on the mitigation of climate change, by limiting its anthropogenic emissions of greenhouse gases and protecting and enhancing its greenhouse gas sinks and reservoirs. These policies and measures will demonstrate that developed countries are taking the lead in modifying longer-term trends in anthropogenic emissions consistent with the objective of the Convention, recognizing that the return by the end of the present decade to earlier levels of anthropogenic emissions of carbon dioxide and other greenhouse gases not controlled by the Montreal Protocol would contribute to such modification, and taking into account the differences in these Parties' starting points and approaches, economic structures and resource bases, the need to maintain strong and sustainable economic growth, available technologies and other individual circumstances, as well as the need for equitable and appropriate contributions by each of these Parties to the global effort regarding that objective. These Parties may implement such policies and measures jointly with other Parties and may assist other Parties in contributing to the achievement of the objective of the Convention and, in particular, that of this subparagraph;
+{k92719ee1} ¶ In order to promote progress to this end, each of these Parties shall communicate, within six months of the entry into force of the Convention for it and periodically thereafter, and in accordance with Article 12, detailed information on its policies and measures referred to in subparagraph (a) above, as well as on its resulting projected anthropogenic emissions by sources and removals by sinks of greenhouse gases not controlled by the Montreal Protocol for the period referred to in subparagraph (a), with the aim of returning individually or jointly to their 1990 levels these anthropogenic emissions of carbon dioxide and other greenhouse gases not controlled by the Montreal Protocol. This information will be reviewed by the Conference of the Parties, at its first session and periodically thereafter, in accordance with Article 7;
+{kdbdd9fd8} ¶ Calculations of emissions by sources and removals by sinks of greenhouse gases for the purposes of subparagraph (b) above should take into account the best available scientific knowledge, including of the effective capacity of sinks and the respective contributions of such gases to climate change. The Conference of the Parties shall consider and agree 1 This includes policies and measures adopted by regional economic integration organizations.
+{k0aae4b27} ¶ on methodologies for these calculations at its first session and review them regularly thereafter;
+{k51883db2} ¶ The Conference of the Parties shall, at its first session, review the adequacy of subparagraphs (a) and (b) above. Such review shall be carried out in the light of the best available scientific information and assessment on climate change and its impacts, as well as relevant technical, social and economic information. Based on this review, the Conference of the Parties shall take appropriate action, which may include the adoption of amendments to the commitments in subparagraphs (a) and (b) above. The Conference of the Parties, at its first session, shall also take decisions regarding criteria for joint implementation as indicated in subparagraph (a) above. A second review of subparagraphs (a) and (b) shall take place not later than 31 December 1998, and thereafter at regular intervals determined by the Conference of the Parties, until the objective of the Convention is met;
+{k3d1992b1} ¶ Each of these Parties shall :
+{k5cfb80b2} ¶ Coordinate as appropriate with other such Parties, relevant economic and administrative instruments developed to achieve the objective of the Convention; and Identify and periodically review its own policies and practices which encourage activities that lead to greater levels of anthropogenic emissions of greenhouse gases not controlled by the Montreal Protocol than would otherwise occur;
+{k15d17d34} ¶ The Conference of the Parties shall review, not later than 31 December 1998, available information with a view to taking decisions regarding such amendments to the lists in Annexes I and II as may be appropriate, with the approval of the Party concerned;
+{k45e4207d} ¶ Any Party not included in Annex I may, in its instrument of ratification, acceptance, approval or accession, or at any time thereafter, notify the Depositary that it intends to be bound by subparagraphs (a) and (b) above. The Depositary shall inform the other signatories and Parties of any such notification.
+{k23a8d69d} ¶ The developed country Parties and other developed Parties included in Annex II shall provide new and additional financial resources to meet the agreed full costs incurred by developing country Parties in complying with their obligations under Article 12, paragraph 1. They shall also provide such financial resources, including for the transfer of technology, needed by the developing country Parties to meet the agreed full incremental costs of implementing measures that are covered by paragraph 1 of this Article and that are agreed between a developing country Party and the international entity or entities referred to in Article 11, in accordance with that Article. The implementation of these commitments shall take into account the need for adequacy and predictability in the flow of funds and the importance of appropriate burden sharing among the developed country Parties.
+{k98618a24} ¶ The developed country Parties and other developed Parties included in Annex II shall also assist the developing country Parties that are particularly vulnerable to the adverse effects of climate change in meeting costs of adaptation to those adverse effects.
+{k81094342} ¶ The developed country Parties and other developed Parties included in Annex II shall take all practicable steps to promote, facilitate and finance, as appropriate, the transfer of, or access to, environmentally sound technologies and know- how to other Parties, particularly developing country Parties, to enable them to implement the provisions of the Convention. In this process, the developed country Parties shall support the development and enhancement of endogenous capacities and technologies of developing country Parties. Other Parties and organizations in a position to do so may also assist in facilitating the transfer of such technologies.
+{k10f34776} ¶ In the implementation of their commitments under paragraph 2 above, a certain degree of flexibility shall be allowed by the Conference of the Parties to the Parties included in Annex I undergoing the process of transition to a market economy, in order to enhance the ability of these Parties to address climate change, including with regard to the historical level of anthropogenic emissions of greenhouse gases not controlled by the Montreal Protocol chosen as a reference.
+{k55aefe60} ¶ The extent to which developing country Parties will effectively implement their commitments under the Convention will depend on the effective implementation by developed country Parties of their commitments under the Convention related to financial resources and transfer of technology and will take fully into account that economic and social development and poverty eradication are the first and overriding priorities of the developing country Parties.
+{k7b3fa113} ¶ In the implementation of the commitments in this Article, the Parties shall give full consideration to what actions are necessary under the Convention, including actions related to funding, insurance and the transfer of technology, to meet the specific needs and concerns of developing country Parties arising from the adverse effects of climate change and/or the impact of the implementation of response measures, especially on:
+{k79204b92} ¶ Small island countries;
+{kdd8c8f2e} ¶ Countries with low-lying coastal areas;
+{k7ddb81af} ¶ Countries with arid and semi-arid areas, forested areas and areas liable to forest decay;
+{k5794bae8} ¶ Countries with areas prone to natural disasters;
+{ka4e27a9c} ¶ Countries with areas liable to drought and desertification;
+{k4445e001} ¶ Countries with areas of high urban atmospheric pollution;
+{kc4926b9d} ¶ Countries with areas with fragile ecosystems, including mountainous ecosystems;
+{keea5c7e4} ¶ Countries whose economies are highly dependent on income generated from the production, processing and export, and/or on consumption of fossil fuels and associated energy-intensive products; and Land-locked and transit countries.
+{k7efdab5f} ¶ Further, the Conference of the Parties may take actions, as appropriate, with respect to this paragraph.
+{kbcee084e} ¶ The Parties shall take full account of the specific needs and special situations of the least developed countries in their actions with regard to funding and transfer of technology.
+{kca124942} ¶ The Parties shall, in accordance with Article 10, take into consideration in the implementation of the commitments of the Convention the situation of Parties, particularly developing country Parties, with economies that are vulnerable to the adverse effects of the implementation of measures to respond to climate change. This applies notably to Parties with economies that are highly dependent on income generated from the production, processing and export, and/or consumption of fossil fuels and associated energy-intensive products and/or the use of fossil fuels for which such Parties have serious difficulties in switching to alternatives.
+## ARTICLE 5
+{k0c3fe363} ¶ RESEARCH AND SYSTEMATIC OBSERVATION In carrying out their commitments under Article 4, paragraph 1(g), the Parties shall:
+{kb2d6a3e8} ¶ Support and further develop, as appropriate, international and intergovernmental programmes and networks or organizations aimed at defining, conducting, assessing and financing research, data collection and systematic observation, taking into account the need to minimize duplication of effort;
+{kd77d5f06} ¶ Support international and intergovernmental efforts to strengthen systematic observation and national scientific and technical research capacities and capabilities, particularly in developing countries, and to promote access to, and the exchange of, data and analyses thereof obtained from areas beyond national jurisdiction; and Take into account the particular concerns and needs of developing countries and cooperate in improving their endogenous capacities and capabilities to participate in the efforts referred to in subparagraphs (a) and (b) above.
+## ARTICLE 6
+{k6f91cfe0} ¶ EDUCATION, TRAINING AND PUBLIC AWARENESS In carrying out their commitments under Article 4, paragraph 1(i), the Parties shall:
+{k0b7781d5} ¶ Promote and facilitate at the national and, as appropriate, subregional and regional levels, and in accordance with national laws and regulations, and within their respective capacities:
+{k57e48e19} ¶ The development and implementation of educational and public awareness programmes on climate change and its effects;
+{k684c11e0} ¶ Public access to information on climate change and its effects;
+{k67161860} ¶ Public participation in addressing climate change and its effects and developing adequate responses; and Training of scientific, technical and managerial personnel.
+{ka539ee06} ¶ Cooperate in and promote, at the international level, and, where appropriate, using existing bodies:
+{k490bfa56} ¶ The development and exchange of educational and public awareness material on climate change and its effects; and The development and implementation of education and training programmes, including the strengthening of national institutions and the exchange or secondment of personnel to train experts in this field, in particular for developing countries.
+## ARTICLE 7 CONFERENCE OF THE PARTIES
+{k9ddfcefa} ¶ A Conference of the Parties is hereby established.
+{k91d7b8ef} ¶ The Conference of the Parties, as the supreme body of this Convention, shall keep under regular review the implementation of the Convention and any related legal instruments that the Conference of the Parties may adopt, and shall make, within its mandate, the decisions necessary to promote the effective implementation of the Convention. To this end, it shall:
+{k4bc7b899} ¶ Periodically examine the obligations of the Parties and the institutional arrangements under the Convention, in the light of the objective of the Convention, the experience gained in its implementation and the evolution of scientific and technological knowledge;
+{ka2efe4ba} ¶ Promote and facilitate the exchange of information on measures adopted by the Parties to address climate change and its effects, taking into account the differing circumstances, responsibilities and capabilities of the Parties and their respective commitments under the Convention;
+{k5882cf16} ¶ Facilitate, at the request of two or more Parties, the coordination of measures adopted by them to address climate change and its effects, taking into account the differing circumstances, responsibilities and capabilities of the Parties and their respective commitments under the Convention;
+{k2681a44c} ¶ Promote and guide, in accordance with the objective and provisions of the Convention, the development and periodic refinement of comparable methodologies, to be agreed on by the Conference of the Parties, inter alia, for preparing inventories of greenhouse gas emissions by sources and removals by sinks, and for evaluating the effectiveness of measures to limit the emissions and enhance the removals of these gases;
+{kebbc8a83} ¶ Assess, on the basis of all information made available to it in accordance with the provisions of the Convention, the implementation of the Convention by the Parties, the overall effects of the measures taken pursuant to the Convention, in particular environmental, economic and social effects as well as their cumulative impacts and the extent to which progress towards the objective of the Convention is being achieved;
+{kb7ebb18f} ¶ Consider and adopt regular reports on the implementation of the Convention and ensure their publication;
+{k135e8b77} ¶ Make recommendations on any matters necessary for the implementation of the Convention;
+{kfde8b810} ¶ Seek to mobilize financial resources in accordance with Article 4, paragraphs 3, 4 and 5, and Article 11;
+{kd48d653a} ¶ Establish such subsidiary bodies as are deemed necessary for the implementation of the Convention;
+{k117de2e8} ¶ Review reports submitted by its subsidiary bodies and provide guidance to them;
+{k89a8a6bd} ¶ Agree upon and adopt, by consensus, rules of procedure and financial rules for itself and for any subsidiary bodies;
+{k3c09ec70} ¶ Seek and utilize, where appropriate, the services and cooperation of, and information provided by, competent international organizations and intergovernmental and non-governmental bodies; and Exercise such other functions as are required for the achievement of the objective of the Convention as well as all other functions assigned to it under the Convention.
+{kc3354df1} ¶ The Conference of the Parties shall, at its first session, adopt its own rules of procedure as well as those of the subsidiary bodies established by the Convention, which shall include decision-making procedures for matters not already covered by decision-making procedures stipulated in the Convention. Such procedures may include specified majorities required for the adoption of particular decisions.
+{k9a0718bc} ¶ The first session of the Conference of the Parties shall be convened by the interim secretariat referred to in Article 21 and shall take place not later than one year after the date of entry into force of the Convention. Thereafter, ordinary sessions of the Conference of the Parties shall be held every year unless otherwise decided by the Conference of the Parties.
+{k3af4aeb4} ¶ Extraordinary sessions of the Conference of the Parties shall be held at such other times as may be deemed necessary by the Conference, or at the written request of any Party, provided that, within six months of the request being communicated to the Parties by the secretariat, it is supported by at least one third of the Parties.
+{k61bcbfb4} ¶ The United Nations, its specialized agencies and the International Atomic Energy Agency, as well as any State member thereof or observers thereto not Party to the Convention, may be represented at sessions of the Conference of the Parties as observers. Any body or agency, whether national or international, governmental or non-governmental, which is qualified in matters covered by the Convention, and which has informed the secretariat of its wish to be represented at a session of the Conference of the Parties as an observer, may be so admitted unless at least one third of the Parties present object. The admission and participation of observers shall be subject to the rules of procedure adopted by the Conference of the Parties.
+## ARTICLE 8
+{k27605b9d} ¶ SECRETARIAT A secretariat is hereby established.
+{ka1315868} ¶ The functions of the secretariat shall be:
+{k178ce5d5} ¶ To make arrangements for sessions of the Conference of the Parties and its subsidiary bodies established under the Convention and to provide them with services as required;
+{kecd45198} ¶ To compile and transmit reports submitted to it;
+{k80c968b5} ¶ To facilitate assistance to the Parties, particularly developing country Parties, on request, in the compilation and communication of information required in accordance with the provisions of the Convention;
+{kf0a5eafe} ¶ To prepare reports on its activities and present them to the Conference of the Parties;
+{k2473ee58} ¶ To ensure the necessary coordination with the secretariats of other relevant international bodies;
+{k2ef99cad} ¶ To enter, under the overall guidance of the Conference of the Parties, into such administrative and contractual arrangements as may be required for the effective discharge of its functions; and To perform the other secretariat functions specified in the Convention and in any of its protocols and such other functions as may be determined by the Conference of the Parties.
+{k0acca531} ¶ The Conference of the Parties, at its first session, shall designate a permanent secretariat and make arrangements for its functioning.
+## ARTICLE 9
+{k4a841b06} ¶ SUBSIDIARY BODY FOR SCIENTIFIC AND TECHNOLOGICAL ADVICE A subsidiary body for scientific and technological advice is hereby established to provide the Conference of the Parties and, as appropriate, its other subsidiary bodies with timely information and advice on scientific and technological matters relating to the Convention. This body shall be open to participation by all Parties and shall be multidisciplinary. It shall comprise government representatives competent in the relevant field of expertise. It shall report regularly to the Conference of the Parties on all aspects of its work.
+{ke1eace60} ¶ Under the guidance of the Conference of the Parties, and drawing upon existing competent international bodies, this body shall:
+{k42d531b6} ¶ Provide assessments of the state of scientific knowledge relating to climate change and its effects;
+{k3b1d9299} ¶ Prepare scientific assessments on the effects of measures taken in the implementation of the Convention;
+{kf29293f5} ¶ Identify innovative, efficient and state-of-the-art technologies and know-how and advise on the ways and means of promoting development and/or transferring such technologies;
+{kdc60fbf2} ¶ Provide advice on scientific programmes, international cooperation in research and development related to climate change, as well as on ways and means of supporting endogenous capacity- building in developing countries; and Respond to scientific, technological and methodological questions that the Conference of the Parties and its subsidiary bodies may put to the body.
+{ke790ccba} ¶ The functions and terms of reference of this body may be further elaborated by the Conference of the Parties.
+## ARTICLE 10
+{k6e033c96} ¶ SUBSIDIARY BODY FOR IMPLEMENTATION A subsidiary body for implementation is hereby established to assist the Conference of the Parties in the assessment and review of the effective implementation of the Convention. This body shall be open to participation by all Parties and comprise government representatives who are experts on matters related to climate change. It shall report regularly to the Conference of the Parties on all aspects of its work.
+{kc4fa4f05} ¶ Under the guidance of the Conference of the Parties, this body shall:
+{k20037bd3} ¶ Consider the information communicated in accordance with Article 12, paragraph 1, to assess the overall aggregated effect of the steps taken by the Parties in the light of the latest scientific assessments concerning climate change;
+{kf4062847} ¶ Consider the information communicated in accordance with Article 12, paragraph 2, in order to assist the Conference of the Parties in carrying out the reviews required by Article 4, paragraph 2(d); and Assist the Conference of the Parties, as appropriate, in the preparation and implementation of its decisions.
+## ARTICLE 11 FINANCIAL MECHANISM
+{k26ff5310} ¶ A mechanism for the provision of financial resources on a grant or concessional basis, including for the transfer of technology, is hereby defined. It shall function under the guidance of and be accountable to the Conference of the Parties, which shall decide on its policies, programme priorities and eligibility criteria related to this Convention. Its operation shall be entrusted to one or more existing international entities.
+{k74da12ce} ¶ The financial mechanism shall have an equitable and balanced representation of all Parties within a transparent system of governance.
+{k29645b96} ¶ The Conference of the Parties and the entity or entities entrusted with the operation of the financial mechanism shall agree upon arrangements to give effect to the above paragraphs, which shall include the following:
+{kc617a275} ¶ Modalities to ensure that the funded projects to address climate change are in conformity with the policies, programme priorities and eligibility criteria established by the Conference of the Parties;
+{k7ba66176} ¶ Modalities by which a particular funding decision may be reconsidered in light of these policies, programme priorities and eligibility criteria;
+{ke7637773} ¶ Provision by the entity or entities of regular reports to the Conference of the Parties on its funding operations, which is consistent with the requirement for accountability set out in paragraph 1 above; and Determination in a predictable and identifiable manner of the amount of funding necessary and available for the implementation of this Convention and the conditions under which that amount shall be periodically reviewed.
+{k76a4032c} ¶ The Conference of the Parties shall make arrangements to implement the above-mentioned provisions at its first session, reviewing and taking into account the interim arrangements referred to in Article 21, paragraph 3, and shall decide whether these interim arrangements shall be maintained. Within four years thereafter, the Conference of the Parties shall review the financial mechanism and take appropriate measures.
+{kd43de74e} ¶ The developed country Parties may also provide and developing country Parties avail themselves of, financial resources related to the implementation of the Convention through bilateral, regional and other multilateral channels.
+## ARTICLE 12
+{k9104cb1f} ¶ COMMUNICATION OF INFORMATION RELATED TO IMPLEMENTATION In accordance with Article 4, paragraph 1, each Party shall communicate to the Conference of the Parties, through the secretariat, the following elements of information:
+{kb7a3c15c} ¶ A national inventory of anthropogenic emissions by sources and removals by sinks of all greenhouse gases not controlled by the Montreal Protocol, to the extent its capacities permit, using comparable methodologies to be promoted and agreed upon by the Conference of the Parties;
+{k08794ef1} ¶ A general description of steps taken or envisaged by the Party to implement the Convention; and Any other information that the Party considers relevant to the achievement of the objective of the Convention and suitable for inclusion in its communication, including, if feasible, material relevant for calculations of global emission trends.
+{kc75e297e} ¶ Each developed country Party and each other Party included in Annex I shall incorporate in its communication the following elements of information:
+{k1d79a904} ¶ A detailed description of the policies and measures that it has adopted to implement its commitment under Article 4, paragraphs 2(a) and 2(b); and A specific estimate of the effects that the policies and measures referred to in subparagraph (a) immediately above will have on anthropogenic emissions by its sources and removals by its sinks of greenhouse gases during the period referred to in Article 4, paragraph 2(a).
+{k0465d41c} ¶ In addition, each developed country Party and each other developed Party included in Annex II shall incorporate details of measures taken in accordance with Article 4, paragraphs 3, 4 and 5.
+{k1a818d1a} ¶ Developing country Parties may, on a voluntary basis, propose projects for financing, including specific technologies, materials, equipment, techniques or practices that would be needed to implement such projects, along with, if possible, an estimate of all incremental costs, of the reductions of emissions and increments of removals of greenhouse gases, as well as an estimate of the consequent benefits.
+{k97364e9c} ¶ Each developed country Party and each other Party included in Annex I shall make its initial communication within six months of the entry into force of the Convention for that Party. Each Party not so listed shall make its initial communication within three years of the entry into force of the Convention for that Party, or of the availability of financial resources in accordance with Article 4, paragraph Parties that are least developed countries may make their initial communication at their discretion. The frequency of subsequent communications by all Parties shall be determined by the Conference of the Parties, taking into account the differentiated timetable set by this paragraph.
+{kb87bee72} ¶ Information communicated by Parties under this Article shall be transmitted by the secretariat as soon as possible to the Conference of the Parties and to any subsidiary bodies concerned. If necessary, the procedures for the communication of information may be further considered by the Conference of the Parties.
+{kbea6bd9e} ¶ From its first session, the Conference of the Parties shall arrange for the provision to developing country Parties of technical and financial support, on request, in compiling and communicating information under this Article, as well as in identifying the technical and financial needs associated with proposed projects and response measures under Article 4. Such support may be provided by other Parties, by competent international organizations and by the secretariat, as appropriate.
+{k3e0de6be} ¶ Any group of Parties may, subject to guidelines adopted by the Conference of the Parties, and to prior notification to the Conference of the Parties, make a joint communication in fulfilment of their obligations under this Article, provided that such a communication includes information on the fulfilment by each of these Parties of its individual obligations under the Convention.
+{k4bf74fa6} ¶ Information received by the secretariat that is designated by a Party as confidential, in accordance with criteria to be established by the Conference of the Parties, shall be aggregated by the secretariat to protect its confidentiality before being made available to any of the bodies involved in the communication and review of information.
+{k788f5a6b} ¶ Subject to paragraph 9 above, and without prejudice to the ability of any Party to make public its communication at any time, the secretariat shall make communications by Parties under this Article publicly available at the time they are submitted to the Conference of the Parties.
+## ARTICLE 13
+{ke0340d1d} ¶ RESOLUTION OF QUESTIONS REGARDING IMPLEMENTATION The Conference of the Parties shall, at its first session, consider the establishment of a multilateral consultative process, available to Parties on their request, for the resolution of questions regarding the implementation of the Convention.
+## ARTICLE 14 SETTLEMENT OF DISPUTES
+{k77e8f1b7} ¶ In the event of a dispute between any two or more Parties concerning the interpretation or application of the Convention, the Parties concerned shall seek a settlement of the dispute through negotiation or any other peaceful means of their own choice.
+{k0551a954} ¶ When ratifying, accepting, approving or acceding to the Convention, or at any time thereafter, a Party which is not a regional economic integration organization may declare in a written instrument submitted to the Depositary that, in respect of any dispute concerning the interpretation or application of the Convention, it recognizes as compulsory ipso facto and without special agreement, in relation to any Party accepting the same obligation:
+{kf9d03c72} ¶ Submission of the dispute to the International Court of Justice, and/or Arbitration in accordance with procedures to be adopted by the Conference of the Parties as soon as practicable, in an annex on arbitration.
+{ka82a8a36} ¶ A Party which is a regional economic integration organization may make a declaration with like effect in relation to arbitration in accordance with the procedures referred to in subparagraph (b) above.
+{ka2d12997} ¶ A declaration made under paragraph 2 above shall remain in force until it expires in accordance with its terms or until three months after written notice of its revocation has been deposited with the Depositary.
+{kbc84925d} ¶ A new declaration, a notice of revocation or the expiry of a declaration shall not in any way affect proceedings pending before the International Court of Justice or the arbitral tribunal, unless the parties to the dispute otherwise agree.
+{k4efce5fa} ¶ Subject to the operation of paragraph 2 above, if after twelve months following notification by one Party to another that a dispute exists between them, the Parties concerned have not been able to settle their dispute through the means mentioned in paragraph 1 above, the dispute shall be submitted, at the request of any of the parties to the dispute, to conciliation.
+{k46c762dc} ¶ A conciliation commission shall be created upon the request of one of the parties to the dispute. The commission shall be composed of an equal number of members appointed by each party concerned and a chairman chosen jointly by the members appointed by each party. The commission shall render a recommendatory award, which the parties shall consider in good faith.
+{ka66b8242} ¶ Additional procedures relating to conciliation shall be adopted by the Conference of the Parties, as soon as practicable, in an annex on conciliation.
+{kbe9a72ab} ¶ The provisions of this Article shall apply to any related legal instrument which the Conference of the Parties may adopt, unless the instrument provides otherwise.
+## ARTICLE 15 AMENDMENTS TO THE CONVENTION
+{k6698aa79} ¶ Any Party may propose amendments to the Convention.
+{kb353e917} ¶ Amendments to the Convention shall be adopted at an ordinary session of the Conference of the Parties. The text of any proposed amendment to the Convention shall be communicated to the Parties by the secretariat at least six months before the meeting at which it is proposed for adoption. The secretariat shall also communicate proposed amendments to the signatories to the Convention and, for information, to the Depositary.
+{k70ce193f} ¶ The Parties shall make every effort to reach agreement on any proposed amendment to the Convention by consensus. If all efforts at consensus have been exhausted, and no agreement reached, the amendment shall as a last resort be adopted by a three-fourths majority vote of the Parties present and voting at the meeting. The adopted amendment shall be communicated by the secretariat to the Depositary, who shall circulate it to all Parties for their acceptance.
+{kcce81896} ¶ Instruments of acceptance in respect of an amendment shall be deposited with the Depositary. An amendment adopted in accordance with paragraph 3 above shall enter into force for those Parties having accepted it on the ninetieth day after the date of receipt by the Depositary of an instrument of acceptance by at least three fourths of the Parties to the Convention.
+{kfae97a14} ¶ The amendment shall enter into force for any other Party on the ninetieth day after the date on which that Party deposits with the Depositary its instrument of acceptance of the said amendment.
+{ke46c5240} ¶ For the purposes of this Article, "Parties present and voting" means Parties present and casting an affirmative or negative vote.
+## ARTICLE 16
+{k68ed271a} ¶ ADOPTION AND AMENDMENT OF ANNEXES TO THE CONVENTION Annexes to the Convention shall form an integral part thereof and, unless otherwise expressly provided, a reference to the Convention constitutes at the same time a reference to any annexes thereto. Without prejudice to the provisions of Article 14, paragraphs 2(b) and 7, such annexes shall be restricted to lists, forms and any other material of a descriptive nature that is of a scientific, technical, procedural or administrative character.
+{kd5b2b40c} ¶ Annexes to the Convention shall be proposed and adopted in accordance with the procedure set forth in Article 15, paragraphs 2, 3 and 4.
+{kbaa24337} ¶ An annex that has been adopted in accordance with paragraph 2 above shall enter into force for all Parties to the Convention six months after the date of the communication by the Depositary to such Parties of the adoption of the annex, except for those Parties that have notified the Depositary, in writing, within that period of their non-acceptance of the annex. The annex shall enter into force for Parties which withdraw their notification of non-acceptance on the ninetieth day after the date on which withdrawal of such notification has been received by the Depositary.
+{k264729fa} ¶ The proposal, adoption and entry into force of amendments to annexes to the Convention shall be subject to the same procedure as that for the proposal, adoption and entry into force of annexes to the Convention in accordance with paragraphs 2 and 3 above.
+{k990144d2} ¶ If the adoption of an annex or an amendment to an annex involves an amendment to the Convention, that annex or amendment to an annex shall not enter into force until such time as the amendment to the Convention enters into force.
+## ARTICLE 17 PROTOCOLS
+{k55e54cdb} ¶ The Conference of the Parties may, at any ordinary session, adopt protocols to the Convention.
+{ka629b272} ¶ The text of any proposed protocol shall be communicated to the Parties by the secretariat at least six months before such a session.
+{kfc6b48d1} ¶ The requirements for the entry into force of any protocol shall be established by that instrument.
+{kf161018b} ¶ Only Parties to the Convention may be Parties to a protocol.
+{k00368f86} ¶ Decisions under any protocol shall be taken only by the Parties to the protocol concerned.
+## ARTICLE 18 RIGHT TO VOTE
+{k3f5ad24d} ¶ Each Party to the Convention shall have one vote, except as provided for in paragraph 2 below.
+{k6c02c5ea} ¶ Regional economic integration organizations, in matters within their competence, shall exercise their right to vote with a number of votes equal to the number of their member States that are Parties to the Convention. Such an organization shall not exercise its right to vote if any of its member States exercises its right, and vice versa.
+## ARTICLE 19 DEPOSITARY
+{kde22b263} ¶ The Secretary-General of the United Nations shall be the Depositary of the Convention and of protocols adopted in accordance with Article 17.
+## ARTICLE 20 SIGNATURE
+{k4fc03d34} ¶ This Convention shall be open for signature by States Members of the United Nations or of any of its specialized agencies or that are Parties to the Statute of the International Court of Justice and by regional economic integration organizations at Rio de Janeiro, during the United Nations Conference on Environment and Development, and thereafter at United Nations Headquarters in New York from 20 June 1992 to 19 June 1993.
+## ARTICLE 21 INTERIM ARRANGEMENTS
+{k7f2ea8b4} ¶ The secretariat functions referred to in Article 8 will be carried out on an interim basis by the secretariat established by the General Assembly of the United Nations in its resolution 45/212 of 21 December 1990, until the completion of the first session of the Conference of the Parties.
+{k60aa6198} ¶ The head of the interim secretariat referred to in paragraph 1 above will cooperate closely with the Intergovernmental Panel on Climate Change to ensure that the Panel can respond to the need for objective scientific and technical advice. Other relevant scientific bodies could also be consulted.
+{kc90bbccb} ¶ The Global Environment Facility of the United Nations Development Programme, the United Nations Environment Programme and the International Bank for Reconstruction and Development shall be the international entity entrusted with the operation of the financial mechanism referred to in Article 11 on an interim basis. In this connection, the Global Environment Facility should be appropriately restructured and its membership made universal to enable it to fulfil the requirements of Article 11.
+## ARTICLE 22
+{k892291e5} ¶ RATIFICATION, ACCEPTANCE, APPROVAL OR ACCESSION The Convention shall be subject to ratification, acceptance, approval or accession by States and by regional economic integration organizations. It shall be open for accession from the day after the date on which the Convention is closed for signature. Instruments of ratification, acceptance, approval or accession shall be deposited with the Depositary.
+{kefaa82ea} ¶ Any regional economic integration organization which becomes a Party to the Convention without any of its member States being a Party shall be bound by all the obligations under the Convention. In the case of such organizations, one or more of whose member States is a Party to the Convention, the organization and its member States shall decide on their respective responsibilities for the performance of their obligations under the Convention. In such cases, the organization and the member States shall not be entitled to exercise rights under the Convention concurrently.
+{k751cd49e} ¶ In their instruments of ratification, acceptance, approval or accession, regional economic integration organizations shall declare the extent of their competence with respect to the matters governed by the Convention. These organizations shall also inform the Depositary, who shall in turn inform the Parties, of any substantial modification in the extent of their competence.
+## ARTICLE 23 ENTRY INTO FORCE
+{k77ca55cb} ¶ The Convention shall enter into force on the ninetieth day after the date of deposit of the fiftieth instrument of ratification, acceptance, approval or accession.
+{kba5e343f} ¶ For each State or regional economic integration organization that ratifies, accepts or approves the Convention or accedes thereto after the deposit of the fiftieth instrument of ratification, acceptance, approval or accession, the Convention shall enter into force on the ninetieth day after the date of deposit by such State or regional economic integration organization of its instrument of ratification, acceptance, approval or accession.
+{k81d82d9e} ¶ For the purposes of paragraphs 1 and 2 above, any instrument deposited by a regional economic integration organization shall not be counted as additional to those deposited by States members of the organization.
+## ARTICLE 24 RESERVATIONS
+{k0bed4713} ¶ No reservations may be made to the Convention.
+## ARTICLE 25 WITHDRAWAL
+{kdef06f83} ¶ At any time after three years from the date on which the Convention has entered into force for a Party, that Party may withdraw from the Convention by giving written notification to the Depositary.
+{ka9a317af} ¶ Any such withdrawal shall take effect upon expiry of one year from the date of receipt by the Depositary of the notification of withdrawal, or on such later date as may be specified in the notification of withdrawal.
+{kdd6cfae3} ¶ Any Party that withdraws from the Convention shall be considered as also having withdrawn from any protocol to which it is a Party.
+## ARTICLE 26 AUTHENTIC TEXTS
+{k4a066ea6} ¶ The original of this Convention, of which the Arabic, Chinese, English, French, Russian and Spanish texts are equally authentic, shall be deposited with the Secretary-General of the United Nations.
+{k39b85432} ¶ IN WITNESS WHEREOF the undersigned, being duly authorized to that effect, have signed this Convention.
+{k3be8fc97} ¶ DONE at New York this ninth day of May one thousand nine hundred and ninety-two.
+## Annex I
+{kb2464f34} ¶ Australia Austria Belarusa/ Belgium Bulgariaa/ Canada Czechoslovakiaa/ Denmark European Economic Community Estoniaa/ Finland France Germany Greece Hungarya/ Iceland Ireland Italy Japan Latviaa/ Lithuaniaa/ Luxembourg Netherlands New Zealand Norway Polanda/ Portugal Romaniaa/ Russian Federationa/ Spain Sweden Switzerland Turkey Ukrainea/ United Kingdom of Great Britain and Northern Ireland United States of America a/ Countries that are undergoing the process of transition to a market economy.
+{kfdb725e1} ¶ Australia Austria Belgium Canada Denmark European Economic Community Finland France Germany Greece Iceland Ireland Italy Japan Luxembourg Netherlands New Zealand Norway Portugal Spain Sweden Switzerland Turkey United Kingdom of Great Britain and Northern Ireland United States of America

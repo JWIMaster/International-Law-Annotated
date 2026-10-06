@@ -1,0 +1,885 @@
+TITLE: Paris Agreement
+DESC: Annotated Paris Agreement (Annotated) text with inline author-filtered notes.
+HEADER: Paris Agreement
+HOME: ../index.html
+IDMAP para-1=kd74adae6
+IDMAP para-10=kc318c7db
+IDMAP para-100=kff16c67f
+IDMAP para-101=k24f36d12
+IDMAP para-102=k6ffab74b
+IDMAP para-103=kbc45dde2
+IDMAP para-104=k503467d3
+IDMAP para-105=k57e631ae
+IDMAP para-106=k960f3a2c
+IDMAP para-107=ke5f774b7
+IDMAP para-108=k59e02883
+IDMAP para-109=kdf8114c1
+IDMAP para-11=kabc8e297
+IDMAP para-110=k2b45133e
+IDMAP para-111=kda28c50f
+IDMAP para-112=kae454a6d
+IDMAP para-113=k527e7c01
+IDMAP para-114=k2b68a4f7
+IDMAP para-115=k634a66d0
+IDMAP para-116=k4fbfbebe
+IDMAP para-117=kd0e0af29
+IDMAP para-118=k10bc6d40
+IDMAP para-119=k675b671b
+IDMAP para-12=k58cbddb9
+IDMAP para-120=kc2afb94d
+IDMAP para-121=k0bbae943
+IDMAP para-122=k190a8489
+IDMAP para-123=kb4cb577e
+IDMAP para-124=k307179ca
+IDMAP para-125=ke9a14a21
+IDMAP para-126=k0f7a1b2d
+IDMAP para-127=kba64a87b
+IDMAP para-128=kf828f894
+IDMAP para-129=k253d1d1b
+IDMAP para-13=kc1f9e50e
+IDMAP para-130=k931f7c31
+IDMAP para-131=k473a7694
+IDMAP para-132=kbe575af0
+IDMAP para-133=kc8ef8d80
+IDMAP para-134=kfa0faa66
+IDMAP para-135=ke937cabb
+IDMAP para-136=kb21217fa
+IDMAP para-137=kf0c8cdae
+IDMAP para-138=k06bcd176
+IDMAP para-139=kfa976562
+IDMAP para-14=k56262bdd
+IDMAP para-140=k90cd090d
+IDMAP para-141=k13512e3d
+IDMAP para-142=k9f902fac
+IDMAP para-143=k188f7049
+IDMAP para-144=kc0718a76
+IDMAP para-145=k6862a6db
+IDMAP para-146=k2a11c837
+IDMAP para-147=kc89d6d7d
+IDMAP para-148=k995a7666
+IDMAP para-149=k7b9ab5c9
+IDMAP para-15=kdec4dd38
+IDMAP para-150=k5025e239
+IDMAP para-151=kcc4e8bd4
+IDMAP para-152=k4eed86c6
+IDMAP para-153=k6f81d0a0
+IDMAP para-154=k5fb0fffb
+IDMAP para-155=k866753b4
+IDMAP para-156=ka8221d00
+IDMAP para-157=k03de214e
+IDMAP para-158=kf930bbe9
+IDMAP para-159=k84508a85
+IDMAP para-16=kbf1f62e4
+IDMAP para-160=kb45cb9fd
+IDMAP para-161=k42fa8763
+IDMAP para-162=ka154cd45
+IDMAP para-163=k1007e35d
+IDMAP para-164=k04588e2b
+IDMAP para-165=k4534acc7
+IDMAP para-166=ke54de5c2
+IDMAP para-167=k98a79426
+IDMAP para-168=k6981940d
+IDMAP para-169=k5e47b25c
+IDMAP para-17=k1148ec25
+IDMAP para-170=k285fd6f3
+IDMAP para-171=ke148872b
+IDMAP para-172=k37cc77fb
+IDMAP para-173=ke9de4d6a
+IDMAP para-174=keadacbbf
+IDMAP para-175=k2ebb412a
+IDMAP para-176=ka9a317af
+IDMAP para-177=kb5a1d6a6
+IDMAP para-178=k6a247c0a
+IDMAP para-179=kd73fb2d8
+IDMAP para-18=k67cde292
+IDMAP para-180=k458fa063
+IDMAP para-181=k3a486671
+IDMAP para-182=k77b70b9e
+IDMAP para-183=k73fbb9e1
+IDMAP para-184=k4e2a53a7
+IDMAP para-185=kdbdcb144
+IDMAP para-186=k0ce7f377
+IDMAP para-187=k78fa1a87
+IDMAP para-188=k58cbddb9-2
+IDMAP para-189=kd9d66e2a
+IDMAP para-19=k583d5f2c
+IDMAP para-190=k690b0e8c
+IDMAP para-191=k0a3c5706
+IDMAP para-192=kc4c91b0b
+IDMAP para-193=k8a183665
+IDMAP para-194=k5e9ccddc
+IDMAP para-195=k55b84b56
+IDMAP para-196=k5ce24bd8
+IDMAP para-197=k0148ef93
+IDMAP para-198=k2b5fca98
+IDMAP para-199=k3968d545
+IDMAP para-2=k6bd87f0e
+IDMAP para-20=k3762787c
+IDMAP para-200=k36fbea18
+IDMAP para-201=k7eff5676
+IDMAP para-202=ka65b72ad
+IDMAP para-203=k7e67be2e
+IDMAP para-204=k1224fe8b
+IDMAP para-205=k1352e780
+IDMAP para-206=k301bf42b
+IDMAP para-207=k7a3101c9
+IDMAP para-208=k1d98868d
+IDMAP para-209=ka86e8e41
+IDMAP para-21=k9ce8f9a4
+IDMAP para-210=k76927b02
+IDMAP para-211=kb86ab032
+IDMAP para-212=k860db4ca
+IDMAP para-213=kac5e3dc5
+IDMAP para-214=k66299988
+IDMAP para-215=ka0c59a14
+IDMAP para-216=k2ded37c4
+IDMAP para-217=k0cc1868c
+IDMAP para-218=k712330ad
+IDMAP para-219=k56d7b1d4
+IDMAP para-22=k0e88d558
+IDMAP para-220=kb53f6c77
+IDMAP para-221=k14fc64a5
+IDMAP para-222=k6660e7d6
+IDMAP para-223=kdbcfa6ab
+IDMAP para-224=kd4fafd63
+IDMAP para-225=k11649332
+IDMAP para-226=kfac33e76
+IDMAP para-227=kc70bc85a
+IDMAP para-228=kb0faadee
+IDMAP para-229=k30866fb3
+IDMAP para-23=k593b8160
+IDMAP para-230=kd7e8f4fc
+IDMAP para-231=ka019ab35
+IDMAP para-232=kcdb79632
+IDMAP para-233=k0612bba1
+IDMAP para-234=k0df96fb9
+IDMAP para-235=k0785dd60
+IDMAP para-236=k33596cdb
+IDMAP para-237=k52606ccc
+IDMAP para-238=kb738e4dd
+IDMAP para-239=k2be23164
+IDMAP para-24=k68f93573
+IDMAP para-240=k04a694ed
+IDMAP para-241=k2a05a017
+IDMAP para-242=kb9ef7815
+IDMAP para-243=k1e4fe688
+IDMAP para-244=k99a81b77
+IDMAP para-245=k94daf624
+IDMAP para-246=kae6980c6
+IDMAP para-247=k0799616a
+IDMAP para-248=kde0ba7c8
+IDMAP para-249=kf4b02c88
+IDMAP para-25=ke032b505
+IDMAP para-250=k7bc6dffa
+IDMAP para-251=k0c97035e
+IDMAP para-252=k1a03cda8
+IDMAP para-253=kc9e74163
+IDMAP para-254=k673fcb3f
+IDMAP para-255=kdcb6217e
+IDMAP para-256=k603a15cf
+IDMAP para-257=k83e0b16d
+IDMAP para-258=k44575713
+IDMAP para-259=kb43a8bf1
+IDMAP para-26=k41afefe0
+IDMAP para-260=kc1a5f63a
+IDMAP para-261=k77549a0a
+IDMAP para-262=ke7be2a9f
+IDMAP para-263=kaa56c834
+IDMAP para-264=k8f1c8d48
+IDMAP para-265=kd9ac5eff
+IDMAP para-266=kc011de28
+IDMAP para-267=keb7e7284
+IDMAP para-268=ka7d3bffd
+IDMAP para-269=k4636e583
+IDMAP para-27=k6bcff9c6
+IDMAP para-270=kdc68ba21
+IDMAP para-271=k750915c7
+IDMAP para-272=kcc140254
+IDMAP para-273=k8a428ed9
+IDMAP para-274=k7d2d8d7e
+IDMAP para-275=k93a5b501
+IDMAP para-276=k1f17828e
+IDMAP para-277=k5f2e0551
+IDMAP para-278=kf1209101
+IDMAP para-279=kf0918b33
+IDMAP para-28=ka018c195
+IDMAP para-280=k85ee8411
+IDMAP para-281=k794000b3
+IDMAP para-282=kf1f4290b
+IDMAP para-283=kd00f02a0
+IDMAP para-284=k1ecd1f4b
+IDMAP para-285=k7e337b9d
+IDMAP para-286=kd9035d11
+IDMAP para-287=k2310c5b2
+IDMAP para-288=k463fbadf
+IDMAP para-289=k37dfcc31
+IDMAP para-29=k111be473
+IDMAP para-290=k74336281
+IDMAP para-291=k6726e7d7
+IDMAP para-292=ke62614be
+IDMAP para-293=k56dcc5d8
+IDMAP para-294=k433cd531
+IDMAP para-295=k95df1c2e
+IDMAP para-296=k535f9ebc
+IDMAP para-297=kde5ae9f7
+IDMAP para-298=kc9a0bc20
+IDMAP para-299=k824a7a4e
+IDMAP para-3=kc870313f
+IDMAP para-30=kbf274a3d
+IDMAP para-300=k64e2a7c0
+IDMAP para-301=k97d39461
+IDMAP para-302=k92d9bfad
+IDMAP para-303=k3508fc76
+IDMAP para-304=k34c5dddb
+IDMAP para-305=k30f55af8
+IDMAP para-306=k3de11d28
+IDMAP para-307=kaacf8489
+IDMAP para-308=k62b1ec95
+IDMAP para-309=k94142ca8
+IDMAP para-31=kba25528d
+IDMAP para-310=kda919296
+IDMAP para-311=k2c007058
+IDMAP para-312=k8dd8305d
+IDMAP para-313=k7d0695b0
+IDMAP para-314=ke04be6f4
+IDMAP para-315=k1f97483e
+IDMAP para-316=k66a9df47
+IDMAP para-317=k66107adb
+IDMAP para-318=k33e29712
+IDMAP para-319=k5df62c1d
+IDMAP para-32=kff9d89ef
+IDMAP para-320=k898a3559
+IDMAP para-321=k623b32a0
+IDMAP para-322=k6d350697
+IDMAP para-323=k98e01c92
+IDMAP para-324=k51708542
+IDMAP para-325=ka07ee70e
+IDMAP para-326=k6c21d438
+IDMAP para-327=k46668e1e
+IDMAP para-328=k1311859c
+IDMAP para-329=k4cac9b62
+IDMAP para-33=k661288a5
+IDMAP para-330=k1082fb8a
+IDMAP para-331=k7d355ff5
+IDMAP para-332=kc9ed0121
+IDMAP para-333=ka7bf115b
+IDMAP para-334=k76758544
+IDMAP para-335=k4826001c
+IDMAP para-336=k2ace9990
+IDMAP para-337=k324ded56
+IDMAP para-338=k7be21ba1
+IDMAP para-339=k1f8d7c7e
+IDMAP para-34=k57851fba
+IDMAP para-340=ka752dc50
+IDMAP para-341=kff21264f
+IDMAP para-342=kbd401b9e
+IDMAP para-343=k68507240
+IDMAP para-344=k325e13c1
+IDMAP para-345=kc1c4fe88
+IDMAP para-346=k25f735fb
+IDMAP para-347=kb3dff93e
+IDMAP para-348=kdb10896c
+IDMAP para-349=k9d2e92ed
+IDMAP para-35=k65008161
+IDMAP para-350=k95f3de48
+IDMAP para-351=k8f6690ba
+IDMAP para-352=kee887e9a
+IDMAP para-353=k6e6792c2
+IDMAP para-354=k876876a9
+IDMAP para-355=kee9f6e55
+IDMAP para-356=k715a4938
+IDMAP para-357=k6e964b17
+IDMAP para-358=k62b7a777
+IDMAP para-359=k30cc4121
+IDMAP para-36=k1b9a589b
+IDMAP para-360=k21d96f45
+IDMAP para-361=kd616d186
+IDMAP para-362=kddf10529
+IDMAP para-363=k8861c43e
+IDMAP para-364=kf58a6006
+IDMAP para-365=ka12135e1
+IDMAP para-366=k1bcd8d80
+IDMAP para-367=k9d98992e
+IDMAP para-368=kc7455a92
+IDMAP para-369=k4f4350f5
+IDMAP para-37=kc95908f8
+IDMAP para-370=kb3aeb260
+IDMAP para-371=kbf6dc48e
+IDMAP para-372=k87bc5920
+IDMAP para-373=k231c8afc
+IDMAP para-374=k498648b9
+IDMAP para-375=k3b266a0e
+IDMAP para-376=k0772cec3
+IDMAP para-377=kcb0800e2
+IDMAP para-378=k95367bd6
+IDMAP para-379=k54fa9cc0
+IDMAP para-38=k693e510c
+IDMAP para-380=k7666cdfd
+IDMAP para-381=ka3008aa7
+IDMAP para-382=k037e18a6
+IDMAP para-383=k16b054e5
+IDMAP para-384=kf726b8f9
+IDMAP para-385=k7e32d3c4
+IDMAP para-386=k47c34d81
+IDMAP para-387=k101a713b
+IDMAP para-388=k8de63e89
+IDMAP para-389=k085ca8b1
+IDMAP para-39=k1ee6c1be
+IDMAP para-390=k8db54dcc
+IDMAP para-391=k0b417e4a
+IDMAP para-392=k33eb7150
+IDMAP para-393=k1299b82c
+IDMAP para-394=kf410779b
+IDMAP para-395=k804f7ea6
+IDMAP para-396=k3477a6bb
+IDMAP para-397=k7abecac3
+IDMAP para-398=kd946bb4b
+IDMAP para-399=k3087575a
+IDMAP para-4=k9b405573
+IDMAP para-40=k8a3578e6
+IDMAP para-400=k207a8874
+IDMAP para-401=k00b7d37a
+IDMAP para-402=k77e3dce9
+IDMAP para-403=k68d45736
+IDMAP para-404=ke833b2d7
+IDMAP para-405=ke0898052
+IDMAP para-406=k5897d6ed
+IDMAP para-407=k32b01624
+IDMAP para-408=k1ce4213b
+IDMAP para-409=k39ebd0ab
+IDMAP para-41=k4c292ada
+IDMAP para-410=k92a4cc91
+IDMAP para-411=kd25f8f98
+IDMAP para-412=k41bf4200
+IDMAP para-413=k620fb5da
+IDMAP para-414=kcbd8fcd5
+IDMAP para-415=k35abab7a
+IDMAP para-416=kc1ab20b6
+IDMAP para-42=k3ac78911
+IDMAP para-43=k8d8eb80d
+IDMAP para-44=k8997e9cc
+IDMAP para-45=k25e534e3
+IDMAP para-46=kfdffdb8e
+IDMAP para-47=k36145613
+IDMAP para-48=kccdaf213
+IDMAP para-49=k70c3532c
+IDMAP para-5=k5f86058e
+IDMAP para-50=k608a80dc
+IDMAP para-51=k5137dedb
+IDMAP para-52=k3caf8656
+IDMAP para-53=k7627ec28
+IDMAP para-54=k67adb1fc
+IDMAP para-55=k0a98d545
+IDMAP para-56=k4102e399
+IDMAP para-57=kba81de4d
+IDMAP para-58=k9b18f602
+IDMAP para-59=k654367a7
+IDMAP para-6=kf4684866
+IDMAP para-60=k1c6db4ee
+IDMAP para-61=k35a77693
+IDMAP para-62=k5cc79da7
+IDMAP para-63=k50258d13
+IDMAP para-64=k68f2f856
+IDMAP para-65=kbf4e88ab
+IDMAP para-66=k4a4a794f
+IDMAP para-67=k74007a78
+IDMAP para-68=kef27a16c
+IDMAP para-69=k35df7ba5
+IDMAP para-7=k5f00b0c5
+IDMAP para-70=kc7c5a2af
+IDMAP para-71=k6bbde5c4
+IDMAP para-72=kf465a39b
+IDMAP para-73=ka7333b3a
+IDMAP para-74=kb66a63f1
+IDMAP para-75=kd35e7f87
+IDMAP para-76=k0fcf6b1e
+IDMAP para-77=k857c346a
+IDMAP para-78=k0fc77428
+IDMAP para-79=k0e387f16
+IDMAP para-8=k06cad69a
+IDMAP para-80=k580c343d
+IDMAP para-81=k0e37551f
+IDMAP para-82=k8d000116
+IDMAP para-83=k1eda8b39
+IDMAP para-84=k755e5557
+IDMAP para-85=k69fd320e
+IDMAP para-86=kf35843db
+IDMAP para-87=kfa5c7fef
+IDMAP para-88=k8fd42a53
+IDMAP para-89=k31e18ab9
+IDMAP para-9=kfe2bb05c
+IDMAP para-90=k5e1dad51
+IDMAP para-91=kfeed97b4
+IDMAP para-92=kda57ff47
+IDMAP para-93=k0d290891
+IDMAP para-94=k9d7687a3
+IDMAP para-95=k7614fbf0
+IDMAP para-96=ka9dfe1be
+IDMAP para-97=kca506c7b
+IDMAP para-98=k0ced5a74
+IDMAP para-99=k09f6dd4f
+---
+
+## THE PARIS AGREEMENT
+{kd74adae6} ¶ The Parties to this Agreement,
+{k6bd87f0e} ¶ Being Parties to the United Nations Framework Convention on Climate Change, hereinafter referred to as “the Convention”,
+{kc870313f} ¶ Pursuant to the Durban Platform for Enhanced Action established by decision 1/CP.17 of the Conference of the Parties to the Convention at its seventeenth session,
+{k9b405573} ¶ In pursuit of the objective of the Convention, and being guided by its principles, including the principle of equity and common but differentiated responsibilities and respective capabilities, in the light of different national circumstances,
+{k5f86058e} ¶ Recognizing the need for an effective and progressive response to the urgent threat of climate change on the basis of the best available scientific knowledge,
+{kf4684866} ¶ Also recognizing the specific needs and special circumstances of developing country Parties, especially those that are particularly vulnerable to the adverse effects of climate change, as provided for in the Convention,
+{k5f00b0c5} ¶ Taking full account of the specific needs and special situations of the least developed countries with regard to funding and transfer of technology,
+{k06cad69a} ¶ Recognizing that Parties may be affected not only by climate change, but also by the impacts of the measures taken in response to it,
+{kfe2bb05c} ¶ Emphasizing the intrinsic relationship that climate change actions, responses and impacts have with equitable access to sustainable development and eradication of poverty,
+{kc318c7db} ¶ Recognizing the fundamental priority of safeguarding food security and ending hunger, and the particular vulnerabilities of food production systems to the adverse impacts of climate change,
+{kabc8e297} ¶ Taking into account the imperatives of a just transition of the workforce and the creation of decent work and quality jobs in accordance with nationally defined development priorities,
+{k58cbddb9} ¶ Acknowledging that climate change is a common concern of humankind, Parties should, when taking action to address climate change, respect, promote and consider their respective obligations on human rights, the right to health, the rights of indigenous peoples, local communities, migrants, children, persons with disabilities and people in vulnerable situations and the right to development, as well as gender equality, empowerment of women and intergenerational equity,
+{kc1f9e50e} ¶ Recognizing the importance of the conservation and enhancement, as appropriate, of sinks and reservoirs of the greenhouse gases referred to in the Convention,
+{k56262bdd} ¶ Noting the importance of ensuring the integrity of all ecosystems, including oceans, and the protection of biodiversity, recognized by some cultures as Mother Earth, and noting the importance for some of the concept of “climate justice”, when taking action to address climate change,
+{kdec4dd38} ¶ Affirming the importance of education, training, public awareness, public participation, public access to information and cooperation at all levels on the matters addressed in this Agreement,
+{kbf1f62e4} ¶ Recognizing the importance of the engagements of all levels of government and various actors, in accordance with respective national legislations of Parties, in addressing climate change,
+{k1148ec25} ¶ Also recognizing that sustainable lifestyles and sustainable patterns of consumption and production, with developed country Parties taking the lead, play an important role in addressing climate change,
+{k67cde292} ¶ Have agreed as follows:
+## Article 1
+{k583d5f2c} ¶ For the purpose of this Agreement, the definitions contained in Article 1 of the Convention shall apply. In addition:
+{k3762787c} ¶ “Convention” means the United Nations Framework Convention on Climate Change, adopted in New York on 9 May 1992;
+{k9ce8f9a4} ¶ “Conference of the Parties” means the Conference of the Parties to the Convention;
+{k0e88d558} ¶ “Party” means a Party to this Agreement.
+## Article 2
+{k593b8160} ¶ This Agreement, in enhancing the implementation of the Convention, including its objective, aims to strengthen the global response to the threat of climate change, in the context of sustainable development and efforts to eradicate poverty, including by:
+{k68f93573} ¶ Holding the increase in the global average temperature to well below 2 °C above pre- industrial levels and pursuing efforts to limit the temperature increase to 1.5 °C above pre-industrial levels, recognizing that this would significantly reduce the risks and impacts of climate change;
+{ke032b505} ¶ Increasing the ability to adapt to the adverse impacts of climate change and foster climate resilience and low greenhouse gas emissions development, in a manner that does not threaten food production; and Making finance flows consistent with a pathway towards low greenhouse gas emissions and climate-resilient development.
+{k41afefe0} ¶ This Agreement will be implemented to reflect equity and the principle of common but differentiated responsibilities and respective capabilities, in the light of different national circumstances.
+## Article 3
+{k6bcff9c6} ¶ As nationally determined contributions to the global response to climate change, all Parties are to undertake and communicate ambitious efforts as defined in Articles 4, 7, 9, 10, 11 and 13 with the view to achieving the purpose of this Agreement as set out in Article 2. The efforts of all Parties will represent a progression over time, while recognizing the need to support developing country Parties for the effective implementation of this Agreement.
+## Article 4
+{ka018c195} ¶ In order to achieve the long-term temperature goal set out in Article 2, Parties aim to reach global peaking of greenhouse gas emissions as soon as possible, recognizing that peaking will take longer for developing country Parties, and to undertake rapid reductions thereafter in accordance with best available science, so as to achieve a balance between anthropogenic emissions by sources and removals by sinks of greenhouse gases in the second half of this century, on the basis of equity, and in the context of sustainable development and efforts to eradicate poverty.
+{k111be473} ¶ Each Party shall prepare, communicate and maintain successive nationally determined contributions that it intends to achieve. Parties shall pursue domestic mitigation measures, with the aim of achieving the objectives of such contributions.
+{kbf274a3d} ¶ Each Party’s successive nationally determined contribution will represent a progression beyond the Party’s then current nationally determined contribution and reflect its highest possible ambition, reflecting its common but differentiated responsibilities and respective capabilities, in the light of different national circumstances.
+{kba25528d} ¶ Developed country Parties should continue taking the lead by undertaking economy- wide absolute emission reduction targets. Developing country Parties should continue enhancing their mitigation efforts, and are encouraged to move over time towards economy-wide emission reduction or limitation targets in the light of different national circumstances.
+{kff9d89ef} ¶ Support shall be provided to developing country Parties for the implementation of this Article, in accordance with Articles 9, 10 and 11, recognizing that enhanced support for developing country Parties will allow for higher ambition in their actions.
+{k661288a5} ¶ The least developed countries and small island developing States may prepare and communicate strategies, plans and actions for low greenhouse gas emissions development reflecting their special circumstances.
+{k57851fba} ¶ Mitigation co-benefits resulting from Parties’ adaptation actions and/or economic diversification plans can contribute to mitigation outcomes under this Article.
+{k65008161} ¶ In communicating their nationally determined contributions, all Parties shall provide the information necessary for clarity, transparency and understanding in accordance with decision 1/CP.21 and any relevant decisions of the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{k1b9a589b} ¶ Each Party shall communicate a nationally determined contribution every five years in accordance with decision 1/CP.21 and any relevant decisions of the Conference of the Parties serving as the meeting of the Parties to this Agreement and be informed by the outcomes of the global stocktake referred to in Article 14.
+{kc95908f8} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement shall consider common time frames for nationally determined contributions at its first session.
+{k693e510c} ¶ A Party may at any time adjust its existing nationally determined contribution with a view to enhancing its level of ambition, in accordance with guidance adopted by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{k1ee6c1be} ¶ Nationally determined contributions communicated by Parties shall be recorded in a public registry maintained by the secretariat.
+{k8a3578e6} ¶ Parties shall account for their nationally determined contributions. In accounting for anthropogenic emissions and removals corresponding to their nationally determined contributions, Parties shall promote environmental integrity, transparency, accuracy, completeness, comparability and consistency, and ensure the avoidance of double counting, in accordance with guidance adopted by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{k4c292ada} ¶ In the context of their nationally determined contributions, when recognizing and implementing mitigation actions with respect to anthropogenic emissions and removals, Parties should take into account, as appropriate, existing methods and guidance under the Convention, in the light of the provisions of paragraph 13 of this Article.
+{k3ac78911} ¶ Parties shall take into consideration in the implementation of this Agreement the concerns of Parties with economies most affected by the impacts of response measures, particularly developing country Parties.
+{k8d8eb80d} ¶ Parties, including regional economic integration organizations and their member States, that have reached an agreement to act jointly under paragraph 2 of this Article shall notify the secretariat of the terms of that agreement, including the emission level allocated to each Party within the relevant time period, when they communicate their nationally determined contributions. The secretariat shall in turn inform the Parties and signatories to the Convention of the terms of that agreement.
+{k8997e9cc} ¶ Each party to such an agreement shall be responsible for its emission level as set out in the agreement referred to in paragraph 16 of this Article in accordance with paragraphs 13 and 14 of this Article and Articles 13 and 15.
+{k25e534e3} ¶ If Parties acting jointly do so in the framework of, and together with, a regional economic integration organization which is itself a Party to this Agreement, each member State of that regional economic integration organization individually, and together with the regional economic integration organization, shall be responsible for its emission level as set out in the agreement communicated under paragraph 16 of this Article in accordance with paragraphs 13 and 14 of this Article and Articles 13 and 15.
+{kfdffdb8e} ¶ All Parties should strive to formulate and communicate long-term low greenhouse gas emission development strategies, mindful of Article 2 taking into account their common but differentiated responsibilities and respective capabilities, in the light of different national circumstances.
+## Article 5
+{k36145613} ¶ Parties should take action to conserve and enhance, as appropriate, sinks and reservoirs of greenhouse gases as referred to in Article 4, paragraph 1(d), of the Convention, including forests.
+{kccdaf213} ¶ Parties are encouraged to take action to implement and support, including through results-based payments, the existing framework as set out in related guidance and decisions already agreed under the Convention for: policy approaches and positive incentives for activities relating to reducing emissions from deforestation and forest degradation, and the role of conservation, sustainable management of forests and enhancement of forest carbon stocks in developing countries; and alternative policy approaches, such as joint mitigation and adaptation approaches for the integral and sustainable management of forests, while reaffirming the importance of incentivizing, as appropriate, non-carbon benefits associated with such approaches.
+## Article 6
+{k70c3532c} ¶ Parties recognize that some Parties choose to pursue voluntary cooperation in the implementation of their nationally determined contributions to allow for higher ambition in their mitigation and adaptation actions and to promote sustainable development and environmental integrity.
+{k608a80dc} ¶ Parties shall, where engaging on a voluntary basis in cooperative approaches that involve the use of internationally transferred mitigation outcomes towards nationally determined contributions, promote sustainable development and ensure environmental integrity and transparency, including in governance, and shall apply robust accounting to ensure, inter alia, the avoidance of double counting, consistent with guidance adopted by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{k5137dedb} ¶ The use of internationally transferred mitigation outcomes to achieve nationally determined contributions under this Agreement shall be voluntary and authorized by participating Parties.
+{k3caf8656} ¶ A mechanism to contribute to the mitigation of greenhouse gas emissions and support sustainable development is hereby established under the authority and guidance of the Conference of the Parties serving as the meeting of the Parties to this Agreement for use by Parties on a voluntary basis. It shall be supervised by a body designated by the Conference of the Parties serving as the meeting of the Parties to this Agreement, and shall aim:
+{k7627ec28} ¶ To promote the mitigation of greenhouse gas emissions while fostering sustainable development;
+{k67adb1fc} ¶ To incentivize and facilitate participation in the mitigation of greenhouse gas emissions by public and private entities authorized by a Party;
+{k0a98d545} ¶ To contribute to the reduction of emission levels in the host Party, which will benefit from mitigation activities resulting in emission reductions that can also be used by another Party to fulfil its nationally determined contribution; and To deliver an overall mitigation in global emissions.
+{k4102e399} ¶ Emission reductions resulting from the mechanism referred to in paragraph 4 of this Article shall not be used to demonstrate achievement of the host Party’s nationally determined contribution if used by another Party to demonstrate achievement of its nationally determined contribution.
+{kba81de4d} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement shall ensure that a share of the proceeds from activities under the mechanism referred to in paragraph 4 of this Article is used to cover administrative expenses as well as to assist developing country Parties that are particularly vulnerable to the adverse effects of climate change to meet the costs of adaptation.
+{k9b18f602} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement shall adopt rules, modalities and procedures for the mechanism referred to in paragraph 4 of this Article at its first session.
+{k654367a7} ¶ Parties recognize the importance of integrated, holistic and balanced non-market approaches being available to Parties to assist in the implementation of their nationally determined contributions, in the context of sustainable development and poverty eradication, in a coordinated and effective manner, including through, inter alia, mitigation, adaptation, finance, technology transfer and capacity-building, as appropriate. These approaches shall aim to:
+{k1c6db4ee} ¶ Promote mitigation and adaptation ambition;
+{k35a77693} ¶ Enhance public and private sector participation in the implementation of nationally determined contributions; and Enable opportunities for coordination across instruments and relevant institutional arrangements.
+{k5cc79da7} ¶ A framework for non-market approaches to sustainable development is hereby defined to promote the non-market approaches referred to in paragraph 8 of this Article.
+## Article 7
+{k50258d13} ¶ Parties hereby establish vulnerability to climate change, with a view to contributing to sustainable development, the global goal on adaptation of enhancing adaptive capacity, strengthening resilience and reducing and ensuring an adequate adaptation response in the context of the temperature goal referred to in Article 2.
+{k68f2f856} ¶ Parties recognize that adaptation is a global challenge faced by all with local, subnational, national, regional and international dimensions, and that it is a key component of and makes a contribution to the long-term global response to climate change to protect people, livelihoods and ecosystems, taking into account the urgent and immediate needs of those developing country Parties that are particularly vulnerable to the adverse effects of climate change.
+{kbf4e88ab} ¶ The adaptation efforts of developing country Parties shall be recognized, in accordance with the modalities to be adopted by the Conference of the Parties serving as the meeting of the Parties to this Agreement at its first session.
+{k4a4a794f} ¶ Parties recognize that the current need for adaptation is significant and that greater levels of mitigation can reduce the need for additional adaptation efforts, and that greater adaptation needs can involve greater adaptation costs.
+{k74007a78} ¶ Parties acknowledge that adaptation action should follow a country-driven, gender- responsive, participatory and fully transparent approach, taking into consideration vulnerable groups, communities and ecosystems, and should be based on and guided by the best available science and, as appropriate, traditional knowledge, knowledge of indigenous peoples and local knowledge systems, with a view to integrating adaptation into relevant socioeconomic and environmental policies and actions, where appropriate.
+{kef27a16c} ¶ Parties recognize the importance of support for and international cooperation on adaptation efforts and the importance of taking into account the needs of developing country Parties, especially those that are particularly vulnerable to the adverse effects of climate change.
+{k35df7ba5} ¶ Parties should strengthen their cooperation on enhancing action on adaptation, taking into account the Cancun Adaptation Framework, including with regard to:
+{kc7c5a2af} ¶ Sharing information, good practices, experiences and lessons learned, including, as appropriate, as these relate to science, planning, policies and implementation in relation to adaptation actions;
+{k6bbde5c4} ¶ Strengthening institutional arrangements, including those under the Convention that serve this Agreement, to support the synthesis of relevant information and knowledge, and the provision of technical support and guidance to Parties;
+{kf465a39b} ¶ Strengthening scientific knowledgeonclimate, includingresearch, systematic observation of the climate system and early warning systems, in a manner that informs climate services and supports decision-making;
+{ka7333b3a} ¶ Assisting developing country Parties in identifying effective adaptation practices, adaptation needs, priorities, support provided and received for adaptation actions and efforts, and challenges and gaps, in a manner consistent with encouraging good practices; and Improving the effectiveness and durability of adaptation actions.
+{kb66a63f1} ¶ United Nations specialized organizations and agencies are encouraged to support the efforts of Parties to implement the actions referred to in paragraph 7 of this Article, taking into account the provisions of paragraph 5 of this Article.
+{kd35e7f87} ¶ Each Party shall, as appropriate, engage in adaptation planning processes and the implementation of actions, including the development or enhancement of relevant plans, policies and/or contributions, which may include:
+{k0fcf6b1e} ¶ The implementation of adaptation actions, undertakings and/or efforts;
+{k857c346a} ¶ The process to formulate and implement national adaptation plans;
+{k0fc77428} ¶ The assessment of climate change impacts and vulnerability, with a view to formulating nationally determined prioritized actions, taking into account vulnerable people, places and ecosystems;
+{k0e387f16} ¶ Monitoring and evaluating and learning from adaptation plans, policies, programmes and actions; and Building the resilience of socioeconomic and ecological systems, including through economic diversification and sustainable management of natural resources.
+{k580c343d} ¶ Each Party should, as appropriate, submit and update periodically an adaptation communication, which may include its priorities, implementation and support needs, plans and actions, without creating any additional burden for developing country Parties.
+{k0e37551f} ¶ The adaptation communication referred to in paragraph 10 of this Article shall be, as appropriate, submitted and updated periodically, as a component of or in conjunction with other communications or documents, including a national adaptation plan, a nationally determined contribution as referred to in Article 4, paragraph 2, and/or a national communication.
+{k8d000116} ¶ The adaptation communications referred to in paragraph 10 of this Article shall be recorded in a public registry maintained by the secretariat.
+{k1eda8b39} ¶ Continuous and enhanced international support shall be provided to developing country Parties for the implementation of paragraphs 7, 9, 10 and 11 of this Article, in accordance with the provisions of Articles 9, 10 and 11.
+{k755e5557} ¶ The global stocktake referred to in Article 14 shall, inter alia:
+{k69fd320e} ¶ Recognize adaptation efforts of developing country Parties;
+{kf35843db} ¶ Enhance the implementation of adaptation action taking into account the adaptation communication referred to in paragraph 10 of this Article;
+{kfa5c7fef} ¶ Review the adequacy and effectiveness of adaptation and support provided for adaptation; and Review the overall progress made in achieving the global goal on adaptation referred to in paragraph 1 of this Article.
+## Article 8
+{k8fd42a53} ¶ Parties recognize the importance of averting, minimizing and addressing loss and damage associated with the adverse effects of climate change, including extreme weather events and slow onset events, and the role of sustainable development in reducing the risk of loss and damage.
+{k31e18ab9} ¶ The Warsaw International Mechanism for Loss and Damage associated with Climate Change Impacts shall be subject to the authority and guidance of the Conference of the Parties serving as the meeting of the Parties to this Agreement and may be enhanced and strengthened, as determined by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{k5e1dad51} ¶ Parties should enhance understanding, action and support, including through the Warsaw International Mechanism, as appropriate, on a cooperative and facilitative basis with respect to loss and damage associated with the adverse effects of climate change.
+{kfeed97b4} ¶ Accordingly, areas of cooperation and facilitation to enhance understanding, action and support may include:
+{kda57ff47} ¶ Early warning systems;
+{k0d290891} ¶ Emergency preparedness;
+{k9d7687a3} ¶ Slow onset events;
+{k7614fbf0} ¶ Events that may involve irreversible and permanent loss and damage;
+{ka9dfe1be} ¶ Comprehensive risk assessment and management;
+{kca506c7b} ¶ Risk insurance facilities, climate risk pooling and other insurance solutions;
+{k0ced5a74} ¶ Non-economic losses; and Resilience of communities, livelihoods and ecosystems.
+{k09f6dd4f} ¶ The Warsaw International Mechanism shall collaborate with existing bodies and expert groups under the Agreement, as well as relevant organizations and expert bodies outside the Agreement.
+## Article 9
+{kff16c67f} ¶ Developed country Parties shall provide financial resources to assist developing country Parties with respect to both mitigation and adaptation in continuation of their existing obligations under the Convention.
+{k24f36d12} ¶ Other Parties are encouraged to provide or continue to provide such support voluntarily.
+{k6ffab74b} ¶ As part of a global effort, developed country Parties should continue to take the lead in mobilizing climate finance from a wide variety of sources, instruments and channels, noting the significant role of public funds, through a variety of actions, including supporting countrydriven strategies, and taking into account the needs and priorities of developing country Parties.
+{kbc45dde2} ¶ Such mobilization of climate finance should represent a progression beyond previous efforts.
+{k503467d3} ¶ The provision of scaled-up financial resources should aim to achieve a balance between adaptation and mitigation, taking into account country-driven strategies, and the priorities and needs of developing country Parties, especially those that are particularly vulnerable to the adverse effects of climate change and have significant capacity constraints, such as the least developed countries and small island developing States, considering the need for public and grant-based resources for adaptation.
+{k57e631ae} ¶ Developed country Parties shall biennially communicate indicative quantitative and qualitative information related to paragraphs 1 and 3 of this Article, as applicable, including, as available, projected levels of public financial resources to be provided to developing country Parties. Other Parties providing resources are encouraged to communicate biennially such information on a voluntary basis.
+{k960f3a2c} ¶ The global stocktake referred to in Article 14 shall take into account the relevant information provided by developed country Parties and/or Agreement bodies on efforts related to climate finance.
+{ke5f774b7} ¶ Developed country Parties shall provide transparent and consistent information on support for developing country Parties provided and mobilized through public interventions biennially in accordance with the modalities, procedures and guidelines to be adopted by the Conference of the Parties serving as the meeting of the Parties to this Agreement, at its first session, as stipulated in Article 13, paragraph 13. Other Parties are encouraged to do so.
+{k59e02883} ¶ The Financial Mechanism of the Convention, including its operating entities, shall serve as the financial mechanism of this Agreement.
+{kdf8114c1} ¶ The institutions serving this Agreement, including the operating entities of the Financial Mechanism of the Convention, shall aim to ensure efficient access to financial resources through simplified approval procedures and enhanced readiness support for developing country Parties, in particular for the least developed countries and small island developing States, in the context of their national climate strategies and plans.
+## Article 10
+{k2b45133e} ¶ Parties share a long-term vision on the importance of fully realizing technology development and transfer in order to improve resilience to climate change and to reduce greenhouse gas emissions.
+{kda28c50f} ¶ Parties, noting the importance of technology for the implementation of mitigation and adaptation actions under this Agreement and recognizing existing technology deployment and dissemination efforts, shall strengthen cooperative action on technology development and transfer.
+{kae454a6d} ¶ The Technology Mechanism established under the Convention shall serve this Agreement.
+{k527e7c01} ¶ A technology framework is hereby established to provide overarching guidance to the work of the Technology Mechanism in promoting and facilitating enhanced action on technology development and transfer in order to support the implementation of this Agreement, in pursuit of the long-term vision referred to in paragraph 1 of this Article.
+{k2b68a4f7} ¶ Accelerating, encouraging and enabling innovation is critical for an effective, long- term global response to climate change and promoting economic growth and sustainable development. Such effort shall be, as appropriate, supported, including by the Technology Mechanism and, through financial means, by the Financial Mechanism of the Convention, for collaborative approaches to research and development, and facilitating access to technology, in particular for early stages of the technology cycle, to developing country Parties.
+{k634a66d0} ¶ Support, including financial support, shall be provided to developing country Parties for the implementation of this Article, including for strengthening cooperative action on technology development and transfer at different stages of the technology cycle, with a view to achieving a balance between support for mitigation and adaptation. The global stocktake referred to in Article 14 shall take into account available information on efforts related to support on technology development and transfer for developing country Parties.
+## Article 11
+{k4fbfbebe} ¶ Capacity-building under this Agreement should enhance the capacity and ability of developing country Parties, in particular countries with the least capacity, such as the least developed countries, and those that are particularly vulnerable to the adverse effects of climate change, such as small island developing States, to take effective climate change action, including, inter alia, to implement adaptation and mitigation actions, and should facilitate technology development, dissemination and deployment, access to climate finance, relevant aspects of education, training and public awareness, and the transparent, timely and accurate communication of information.
+{kd0e0af29} ¶ Capacity-building should be country-driven, based on and responsive to national needs, and foster country ownership of Parties, in particular, for developing country Parties, including at the national, subnational and local levels. Capacity-building should be guided by lessons learned, including those from capacity-building activities under the Convention, and should be an effective, iterative process that is participatory, cross-cutting and gender-responsive.
+{k10bc6d40} ¶ All Parties should cooperate to enhance the capacity of developing country Parties to implement this Agreement. Developed country Parties should enhance support for capacity- building actions in developing country Parties.
+{k675b671b} ¶ All Parties enhancing the capacity of developing country Parties to implement this Agreement, including through regional, bilateral and multilateral approaches, shall regularly communicate on these actions or measures on capacity-building. Developing country Parties should regularly communicate progress made on implementing capacity-building plans, policies, actions or measures to implement this Agreement.
+{kc2afb94d} ¶ Capacity-building activities shall be enhanced through appropriate institutional arrangements to support the implementation of this Agreement, including the appropriate institutional arrangements established under the Convention that serve this Agreement. The Conference of the Parties serving as the meeting of the Parties to this Agreement shall, at its first session, consider and adopt a decision on the initial institutional arrangements for capacity- building.
+## Article 12
+{k0bbae943} ¶ Parties shall cooperate in taking measures, as appropriate, to enhance climate change education, training, public awareness, public participation and public access to information, recognizing the importance of these steps with respect to enhancing actions under this Agreement.
+## Article 13
+{k190a8489} ¶ In order to build mutual trust and confidence and to promote effective implementation, an enhanced transparency framework for action and support, with built-in flexibility which takes into account Parties’ different capacities and builds upon collective experience is hereby established.
+{kb4cb577e} ¶ The transparency framework shall provide flexibility in the implementation of the provisions of this Article to those developing country Parties that need it in the light of their capacities. The modalities, procedures and guidelines referred to in paragraph 13 of this Article shall reflect such flexibility.
+{k307179ca} ¶ The transparency framework shall build on and enhance the transparency arrangements under the Convention, recognizing the special circumstances of the least developed countries and small island developing States, and be implemented in a facilitative, non-intrusive, non-punitive manner, respectful of national sovereignty, and avoid placing undue burden on Parties.
+{ke9a14a21} ¶ The transparency arrangements under the Convention, including national communications, biennial reports and biennial update reports, international assessment and review and international consultation and analysis, shall form part of the experience drawn upon for the development of the modalities, procedures and guidelines under paragraph 13 of this Article.
+{k0f7a1b2d} ¶ The purpose of the framework for transparency of action is to provide a clear understanding of climate change action in the light of the objective of the Convention as set out in its Article 2, including clarity and tracking of progress towards achieving Parties’ individual nationally determined contributions under Article 4, and Parties’ adaptation actions under Article 7, including good practices, priorities, needs and gaps, to inform the global stocktake under Article 14.
+{kba64a87b} ¶ The purpose of the framework for transparency of support is to provide clarity on support provided and received by relevant individual Parties in the context of climate change actions under Articles 4, 7, 9, 10 and 11, and, to the extent possible, to provide a full overview of aggregate financial support provided, to inform the global stocktake under Article 14.
+{kf828f894} ¶ Each Party shall regularly provide the following information:
+{k253d1d1b} ¶ A national inventory report of anthropogenic emissions by sources and removals by sinks of greenhouse gases, prepared using good practice methodologies accepted by the Intergovernmental Panel on Climate Change and agreed upon by the Conference of the Parties serving as the meeting of the Parties to this Agreement; and Information necessary to track progress made in implementing and achieving its nationally determined contribution under Article 4.
+{k931f7c31} ¶ Each Party should also provide information related to climate change impacts and adaptation under Article 7, as appropriate.
+{k473a7694} ¶ Developed country Parties shall, and other Parties that provide support should, provide information on financial, technology transfer and capacity-building support provided to developing country Parties under Articles 9, 10 and 11.
+{kbe575af0} ¶ Developing country Parties should provide information on financial, technology transfer and capacity-building support needed and received under Articles 9, 10 and 11.
+{kc8ef8d80} ¶ Information submitted by each Party under paragraphs 7 and 9 of this Article shall undergo a technical expert review, in accordance with decision 1/CP.21. For those developing country Parties that need it in the light of their capacities, the review process shall include assistance in identifying capacity-building needs. In addition, each Party shall participate in a facilitative, multilateral consideration of progress with respect to efforts under Article 9, and its respective implementation and achievement of its nationally determined contribution.
+{kfa0faa66} ¶ The technical expert review under this paragraph shall consist of a consideration of the Party’s support provided, as relevant, and its implementation and achievement of its nationally determined contribution. The review shall also identify areas of improvement for the Party, and include a review of the consistency of the information with the modalities, procedures and guidelines referred to in paragraph 13 of this Article, taking into account the flexibility accorded to the Party under paragraph 2 of this Article. The review shall pay particular attention to the respective national capabilities and circumstances of developing country Parties.
+{ke937cabb} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement shall, at its first session, building on experience from the arrangements related to transparency under the Convention, and elaborating on the provisions in this Article, adopt common modalities, procedures and guidelines, as appropriate, for the transparency of action and support.
+{kb21217fa} ¶ Support shall be provided to developing countries for the implementation of this Article.
+{kf0c8cdae} ¶ Support shall also be provided for the building of transparency-related capacity of developing country Parties on a continuous basis.
+## Article 14
+{k06bcd176} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement shall periodically take stock of the implementation of this Agreement to assess the collective progress towards achieving the purpose of this Agreement and its long-term goals (referred to as the “global stocktake”). It shall do so in a comprehensive and facilitative manner, considering mitigation, adaptation and the means of implementation and support, and in the light of equity and the best available science.
+{kfa976562} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement shall undertake its first global stocktake in 2023 and every five years thereafter unless otherwise decided by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{k90cd090d} ¶ The outcome of the global stocktake shall inform Parties in updating and enhancing, in a nationally determined manner, their actions and support in accordance with the relevant provisions of this Agreement, as well as in enhancing international cooperation for climate action.
+## Article 15
+{k13512e3d} ¶ A mechanism to facilitate implementation of and promote compliance with the provisions of this Agreement is hereby established.
+{k9f902fac} ¶ The mechanism referred to in paragraph 1 of this Article shall consist of a committee that shall be expert-based and facilitative in nature and function in a manner that is transparent, non-adversarial and non-punitive. The committee shall pay particular attention to the respective national capabilities and circumstances of Parties.
+{k188f7049} ¶ The committee shall operate under the modalities and procedures adopted by the Conference of the Parties serving as the meeting of the Parties to this Agreement at its first session and report annually to the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+## Article 16
+{kc0718a76} ¶ The Conference of the Parties, the supreme body of the Convention, shall serve as the meeting of the Parties to this Agreement.
+{k6862a6db} ¶ Parties to the Convention that are not Parties to this Agreement may participate as observers in the proceedings of any session of the Conference of the Parties serving as the meeting of the Parties to this Agreement. When the Conference of the Parties serves as the meeting of the Parties to this Agreement, decisions under this Agreement shall be taken only by those that are Parties to this Agreement.
+{k2a11c837} ¶ When the Conference of the Parties serves as the meeting of the Parties to this Agreement, any member of the Bureau of the Conference of the Parties representing a Party to the Convention but, at that time, not a Party to this Agreement, shall be replaced by an additional member to be elected by and from amongst the Parties to this Agreement.
+{kc89d6d7d} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement shall keep under regular review the implementation of this Agreement and shall make, within its mandate, the decisions necessary to promote its effective implementation. It shall perform the functions assigned to it by this Agreement and shall:
+{k995a7666} ¶ Establish such subsidiary bodies as deemed necessary for the implementation of this Agreement; and Exercise such other functions as may be required for the implementation of this Agreement.
+{k7b9ab5c9} ¶ The rules of procedure of the Conference of the Parties and the financial procedures applied under the Convention shall be applied mutatis mutandis under this Agreement, except as may be otherwise decided by consensus by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{k5025e239} ¶ The first session of the Conference of the Parties serving as the meeting of the Parties to this Agreement shall be convened by the secretariat in conjunction with the first session of the Conference of the Parties that is scheduled after the date of entry into force of this Agreement. Subsequent ordinary sessions of the Conference of the Parties serving as the meeting of the Parties to this Agreement shall be held in conjunction with ordinary sessions of the Conference of the Parties, unless otherwise decided by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+{kcc4e8bd4} ¶ Extraordinary sessions of the Conference of the Parties serving as the meeting of the Parties to this Agreement shall be held at such other times as may be deemed necessary by the Conference of the Parties serving as the meeting of the Parties to this Agreement or at the written request of any Party, provided that, within six months of the request being communicated to the Parties by the secretariat, it is supported by at least one third of the Parties.
+{k4eed86c6} ¶ The United Nations and its specialized agencies and the International Atomic Energy Agency, as well as any State member thereof or observers thereto not party to the Convention, may be represented at sessions of the Conference of the Parties serving as the meeting of the Parties to this Agreement as observers. Any body or agency, whether national or international, governmental or non-governmental, which is qualified in matters covered by this Agreement and which has informed the secretariat of its wish to be represented at a session of the Conference of the Parties serving as the meeting of the Parties to this Agreement as an observer, may be so admitted unless at least one third of the Parties present object. The admission and participation of observers shall be subject to the rules of procedure referred to in paragraph 5 of this Article.
+## Article 17
+{k6f81d0a0} ¶ The secretariat established by Article 8 of the Convention shall serve as the secretariat of this Agreement.
+{k5fb0fffb} ¶ Article 8, paragraph 2, of the Convention on the functions of the secretariat, and Article 8, paragraph 3, of the Convention, on the arrangements made for the functioning of the secretariat, shall apply mutatis mutandis to this Agreement. The secretariat shall, in addition, exercise the functions assigned to it under this Agreement and by the Conference of the Parties serving as the meeting of the Parties to this Agreement.
+## Article 18
+{k866753b4} ¶ The Subsidiary Body for Scientific and Technological Advice and the Subsidiary Body for Implementation established by Articles 9 and 10 of the Convention shall serve, respectively, as the Subsidiary Body for Scientific and Technological Advice and the Subsidiary Body for Implementation of this Agreement. The provisions of the Convention relating to the functioning of these two bodies shall apply mutatis mutandis to this Agreement. Sessions of the meetings of the Subsidiary Body for Scientific and Technological Advice and the Subsidiary Body for Implementation of this Agreement shall be held in conjunction with the meetings of, respectively, the Subsidiary Body for Scientific and Technological Advice and the Subsidiary Body for Implementation of the Convention.
+{ka8221d00} ¶ Parties to the Convention that are not Parties to this Agreement may participate as observers in the proceedings of any session of the subsidiary bodies. When the subsidiary bodies serve as the subsidiary bodies of this Agreement, decisions under this Agreement shall be taken only by those that are Parties to this Agreement.
+{k03de214e} ¶ When the subsidiary bodies established by Articles 9 and 10 of the Convention exercise their functions with regard to matters concerning this Agreement, any member of the bureaux of those subsidiary bodies representing a Party to the Convention but, at that time, not a Party to this Agreement, shall be replaced by an additional member to be elected by and from amongst the Parties to this Agreement.
+## Article 19
+{kf930bbe9} ¶ Subsidiary bodies or other institutional arrangements established by or under the Convention, other than those referred to in this Agreement, shall serve this Agreement upon a decision of the Conference of the Parties serving as the meeting of the Parties to this Agreement. The Conference of the Parties serving as the meeting of the Parties to this Agreement shall specify the functions to be exercised by such subsidiary bodies or arrangements.
+{k84508a85} ¶ The Conference of the Parties serving as the meeting of the Parties to this Agreement may provide further guidance to such subsidiary bodies and institutional arrangements.
+## Article 20
+{kb45cb9fd} ¶ This Agreement shall be open for signature and subject to ratification, acceptance or approval by States and regional economic integration organizations that are Parties to the Convention. It shall be open for signature at the United Nations Headquarters in New York from 22 April 2016 to 21 April 2017. Thereafter, this Agreement shall be open for accession from the day following the date on which it is closed for signature. Instruments of ratification, acceptance, approval or accession shall be deposited with the Depositary.
+{k42fa8763} ¶ Any regional economic integration organization that becomes a Party to this Agreement without any of its member States being a Party shall be bound by all the obligations under this Agreement. In the case of regional economic integration organizations with one or more member States that are Parties to this Agreement, the organization and its member States shall decide on their respective responsibilities for the performance of their obligations under this Agreement. In such cases, the organization and the member States shall not be entitled to exercise rights under this Agreement concurrently.
+{ka154cd45} ¶ In their instruments of ratification, acceptance, approval or accession, regional economic integration organizations shall declare the extent of their competence with respect to the matters governed by this Agreement. These organizations shall also inform the Depositary, who shall in turn inform the Parties, of any substantial modification in the extent of their competence.
+## Article 21
+{k1007e35d} ¶ This Agreement shall enter into force on the thirtieth day after the date on which at least 55 Parties to the Convention accounting in total for at least an estimated 55 per cent of the total global greenhouse gas emissions have deposited their instruments of ratification, acceptance, approval or accession.
+{k04588e2b} ¶ Solely for the limited purpose of paragraph 1 of this Article, “total global greenhouse gas emissions” means the most up-to-date amount communicated on or before the date of adoption of this Agreement by the Parties to the Convention.
+{k4534acc7} ¶ For each State or regional economic integration organization that ratifies, accepts or approves this Agreement or accedes thereto after the conditions set out in paragraph 1 of this Article for entry into force have been fulfilled, this Agreement shall enter into force on the thirtieth day after the date of deposit by such State or regional economic integration organization of its instrument of ratification, acceptance, approval or accession.
+{ke54de5c2} ¶ For the purposes of paragraph 1 of this Article, any instrument deposited by a regional economic integration organization shall not be counted as additional to those deposited by its member States.
+## Article 22
+{k98a79426} ¶ The provisions of Article 15 of the Convention on the adoption of amendments to the Convention shall apply mutatis mutandis to this Agreement.
+## Article 23
+{k6981940d} ¶ The provisions of Article 16 of the Convention on the adoption and amendment of annexes to the Convention shall apply mutatis mutandis to this Agreement.
+{k5e47b25c} ¶ Annexes to this Agreement shall form an integral part thereof and, unless otherwise expressly provided for, a reference to this Agreement constitutes at the same time a reference to any annexes thereto. Such annexes shall be restricted to lists, forms and any other material of a descriptive nature that is of a scientific, technical, procedural or administrative character.
+## Article 24
+{k285fd6f3} ¶ The provisions of Article 14 of the Convention on settlement of disputes shall apply mutatis mutandis to this Agreement.
+## Article 25
+{ke148872b} ¶ Each Party shall have one vote, except as provided for in paragraph 2 of this Article.
+{k37cc77fb} ¶ Regional economic integration organizations, in matters within their competence, shall exercise their right to vote with a number of votes equal to the number of their member States that are Parties to this Agreement. Such an organization shall not exercise its right to vote if any of its member States exercises its right, and vice versa.
+## Article 26
+{ke9de4d6a} ¶ The Secretary-General of the United Nations shall be the Depositary of this Agreement.
+## Article 27
+{keadacbbf} ¶ No reservations may be made to this Agreement.
+## Article 28
+{k2ebb412a} ¶ At any time after three years from the date on which this Agreement has entered into force for a Party, that Party may withdraw from this Agreement by giving written notification to the Depositary.
+{ka9a317af} ¶ Any such withdrawal shall take effect upon expiry of one year from the date of receipt by the Depositary of the notification of withdrawal, or on such later date as may be specified in the notification of withdrawal.
+{kb5a1d6a6} ¶ Any Party that withdraws from the Convention shall be considered as also having withdrawn from this Agreement.
+## Article 29
+{k6a247c0a} ¶ The original of this Agreement, of which the Arabic, Chinese, English, French, Russian and Spanish texts are equally authentic, shall be deposited with the Secretary-General of the United Nations.
+{kd73fb2d8} ¶ DONE at Paris this twelfth day of December two thousand and fifteen.
+{k458fa063} ¶ IN WITNESS WHEREOF, the undersigned, being duly authorized to that effect, have signed this Agreement.
+## Decision 1/CP.21
+{k3a486671} ¶ ADOPTION OF THE PARIS AGREEMENT The Conference of the Parties,
+{k77b70b9e} ¶ Recalling decision 1/CP.17 on the establishment of the Ad Hoc Working Group on the Durban Platform for Enhanced Action,
+{k73fbb9e1} ¶ Also recalling Articles 2, 3 and 4 of the Convention,
+{k4e2a53a7} ¶ Further recalling relevant decisions of the Conference of the Parties, including decisions 1/ CP.16, 2/CP.18, 1/CP.19 and 1/CP.20,
+{kdbdcb144} ¶ Welcoming the adoption of United Nations General Assembly resolution A/RES/70/1, “Transforming our world: the 2030 Agenda for Sustainable Development”, in particular its goal 13, and the adoption of the Addis Ababa Action Agenda of the third International Conference on Financing for Development and the adoption of the Sendai Framework for Disaster Risk Reduction,
+{k0ce7f377} ¶ Recognizing that climate change represents an urgent and potentially irreversible threat to human societies and the planet and thus requires the widest possible cooperation by all countries, and their participation in an effective and appropriate international response, with a view to accelerating the reduction of global greenhouse gas emissions,
+{k78fa1a87} ¶ Also recognizing that deep reductions in global emissions will be required in order to achieve the ultimate objective of the Convention and emphasizing the need for urgency in addressing climate change,
+{k58cbddb9-2} ¶ Acknowledging that climate change is a common concern of humankind, Parties should, when taking action to address climate change, respect, promote and consider their respective obligations on human rights, the right to health, the rights of indigenous peoples, local communities, migrants, children, persons with disabilities and people in vulnerable situations and the right to development, as well as gender equality, empowerment of women and intergenerational equity,
+{kd9d66e2a} ¶ Also acknowledging the specific needs and concerns of developing country Parties arising from the impact of the implementation of response measures and, in this regard, decisions 5/ CP.7, 1/CP.10, 1/CP.16 and 8/CP.17,
+{k690b0e8c} ¶ Emphasizing with serious concern the urgent need to address the significant gap between the aggregate effect of Parties’ mitigation pledges in terms of global annual emissions of greenhouse gases by 2020 and aggregate emission pathways consistent with holding the increase in the global average temperature to well below 2 °C above pre-industrial levels and pursuing efforts to limit the temperature increase to 1.5 °C above pre-industrial levels,
+{k0a3c5706} ¶ Also emphasizing that enhanced pre-2020 ambition can lay a solid foundation for enhanced post-2020 ambition,
+{kc4c91b0b} ¶ Stressing the urgency of accelerating the implementation of the Convention and its Kyoto Protocol in order to enhance pre-2020 ambition,
+{k8a183665} ¶ Recognizing the urgent need to enhance the provision of finance, technology and capacity- building support by developed country Parties, in a predictable manner, to enable enhanced pre-2020 action by developing country Parties,
+{k5e9ccddc} ¶ Emphasizing the enduring benefits of ambitious and early action, including major reductions in the cost of future mitigation and adaptation efforts,
+{k55b84b56} ¶ Acknowledging the need to promote universal access to sustainable energy in developing countries, in particular in Africa, through the enhanced deployment of renewable energy,
+{k5ce24bd8} ¶ Agreeing to uphold and promote regional and international cooperation in order to mobilize stronger and more ambitious climate action by all Parties and non-Party stakeholders, including civil society, the private sector, financial institutions, cities and other subnational authorities, local communities and indigenous peoples,
+## ADOPTION
+{k0148ef93} ¶ Decides to adopt the Paris Agreement under the United Nations Framework Convention on Climate Change (hereinafter referred to as “the Agreement”) as contained in the annex;
+{k2b5fca98} ¶ Requests the Secretary-General of the United Nations to be the Depositary of the Agreement and to have it open for signature in New York, United States of America, from 22 April 2016 to 21 April 2017;
+{k3968d545} ¶ Invites the Secretary-General to convene a high-level signature ceremony for the Agreement on 22 April 2016;
+{k36fbea18} ¶ Also invites all Parties to the Convention to sign the Agreement at the ceremony to be convened by the Secretary-General, or at their earliest opportunity, and to deposit their respective instruments of ratification, acceptance, approval or accession, where appropriate, as soon as possible;
+{k7eff5676} ¶ Recognizes that Parties to the Convention may provisionally apply all of the provisions of the Agreement pending its entry into force, and requests Parties to provide notification of any such provisional application to the Depositary;
+{ka65b72ad} ¶ Notes that the work of the Ad Hoc Working Group on the Durban Platform for Enhanced Action, in accordance with decision 1/CP.17, paragraph 4, has been completed;
+{k7e67be2e} ¶ Decides to establish the Ad Hoc Working Group on the Paris Agreement under the same arrangement, mutatis mutandis, as those concerning the election of officers to the Bureau of the Ad Hoc Working Group on the Durban Platform for Enhanced Action;1 Also decides that the Ad Hoc Working Group on the Paris Agreement shall prepare for the entry into force of the Agreement and for the convening of the first session of the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement;
+{k1224fe8b} ¶ Further decides to oversee the implementation of the work programme resulting from the relevant requests contained in this decision;
+{k1352e780} ¶ Requests the Ad Hoc Working Group on the Paris Agreement to report regularly to the Conference of the Parties on the progress of its work and to complete its work by the first 1 Endorsed by decision 2/CP.18, paragraph 2.
+{k301bf42b} ¶ session of the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement;
+{k7a3101c9} ¶ Decides that the Ad Hoc Working Group on the Paris Agreement shall hold its sessions starting in 2016 in conjunction with the sessions of the Convention subsidiary bodies and shall prepare draft decisions to be recommended through the Conference of the Parties to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement for consideration and adoption at its first session;
+## INTENDED NATIONALLY DETERMINED CONTRIBUTIONS
+{k1d98868d} ¶ Welcomes the intended nationally determined contributions that have been communicated by Parties in accordance with decision 1/CP.19, paragraph 2(b);
+{ka86e8e41} ¶ Reiterates its invitation to all Parties that have not yet done so to communicate to the secretariat their intended nationally determined contributions towards achieving the objective of the Convention as set out in its Article 2 as soon as possible and well in advance of the twenty-second session of the Conference of the Parties (November 2016) and in a manner that facilitates the clarity, transparency and understanding of the intended nationally determined contributions;
+{k76927b02} ¶ Requests the secretariat to continue to publish the intended nationally determined contributions communicated by Parties on the UNFCCC website;
+{kb86ab032} ¶ Reiterates its call to developed country Parties, the operating entities of the Financial Mechanism and any other organizations in a position to do so to provide support for the preparation and communication of the intended nationally determined contributions of Parties that may need such support;
+{k860db4ca} ¶ Takes note of the synthesis report on the aggregate effect of intended nationally determined contributions communicated by Parties by 1 October 2015, contained in document FCCC/ CP/2015/7;
+{kac5e3dc5} ¶ Notes with concern that the estimated aggregate greenhouse gas emission levels in 2025 and 2030 resulting from the intended nationally determined contributions do not fall within least- cost 2 ˚C scenarios but rather lead to a projected level of 55 gigatonnes in 2030, and also notes that much greater emission reduction efforts will be required than those associated with the intended nationally determined contributions in order to hold the increase in the global average temperature to below 2 ˚C above pre-industrial levels by reducing emissions to 40 gigatonnes or to 1.5 ˚C above pre-industrial levels by reducing to a level to be identified in the special report referred to in paragraph 21 below;
+{k66299988} ¶ Further notes, in this context, the adaptation needs expressed by many developing country Parties in their intended nationally determined contributions;
+{ka0c59a14} ¶ Requests the secretariat to update the synthesis report referred to in paragraph 16 above so as to cover all the information in the intended nationally determined contributions communicated by Parties pursuant to decision 1/CP.20 by 4 April 2016 and to make it available by 2 May 2016;
+{k2ded37c4} ¶ Decides to convene a facilitative dialogue among Parties in 2018 to take stock of the collective efforts of Parties in relation to progress towards the long-term goal referred to in Article 4, paragraph 1, of the Agreement and to inform the preparation of nationally determined contributions pursuant to Article 4, paragraph 8, of the Agreement;
+{k0cc1868c} ¶ Invites the Intergovernmental Panel on Climate Change to provide a special report in 2018 on the impacts of global warming of 1.5 °C above pre-industrial levels and related global greenhouse gas emission pathways;
+## DECISIONS TO GIVE EFFECT TO THE AGREEMENT
+## Mitigation
+{k712330ad} ¶ Also invites Parties to communicate their first nationally determined contribution no later than when the Party submits its respective instrument of ratification, acceptance, approval or accession of the Paris Agreement; if a Party has communicated an intended nationally determined contribution prior to joining the Agreement, that Party shall be considered to have satisfied this provision unless that Party decides otherwise;
+{k56d7b1d4} ¶ Requests those Parties whose intended nationally determined contribution pursuant to decision 1/CP.20 contains a time frame up to 2025 to communicate by 2020 a new nationally determined contribution and to do so every five years thereafter pursuant to Article 4, paragraph 9, of the Agreement;
+{kb53f6c77} ¶ Also requests those Parties whose intended nationally determined contribution pursuant to decision 1/CP.20 contains a time frame up to 2030 to communicate or update by 2020 these contributions and to do so every five years thereafter pursuant to Article 4, paragraph 9, of the Agreement;
+{k14fc64a5} ¶ Decides that Parties shall submit to the secretariat their nationally determined contributions referred to in Article 4 of the Agreement at least 9 to 12 months in advance of the relevant session of the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement with a view to facilitating the clarity, transparency and understanding of these contributions, including through a synthesis report prepared by the secretariat;
+{k6660e7d6} ¶ Requests the Ad Hoc Working Group on the Paris Agreement to develop further guidance on features of the nationally determined contributions for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{kdbcfa6ab} ¶ Agrees that the information to be provided by Parties communicating their nationally determined contributions, in order to facilitate clarity, transparency and understanding, may include, as appropriate, inter alia, quantifiable information on the reference point (including, as appropriate, a base year), time frames and/or periods for implementation, scope and coverage, planning processes, assumptions and methodological approaches including those for estimating and accounting for anthropogenic greenhouse gas emissions and, as appropriate, removals, and how the Party considers that its nationally determined contribution is fair and ambitious, in the light of its national circumstances, and how it contributes towards achieving the objective of the Convention as set out in its Article 2;
+{kd4fafd63} ¶ Requests the Ad Hoc Working Group on the Paris Agreement to develop further guidance for the information to be provided by Parties in order to facilitate clarity, transparency and understanding of nationally determined contributions for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{k11649332} ¶ Also requests the Subsidiary Body for Implementation to develop modalities and procedures for the operation and use of the public registry referred to in Article 4, paragraph 12, of the Agreement, for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{kfac33e76} ¶ Further requests the secretariat to make available an interim public registry in the first half of 2016 for the recording of nationally determined contributions submitted in accordance with Article 4 of the Agreement, pending the adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement of the modalities and procedures referred to in paragraph 29 above;
+{kc70bc85a} ¶ Requests the Ad Hoc Working Group on the Paris Agreement to elaborate, drawing from approaches established under the Convention and its related legal instruments as appropriate, guidance for accounting for Parties’ nationally determined contributions, as referred to in Article 4, paragraph 13, of the Agreement, for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session, which ensures that:
+{kb0faadee} ¶ Parties account for anthropogenic emissions and removals in accordance with methodologies and common metrics assessed by the Intergovernmental Panel on Climate Change and adopted by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement;
+{k30866fb3} ¶ Parties ensure methodological consistency, including on baselines, between the communication and implementation of nationally determined contributions;
+{kd7e8f4fc} ¶ Parties strive to include all categories of anthropogenic emissions or removals in their nationally determined contributions and, once a source, sink or activity is included, continue to include it;
+{ka019ab35} ¶ Parties shall provide an explanation of why any categories of anthropogenic emissions or removals are excluded;
+{kcdb79632} ¶ Decides that Parties shall apply the guidance referred to in paragraph 31 above to the second and subsequent nationally determined contributions and that Parties may elect to apply such guidance to their first nationally determined contribution;
+{k0612bba1} ¶ Also decides that the forum on the impact of the implementation of response measures, under the subsidiary bodies, shall continue, and shall serve the Agreement;
+{k0df96fb9} ¶ Further decides that the Subsidiary Body for Scientific and Technological Advice and the Subsidiary Body for Implementation shall recommend, for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session, the modalities, work programme and functions of the forum on the impact of the implementation of response measures to address the effects of the implementation of response measures under the Agreement by enhancing cooperation amongst Parties on understanding the impacts of mitigation actions under the Agreement and the exchange of information, experiences, and best practices amongst Parties to raise their resilience to these impacts;
+{k0785dd60} ¶ Invites Parties to communicate, by 2020, to the secretariat mid-century, long-term low greenhouse gas emission development strategies in accordance with Article 4, paragraph 19, of the Agreement, and requests the secretariat to publish on the UNFCCC website Parties’ low greenhouse gas emission development strategies as communicated;
+{k33596cdb} ¶ Requests the Subsidiary Body for Scientific and Technological Advice to develop and recommend the guidance referred to under Article 6, paragraph 2, of the Agreement for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session, including guidance to ensure that double counting is avoided on the basis of a corresponding adjustment by Parties for both anthropogenic emissions by sources and removals by sinks covered by their nationally determined contributions under the Agreement;
+{k52606ccc} ¶ Recommends that the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement adopt rules, modalities and procedures for the mechanism established by Article 6, paragraph 4, of the Agreement on the basis of:
+{kb738e4dd} ¶ Voluntary participation authorized by each Party involved;
+{k2be23164} ¶ Real, measurable, and long-term benefits related to the mitigation of climate change;
+{k04a694ed} ¶ Specific scopes of activities;
+{k2a05a017} ¶ Reductions in emissions that are additional to any that would otherwise occur;
+{kb9ef7815} ¶ Verification and certification of emission reductions resulting from mitigation activities by designated operational entities;
+{k1e4fe688} ¶ Experience gained with and lessons learned from existing mechanisms and approaches adopted under the Convention and its related legal instruments;
+{k99a81b77} ¶ Requests the Subsidiary Body for Scientific and Technological Advice to develop and recommend rules, modalities and procedures for the mechanism referred to in paragraph 37 above for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{k94daf624} ¶ Also requests the Subsidiary Body for Scientific and Technological Advice to undertakeawork programme under the framework for non-market approaches to sustainable development referred to in Article 6, paragraph 8, of the Agreement, with the objective of consideringhowtoenhancelinkages and create synergy between, inter alia, mitigation, adaptation, finance, technology transfer and capacity- building, and how to facilitate the implementation and coordination of non-market approaches;
+{kae6980c6} ¶ Further requests the Subsidiary Body for Scientific and Technological Advice to recommend a draft decision on the work programme referred to in paragraph 39 above, taking into account the views of Parties, for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+## Adaptation
+{k0799616a} ¶ Requests the Adaptation Committee and the Least Developed Countries Expert Group to jointly develop modalities to recognize the adaptation efforts of developing country Parties, as referred to in Article 7, paragraph 3, of the Agreement, and make recommendations for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{kde0ba7c8} ¶ Also requests the Adaptation Committee, taking into account its mandate and its second three-year workplan, and with a view to preparing recommendations for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session:
+{kf4b02c88} ¶ To review, in 2017, the work of adaptation-related institutional arrangements under the Convention, with a view to identifying ways to enhance the coherence of their work, as appropriate, in order to respond adequately to the needs of Parties;
+{k7bc6dffa} ¶ To consider methodologies for assessing adaptation needs with a view to assisting developing country Parties, without placing an undue burden on them;
+{k0c97035e} ¶ Invites all relevant United Nations agencies and international, regional and national financial institutions to provide information to Parties through the secretariat on how their development assistance and climate finance programmes incorporate climate-proofing and climate resilience measures;
+{k1a03cda8} ¶ Requests Parties to strengthen regional cooperation on adaptation where appropriate and, where necessary, establish regional centres and networks, in particular in developing countries, taking into account decision 1/CP.16, paragraph 30;
+{kc9e74163} ¶ Also requests the Adaptation Committee and the Least Developed Countries Expert Group, in collaboration with the Standing Committee on Finance and other relevant institutions, to develop methodologies, and make recommendations for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session on:
+{k673fcb3f} ¶ Taking the necessary steps to facilitate the mobilization of support for adaptation in developing countries in the context of the limit to global average temperature increase referred to in Article 2 of the Agreement;
+{kdcb6217e} ¶ Reviewing the adequacy and effectiveness of adaptation and support referred to in Article 7, paragraph 14(c), of the Agreement;
+{k603a15cf} ¶ Further requests the Green Climate Fund to expedite support for the least developed countries and other developing country Parties for the formulation of national adaptation plans, consistent with decisions 1/CP.16 and 5/CP.17, and for the subsequent implementation of policies, projects and programmes identified by them;
+## Loss and damage
+{k83e0b16d} ¶ Decides on the continuation of the Warsaw International Mechanism for Loss and Damage associated with Climate Change Impacts, following the review in 2016;
+{k44575713} ¶ Requests the Executive Committee of the Warsaw International Mechanism to establish a clearing house for risk transfer that serves as a repository for information on insurance and risk transfer, in order to facilitate the efforts of Parties to develop and implement comprehensive risk management strategies;
+{kb43a8bf1} ¶ Also requests the Executive Committee of the Warsaw International Mechanism to establish, according to its procedures and mandate, a task force to complement, draw upon the work of and involve, as appropriate, existing bodies and expert groups under the Convention including the Adaptation Committee and the Least Developed Countries Expert Group, as well as relevant organizations and expert bodies outside the Convention, to develop recommendations for integrated approaches to avert, minimize and address displacement related to the adverse impacts of climate change;
+{kc1a5f63a} ¶ Further requests the Executive Committee of the Warsaw International Mechanism to initiate its work, at its next meeting, to operationalize the provisions referred to in paragraphs 48 and 49 above, and to report on progress thereon in its annual report;
+{k77549a0a} ¶ Agrees that Article 8 of the Agreement does not involve or provide a basis for any liability or compensation;
+## Finance
+{ke7be2a9f} ¶ Decides that, in the implementation of the Agreement, financial resources provided to developing country Parties should enhance the implementation of their policies, strategies, regulations and action plans and their climate change actions with respect to both mitigation and adaptation to contribute to the achievement of the purpose of the Agreement as defined in its Article 2;
+{kaa56c834} ¶ Also decides that, in accordance with Article 9, paragraph 3, of the Agreement, developed countries intend to continue their existing collective mobilization goal through 2025 in the context of meaningful mitigation actions and transparency on implementation; prior to 2025 the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement shall set a new collective quantified goal from a floor of USD 100 billion per year, taking into account the needs and priorities of developing countries;
+{k8f1c8d48} ¶ Recognizes the importance of adequate and predictable financial resources, including for results-based payments, as appropriate, for the implementation of policy approaches and positive incentives for reducing emissions from deforestation and forest degradation, and the role of conservation, sustainable management of forests and enhancement of forest carbon stocks; as well as alternative policy approaches, such as joint mitigation and adaptation approaches for the integral and sustainable management of forests; while reaffirming the importance of non-carbon benefits associated with such approaches; encouraging the coordination of support from, inter alia, public and private, bilateral and multilateral sources, such as the Green Climate Fund, and alternative sources in accordance with relevant decisions by the Conference of the Parties;
+{kd9ac5eff} ¶ Decides to initiate, at its twenty-second session, a process to identify the information to be provided by Parties, in accordance with Article 9, paragraph 5, of the Agreement with a view to providing a recommendation for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{kc011de28} ¶ Also decides to ensure that the provision of information in accordance with Article 9, paragraph 7, of the Agreement shall be undertaken in accordance with the modalities, procedures and guidelines referred to in paragraph 91 below;
+{keb7e7284} ¶ Requests the Subsidiary Body for Scientific and Technological Advice to develop modalities for the accounting of financial resources provided and mobilized through public interventions in accordance with Article 9, paragraph 7, of the Agreement for consideration by the Conference of the Parties at its twenty-fourth session (November 2018), with a view to making a recommendation for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{ka7d3bffd} ¶ Decides that the Green Climate Fund and the Global Environment Facility, the entities entrusted with the operation of the Financial Mechanism of the Convention, as well as the Least Developed Countries Fund and the Special Climate Change Fund, administered by the Global Environment Facility, shall serve the Agreement;
+{k4636e583} ¶ Recognizes that the Adaptation Fund may serve the Agreement, subject to relevant decisions by the Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol and the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement;
+{kdc68ba21} ¶ Invites the Conference of the Parties serving as the meeting of the Parties to the Kyoto Protocol to consider the issue referred to in paragraph 59 above and make a recommendation to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+{k750915c7} ¶ Recommends that the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement shall provide guidance to the entities entrusted with the operation of the Financial Mechanism of the Convention on the policies, programme priorities and eligibility criteria related to the Agreement for transmission by the Conference of the Parties;
+{kcc140254} ¶ Decides that the guidance to the entities entrusted with the operations of the Financial Mechanism of the Convention in relevant decisions of the Conference of the Parties, including those agreed before adoption of the Agreement, shall apply mutatis mutandis to the Agreement;
+{k8a428ed9} ¶ Also decides that the Standing Committee on Finance shall serve the Agreement in line with its functions and responsibilities established under the Conference of the Parties;
+{k7d2d8d7e} ¶ Urges the institutions serving the Agreement to enhance the coordination and delivery of resources to support country-driven strategies through simplified and efficient application and approval procedures, and through continued readiness support to developing country Parties, including the least developed countries and small island developing States, as appropriate;
+## Technology development and transfer
+{k93a5b501} ¶ Takes note of the interim report of the Technology Executive Committee on guidance on enhanced implementation of the results of technology needs assessments as contained in document FCCC/SB/2015/INF.3;
+{k1f17828e} ¶ Decides to strengthen the Technology Mechanism and requests the Technology Executive Committee and the Climate Technology Centre and Network, in supporting the implementation of the Agreement, to undertake further work relating to, inter alia:
+{k5f2e0551} ¶ Technology research, development and demonstration;
+{kf1209101} ¶ The development and enhancement of endogenous capacities and technologies;
+{kf0918b33} ¶ Requests the Subsidiary Body for Scientific and Technological Advice to initiate, at its forty- fourth session (May 2016), the elaboration of the technology framework established under Article 10, paragraph 4, of the Agreement and to report on its findings to the Conference of the Parties, with a view to the Conference of the Parties making a recommendation on the framework to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement for consideration and adoption at its first session, taking into consideration that the framework should facilitate, inter alia:
+{k85ee8411} ¶ The undertaking and updating of technology needs assessments, as well as the enhanced implementation of their results, particularly technology action plans and project ideas, through the preparation of bankable projects;
+{k794000b3} ¶ The provision of enhanced financial and technical support for the implementation of the results of the technology needs assessments;
+{kf1f4290b} ¶ The assessment of technologies that are ready for transfer;
+{kd00f02a0} ¶ The enhancement of enabling environments for and the addressing of barriers to the development and transfer of socially and environmentally sound technologies;
+{k1ecd1f4b} ¶ Decides that the Technology Executive Committee and the Climate Technology Centre and Network shall report to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement, through the subsidiary bodies, on their activities to support the implementation of the Agreement;
+{k7e337b9d} ¶ Also decides to undertake a periodic assessment of the effectiveness and adequacy of the support provided to the Technology Mechanism in supporting the implementation of the Agreement on matters relating to technology development and transfer;
+{kd9035d11} ¶ Requests the Subsidiary Body for Implementation to initiate, at its forty-fourth session, the elaboration of the scope of and modalities for the periodic assessment referred to in paragraph 69 above, taking into account the review of the Climate Technology Centre and Network as referred to in decision 2/CP.17, annex VII, paragraph 20, and the modalities for the global stocktake referred to in Article 14 of the Agreement, for consideration and adoption by the Conference of the Parties at its twenty-fifth session (November 2019);
+## Capacity-building
+{k2310c5b2} ¶ Decides to establish the Paris Committee on Capacity-building whose aim will be to address gaps and needs, both current and emerging, in implementing capacity-building in developing country Parties and further enhancing capacity-building efforts, including with regard to coherence and coordination in capacity-building activities under the Convention;
+{k463fbadf} ¶ Also decides that the Paris Committee on Capacity-building will manage and oversee the workplan referred to in paragraph 73 below;
+{k37dfcc31} ¶ Further decides to launch a workplan for the period 2016–2020 with the following activities:
+{k74336281} ¶ Assessing how to increase synergies through cooperation and avoid duplication among existing bodies established under the Convention that implement capacity-building activities, including through collaborating with institutions under and outside the Convention;
+{k6726e7d7} ¶ Identifying capacity gaps and needs and recommending ways to address them;
+{ke62614be} ¶ Promoting the development and dissemination of tools and methodologies for the implementation of capacity-building;
+{k56dcc5d8} ¶ Fostering global, regional, national and subnational cooperation;
+{k433cd531} ¶ Identifying and collecting good practices, challenges, experiences and lessons learned from work on capacity-building by bodies established under the Convention;
+{k95df1c2e} ¶ Exploring how developing country Parties can take ownership of building and maintaining capacity over time and space;
+{k535f9ebc} ¶ Identifying opportunities to strengthen capacity at the national, regional and subnational level;
+{kde5ae9f7} ¶ Fostering dialogue, coordination, collaboration and coherence among relevant processes and initiatives under the Convention, including through exchanging information on capacity-building activities and strategies of bodies established under the Convention;
+{kc9a0bc20} ¶ Providing guidance to the secretariat on the maintenance and further development of the web-based capacity-building portal;
+{k824a7a4e} ¶ Decides that the Paris Committee on Capacity-building will annually focus on an area or theme related to enhanced technical exchange on capacity-building, with the purpose of maintaining up-to-date knowledge on the successes and challenges in building capacity effectively in a particular area;
+{k64e2a7c0} ¶ Requests the Subsidiary Body for Implementation to organize annual in-session meetings of the Paris Committee on Capacity-building;
+{k97d39461} ¶ Also requests the Subsidiary Body for Implementation to develop the terms of reference for the Paris Committee on Capacity-building, in the context of the third comprehensive review of the implementation of the capacity-building framework, also taking into account paragraphs 71–75 above and paragraphs 79 and 80 below, with a view to recommending a draft decision on this matter for consideration and adoption by the Conference of the Parties at its twenty-second session;
+{k92d9bfad} ¶ Invites Parties to submit their views on the membership of the Paris Committee on Capacity- building by 9 March 2016;2 2 Parties should submit their views via the submissions portal at <http://www.unfccc.int/5900>.
+{k3508fc76} ¶ Requests the secretariat to compile the submissions referred to in paragraph 77 above into a miscellaneous document for consideration by the Subsidiary Body for Implementation at its forty-fourth session;
+{k34c5dddb} ¶ Decides that the inputs to the Paris Committee on Capacity-building will include, inter alia, submissions, the outcome of the third comprehensive review of the implementation of the capacity-building framework, the secretariat’s annual synthesis report on the implementation of the framework for capacity-building in developing countries, the secretariat’s compilation and synthesis report on capacity-building work of bodies established under the Convention and its Kyoto Protocol, and reports on the Durban Forum and the capacity-building portal;
+{k30f55af8} ¶ Requests the Paris Committee on Capacity-building to prepare annual technical progress reports on its work, and to make these reports available at the sessions of the Subsidiary Body for Implementation coinciding with the sessions of the Conference of the Parties;
+{k3de11d28} ¶ Decides, at its twenty-fifth session, to review the progress, need for extension, the effectiveness and enhancement of the Paris Committee on Capacity-building and to take any action it considers appropriate, with a view to making recommendations to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session on enhancing institutional arrangements for capacity-building consistent with Article 11, paragraph 5, of the Agreement;
+{kaacf8489} ¶ Calls upon all Parties to ensure that education, training and public awareness, as reflected in Article 6 of the Convention and in Article 12 of the Agreement, are adequately considered in their contribution to capacity-building;
+{k62b1ec95} ¶ Invites the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement, at its first session, to explore ways of enhancing the implementation of training, public awareness, public participation and public access to information so as to enhance actions under the Agreement;
+## Transparency of action and support
+{k94142ca8} ¶ Decides to establish a Capacity-building Initiative for Transparency in order to build institutional and technical capacity, both pre- and post-2020; this initiative will support developing country Parties, upon request, in meeting enhanced transparency requirements as defined in Article 13 of the Agreement in a timely manner;
+{kda919296} ¶ Also decides that the Capacity-building Initiative for Transparency will aim:
+{k2c007058} ¶ To strengthen national institutions for transparency-related activities in line with national priorities;
+{k8dd8305d} ¶ To provide relevant tools, training and assistance for meeting the provisions stipulated in Article 13 of the Agreement;
+{k7d0695b0} ¶ To assist in the improvement of transparency over time;
+{ke04be6f4} ¶ Urges and requests the Global Environment Facility to make arrangements to support the establishment and operation of the Capacity-building Initiative for Transparency as a priority reporting-related need, including through voluntary contributions to support developing country Parties in the sixth replenishment of the Global Environment Facility and future replenishment cycles, to complement existing support under the Global Environment Facility;
+{k1f97483e} ¶ Decides to assess the implementation of the Capacity-building Initiative for Transparency in the context of the seventh review of the Financial Mechanism;
+{k66a9df47} ¶ Requests that the Global Environment Facility, as an operating entity of the Financial Mechanism, include in its annual report to the Conference of the Parties the progress of work in the design, development and implementation of the Capacity-building Initiative for Transparency referred to in paragraph 84 above starting in 2016;
+{k66107adb} ¶ Decides that, in accordance with Article 13, paragraph 2, of the Agreement, developing country Parties shall be provided flexibility in the implementation of the provisions of that Article, including in the scope, frequency and level of detail of reporting, and in the scope of review, and that the scope of review could provide for in-country reviews to be optional, while such flexibilities shall be reflected in the development of modalities, procedures and guidelines referred to in paragraph 91 below;
+{k33e29712} ¶ Also decides that all Parties, except for the least developed country Parties and small island developing States, shall submit the information referred to in Article 13, paragraphs 7, 8, 9 and 10, of the Agreement, as appropriate, no less frequently than on a biennial basis, and that the least developed country Parties and small island developing States may submit this information at their discretion;
+{k5df62c1d} ¶ Requests the Ad Hoc Working Group on the Paris Agreement to develop recommendations for modalities, procedures and guidelines in accordance with Article 13, paragraph 13, of the Agreement, and to define the year of their first and subsequent review and update, as appropriate, at regular intervals, for consideration by the Conference of the Parties, at its twenty-fourth session, with a view to forwarding them to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement for consideration and adoption at its first session;
+{k898a3559} ¶ Also requests the Ad Hoc Working Group on the Paris Agreement, in developing the recommendations for the modalities, procedures and guidelines referred to in paragraph 91 above, to take into account, inter alia:
+{k623b32a0} ¶ The importance of facilitating improved reporting and transparency over time;
+{k6d350697} ¶ The need to provide flexibility to those developing country Parties that need it in the light of their capacities;
+{k98e01c92} ¶ The need to promote transparency, accuracy, completeness, consistency and comparability;
+{k51708542} ¶ The need to avoid duplication as well as undue burden on Parties and the secretariat;
+{ka07ee70e} ¶ The need to ensure that Parties maintain at least the frequency and quality of reporting in accordance with their respective obligations under the Convention;
+{k6c21d438} ¶ The need to ensure that double counting is avoided;
+{k46668e1e} ¶ The need to ensure environmental integrity;
+{k1311859c} ¶ Further requests the Ad Hoc Working Group on the Paris Agreement, in developing the modalities, procedures and guidelines referred to in paragraph 91 above, to draw on the experiences from and take into account other ongoing relevant processes under the Convention;
+{k4cac9b62} ¶ Requests the Ad Hoc Working Group on the Paris Agreement, in developing the modalities, procedures and guidelines referred to in paragraph 91 above, to consider, inter alia:
+{k1082fb8a} ¶ The types of flexibility available to those developing country Parties that need it on the basis of their capacities;
+{k7d355ff5} ¶ The consistency between the methodology communicated in the nationally determined contribution and the methodology for reporting on progress made towards achieving individual Parties’ respective nationally determined contribution;
+{kc9ed0121} ¶ That Parties report information on adaptation action and planning including, if appropriate, their national adaptation plans, with a view to collectively exchanging information and sharing lessons learned;
+{ka7bf115b} ¶ Support provided, enhancing delivery of support for both adaptation and mitigation through, inter alia, the common tabular formats for reporting support, and taking into account issues considered by the Subsidiary Body for Scientific and Technological Advice on methodologies for reporting on financial information, and enhancing the reporting by developing country Parties on support received, including the use, impact and estimated results thereof;
+{k76758544} ¶ Information in the biennial assessments and other reports of the Standing Committee on Finance and other relevant bodies under the Convention;
+{k4826001c} ¶ Information on the social and economic impact of response measures;
+{k2ace9990} ¶ Also requests the Ad Hoc Working Group on the Paris Agreement, in developing recommendations for the modalities, procedures and guidelines referred to in paragraph 91 above, to enhance the transparency of support provided in accordance with Article 9 of the Agreement;
+{k324ded56} ¶ Further requests the Ad Hoc Working Group on the Paris Agreement to report on the progress of work on the modalities, procedures and guidelines referred to in paragraph 91 above to future sessions of the Conference of the Parties, and that this work be concluded no later than 2018;
+{k7be21ba1} ¶ Decides that the modalities, procedures and guidelines developed under paragraph 91 above shall be applied upon the entry into force of the Paris Agreement;
+{k1f8d7c7e} ¶ Also decides that the modalities, procedures and guidelines of this transparency framework shall build upon and eventually supersede the measurement, reporting and verification system established by decision 1/CP.16, paragraphs 40–47 and 60–64, and decision 2/CP.17, paragraphs 12–62, immediately following the submission of the final biennial reports and biennial update reports;
+## Global stocktake
+{ka752dc50} ¶ Requests the Ad Hoc Working Group on the Paris Agreement to identify the sources of input for the global stocktake referred to in Article 14 of the Agreement and to report to the Conference of the Parties, with a view to the Conference of the Parties making a recommendation to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement for consideration and adoption at its first session, including, but not limited to:
+{kff21264f} ¶ Information on:
+{kbd401b9e} ¶ The overall effect of the nationally determined contributions communicated by Parties;
+{k68507240} ¶ The state of adaptation efforts, support, experiences and priorities from the communications referred to in Article 7, paragraphs 10 and 11, of the Agreement, and reports referred to in Article 13, paragraph 8, of the Agreement;
+{k325e13c1} ¶ The mobilization and provision of support;
+{kc1c4fe88} ¶ The latest reports of the Intergovernmental Panel on Climate Change;
+{k25f735fb} ¶ Reports of the subsidiary bodies;
+{kb3dff93e} ¶ Also requests the Subsidiary Body for Scientific and Technological Advice to provide advice on how the assessments of the Intergovernmental Panel on Climate Change can inform the global stocktake of the implementation of the Agreement pursuant to its Article 14 and to report on this matter to the Ad Hoc Working Group on the Paris Agreement at its second session;
+{kdb10896c} ¶ Further requests the Ad Hoc Working Group on the Paris Agreement to develop modalities for the global stocktake referred to in Article 14 of the Agreement and to report to the Conference of the Parties, with a view to the Conference of the Parties making a recommendation to the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement for consideration and adoption at its first session;
+## Facilitating implementation and compliance
+{k9d2e92ed} ¶ Decides that the committee referred to in Article 15, paragraph 2, of the Agreement shall consist of 12 members with recognized competence in relevant scientific, technical, socioeconomic or legal fields, to be elected by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement on the basis of equitable geographical representation, with two members each from the five regional groups of the United Nations and one member each from the small island developing States and the least developed countries, while taking into account the goal of gender balance;
+{k95f3de48} ¶ Requests the Ad Hoc Working Group on the Paris Agreement to develop the modalities and procedures for the effective operation of the committee referred to in Article 15, paragraph 2, of the Agreement, with a view to the Ad Hoc Working Group on the Paris Agreement completing its work on such modalities and procedures for consideration and adoption by the Conference of the Parties serving as the meeting of the Parties to the Paris Agreement at its first session;
+## Final clauses
+{k8f6690ba} ¶ Also requests the secretariat, solely for the purposes of Article 21 of the Agreement, to make available on its website on the date of adoption of the Agreement as well as in the report of the Conference of the Parties on its twenty-first session, information on the most up-to-date total and per cent of greenhouse gas emissions communicated by Parties to the Convention in their national communications, greenhouse gas inventory reports, biennial reports or biennial update reports;
+## ENHANCED ACTION PRIOR TO 2020
+{kee887e9a} ¶ Resolves to ensure the highest possible mitigation efforts in the pre-2020 period, including by:
+{k6e6792c2} ¶ Urging all Parties to the Kyoto Protocol that have not already done so to ratify and implement the Doha Amendment to the Kyoto Protocol;
+{k876876a9} ¶ Urging all Parties that have not already done so to make and implement a mitigation pledge under the Cancun Agreements;
+{kee9f6e55} ¶ Reiterating its resolve, as set out in decision 1/CP.19, paragraphs 3 and 4, to accelerate the full implementation of the decisions constituting the agreed outcome pursuant to decision 1/CP.13 and enhance ambition in the pre-2020 period in order to ensure the highest possible mitigation efforts under the Convention by all Parties;
+{k715a4938} ¶ Inviting developing country Parties that have not submitted their first biennial update reports to do so as soon as possible;
+{k6e964b17} ¶ Urging all Parties to participate in the existing measurement, reporting and verification processes under the Cancun Agreements, in a timely manner, with a view to demonstrating progress made in the implementation of their mitigation pledges;
+{k62b7a777} ¶ Encourages Parties to promote the voluntary cancellation by Party and non-Party stakeholders, without double counting, of units issued under the Kyoto Protocol, including certified emission reductions that are valid for the second commitment period;
+{k30cc4121} ¶ Urges host and purchasing Parties to report transparently on internationally transferred mitigation outcomes, including outcomes used to meet international pledges, and emission units issued under the Kyoto Protocol with a view to promoting environmental integrity and avoiding double counting;
+{k21d96f45} ¶ Recognizes the social, economic and environmental value of voluntary mitigation actions and their co-benefits for adaptation, health and sustainable development;
+{kd616d186} ¶ Resolves to strengthen, in the period 2016–2020, the existing technical examination process on mitigation as defined in decision 1/CP.19, paragraph 5(a), and decision 1/CP.20, paragraph 19, taking into account the latest scientific knowledge, including by:
+{kddf10529} ¶ Encouraging Parties, Convention bodies and international organizations to engage in this process, including, as appropriate, in cooperation with relevant non-Party stakeholders, to share their experiences and suggestions, including from regional events, and to cooperate in facilitating the implementation of policies, practices and actions identified during this process in accordance with national sustainable development priorities;
+{k8861c43e} ¶ Striving to improve, in consultation with Parties, access to and participation in this process by developing country Party and non-Party experts;
+{kf58a6006} ¶ Requesting the Technology Executive Committee and the Climate Technology Centre and Network in accordance with their respective mandates:
+{ka12135e1} ¶ To engage in the technical expert meetings and enhance their efforts to facilitate and support Parties in scaling up the implementation of policies, practices and actions identified during this process;
+{k1bcd8d80} ¶ To provide regular updates during the technical expert meetings on the progress made in facilitating the implementation of policies, practices and actions previously identified during this process;
+{k9d98992e} ¶ To include information on their activities under this process in their joint annual report to the Conference of the Parties;
+{kc7455a92} ¶ Encouraging Parties to make effective use of the Climate Technology Centre and Network to obtain assistance to develop economically, environmentally and socially viable project proposals in the high mitigation potential areas identified in this process;
+{k4f4350f5} ¶ Encourages the operating entities of the Financial Mechanism of the Convention to engage in the technical expert meetings and to inform participants of their contribution to facilitating progress in the implementation of policies, practices and actions identified during the technical examination process;
+{kb3aeb260} ¶ Requests the secretariat to organize the process referred to in paragraph 109 above and disseminate its results, including by:
+{kbf6dc48e} ¶ Organizing, in consultation with the Technology Executive Committee and relevant expert organizations, regular technical expert meetings focusing on specific policies, practices and actions representing best practices and with the potential to be scalable and replicable;
+{k87bc5920} ¶ Updating, on an annual basis, following the meetings referred to in paragraph 111(a) above and in time to serve as input to the summary for policymakers referred to in paragraph 111(c) below, a technical paper on the mitigation benefits and co-benefits of policies, practices and actions for enhancing mitigation ambition, as well as on options for supporting their implementation, information on which should be made available in a user-friendly online format;
+{k231c8afc} ¶ Preparing, in consultation with the champions referred to in paragraph 121 below, a summary for policymakers, with information on specific policies, practices and actions representing best practices and with the potential to be scalable and replicable, and on options to support their implementation, as well as on relevant collaborative initiatives, and publishing the summary at least two months in advance of each session of the Conference of the Parties as input for the high-level event referred to in paragraph 120 below;
+{k498648b9} ¶ Decides that the process referred to in paragraph 109 above should be organized jointly by the Subsidiary Body for Implementation and the Subsidiary Body for Scientific and Technological Advice and should take place on an ongoing basis until 2020;
+{k3b266a0e} ¶ Also decides to conduct in 2017 an assessment of the process referred to in paragraph 109 above so as to improve its effectiveness;
+{k0772cec3} ¶ Resolves to enhance the provision of urgent and adequate finance, technology and capacity- building support by developed country Parties in order to enhance the level of ambition of pre-2020 action by Parties, and in this regard strongly urges developed country Parties to scale up their level of financial support, with a concrete road map to achieve the goal of jointly providing USD 100 billion annually by 2020 for mitigation and adaptation while significantly increasing adaptation finance from current levels and to further provide appropriate technology and capacity-building support;
+{kcb0800e2} ¶ Decides to conduct a facilitative dialogue in conjunction with the twenty-second session of the Conference of the Parties to assess the progress in implementing decision 1/CP.19, paragraphs 3 and 4, and identify relevant opportunities to enhance the provision of financial resources, including for technology development and transfer, and capacity-building support, with a view to identifying ways to enhance the ambition of mitigation efforts by all Parties, including identifying relevant opportunities to enhance the provision and mobilization of support and enabling environments;
+{k95367bd6} ¶ Acknowledges with appreciation the results of the Lima-Paris Action Agenda, which build on the climate summit convened on 23 September 2014 by the Secretary-General of the United Nations;
+{k54fa9cc0} ¶ Welcomes the efforts of non-Party stakeholders to scale up their climate actions, and encourages the registration of those actions in the Non-State Actor Zone for Climate Action platform;3 Encourages Parties to work closely with non-Party stakeholders to catalyse efforts to strengthen mitigation and adaptation action;
+{k7666cdfd} ¶ Also encourages non-Party stakeholders to increase their engagement in the processes referred to in paragraph 109 above and paragraph 124 below;
+{ka3008aa7} ¶ Agrees to convene, pursuant to decision 1/CP.20, paragraph 21, building on the Lima-Paris Action Agenda and in conjunction with each session of the Conference of the Parties during the period 2016–2020, a high-level event that:
+{k037e18a6} ¶ Further strengthens high-level engagement on the implementation of policy options and actions arising from the processes referred to in paragraph 109 above and paragraph 124 below, drawing on the summary for policymakers referred to in paragraph 111(c) above;
+{k16b054e5} ¶ Provides an opportunity for announcing new or strengthened voluntary efforts, initiatives and coalitions, including the implementation of policies, practices and actions arising from the processes referred to in paragraph 109 above and paragraph 124 below and presented in the summary for policymakers referred to in paragraph 111(c) above;
+{kf726b8f9} ¶ Takes stock of related progress and recognizes new or strengthened voluntary efforts, initiatives and coalitions;
+{k7e32d3c4} ¶ Provides meaningful and regular opportunities for the effective high-level engagement of dignitaries of Parties, international organizations, international cooperative initiatives and non-Party stakeholders;
+{k47c34d81} ¶ Decides that two high-level champions shall be appointed to act on behalf of the President of the Conference of the Parties to facilitate through strengthened high-level engagement in the period 2016–2020 the successful execution of existing efforts and the scaling-up and introduction of new or strengthened voluntary efforts, initiatives and coalitions, including by:
+{k101a713b} ¶ Working with the Executive Secretary and the current and incoming Presidents of the Conference of the Parties to coordinate the annual high-level event referred to in paragraph 120 above; 3 <http://climateaction.unfccc.int/>.
+{k8de63e89} ¶ Engaging with interested Parties and non-Party stakeholders, including to further the voluntary initiatives of the Lima-Paris Action Agenda;
+{k085ca8b1} ¶ Providing guidance to the secretariat on the organization of technical expert meetings referred to in paragraph 111(a) above and paragraph 129(a) below;
+{k8db54dcc} ¶ Also decides that the high-level champions referred to in paragraph 121 above should normally serve for a term of two years, with their terms overlapping for a full year to ensure continuity, such that:
+{k0b417e4a} ¶ The President of the twenty-first session of the Conference of the Parties should appoint one champion, who should serve for one year from the date of the appointment until the last day of the twenty-second session of the Conference of the Parties;
+{k33eb7150} ¶ The President of the twenty-second session of the Conference of the Parties should appoint one champion who should serve for two years from the date of the appointment until the last day of the twenty-third session of the Conference of the Parties (November 2017);
+{k1299b82c} ¶ Thereafter, each subsequent President of the Conference of the Parties should appoint one champion who should serve for two years and succeed the previously appointed champion whose term has ended;
+{kf410779b} ¶ Invites all interested Parties and relevant organizations to provide support for the work of the champions referred to in paragraph 121 above;
+{k804f7ea6} ¶ Decides to launch, in the period 2016−2020, a technical examination process on adaptation;
+{k3477a6bb} ¶ Also decides that the process referred to in paragraph 124 above will endeavour to identify concrete opportunities for strengthening resilience, reducing vulnerabilities and increasing the understanding and implementation of adaptation actions;
+{k7abecac3} ¶ Further decides that the process referred to in paragraph 124 above should be organized jointly by the Subsidiary Body for Implementation and the Subsidiary Body for Scientific and Technological Advice, and conducted by the Adaptation Committee;
+{kd946bb4b} ¶ Decides that the process referred to in paragraph 124 above will be pursued by:
+{k3087575a} ¶ Facilitating the sharing of good practices, experiences and lessons learned;
+{k207a8874} ¶ Identifying actions that could significantly enhance the implementation of adaptation actions, including actions that could enhance economic diversification and have mitigation co-benefits;
+{k00b7d37a} ¶ Promoting cooperative action on adaptation;
+{k77e3dce9} ¶ Identifying opportunities to strengthen enabling environments and enhance the provision of support for adaptation in the context of specific policies, practices and actions;
+{k68d45736} ¶ Also decides that the technical examination process on adaptation referred to in paragraph 124 above will take into account the process, modalities, outputs, outcomes and lessons learned from the technical examination process on mitigation referred to in paragraph 109 above;
+{ke833b2d7} ¶ Requests the secretariat to support the process referred to in paragraph 124 above by:
+{ke0898052} ¶ Organizing regular technical expert meetings focusing on specific policies, strategies and actions;
+{k5897d6ed} ¶ Preparing annually, on the basis of the meetings referred to in paragraph 129(a) above and in time to serve as an input to the summary for policymakers referred to in paragraph 111(c) above, a technical paper on opportunities to enhance adaptation action, as well as options to support their implementation, information on which should be made available in a user-friendly online format;
+{k32b01624} ¶ Decides that in conducting the process referred to in paragraph 124 above, the Adaptation Committee will engage with and explore ways to take into account, synergize with and build on the existing arrangements for adaptation-related work programmes, bodies and institutions under the Convention so as to ensure coherence and maximum value;
+{k1ce4213b} ¶ Also decides to conduct, in conjunction with the assessment referred to in paragraph 113 above, an assessment of the process referred to in paragraph 124 above, so as to improve its effectiveness;
+{k39ebd0ab} ¶ Invites Parties and observer organizations to submit information on the opportunities referred to in paragraph 125 above by 3 February 2016;
+## NON-PARTY STAKEHOLDERS
+{k92a4cc91} ¶ Welcomes the efforts of all non-Party stakeholders to address and respond to climate change, including those of civil society, the private sector, financial institutions, cities and other subnational authorities;
+{kd25f8f98} ¶ Invites the non-Party stakeholders referred to in paragraph 133 above to scale up their efforts and support actions to reduce emissions and/or to build resilience and decrease vulnerability to the adverse effects of climate change and demonstrate these efforts via the Non- State Actor Zone for Climate Action platform4 referred to in paragraph 117 above;
+{k41bf4200} ¶ Recognizes the need to strengthen knowledge, technologies, practices and efforts of local communities and indigenous peoples related to addressing and responding to climate change, and establishes a platform for the exchange of experiences and sharing of best practices on mitigation and adaptation in a holistic and integrated manner;
+{k620fb5da} ¶ Also recognizes the important role of providing incentives for emission reduction activities, including tools such as domestic policies and carbon pricing; 4 <http://climateaction.unfccc.int/>.
+## VII.ADMINISTRATIVE AND BUDGETARY MATTERS
+{kcbd8fcd5} ¶ Takes note of the estimated budgetary implications of the activities to be undertaken by the secretariat referred to in this decision and requests that the actions of the secretariat called for in this decision be undertaken subject to the availability of financial resources;
+{k35abab7a} ¶ Emphasizes the urgency of making additional resources available for the implementation of the relevant actions, including actions referred to in this decision, and the implementation of the work programme referred to in paragraph 9 above;
+{kc1ab20b6} ¶ Urges Parties to make voluntary contributions for the timely implementation of this decision.

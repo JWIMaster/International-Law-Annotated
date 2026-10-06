@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from . import annotations as ann_mod, backends, docx, layout as layout_mod, textutil
+from . import annotations as ann_mod, backends, docx, layout as layout_mod, migrate, textutil
 from . import render, sourcefmt, structure, validate
 from .errors import (
     Diagnostics,
@@ -75,6 +75,10 @@ class ConvertResult:
 @dataclass
 class BuildOptions:
     backend: str = "auto"
+    #: An existing published page to take paragraph aliases from, so notes
+    #: keyed to the old page's positional ids follow their sentences onto the
+    #: rebuilt page instead of being dropped.
+    migrate_from: Optional[Path] = None
     use_pdf_annotations: bool = True
     include_empty_annotations: bool = False
     validate: bool = True
@@ -418,19 +422,38 @@ def _atomic_write(path: Path, text: str) -> None:
 # Stage 5-7: source + annotations -> page
 # ---------------------------------------------------------------------------
 
-def load_all_annotations(path: Optional[Path], source: SourceDocument,
+def load_all_annotations(paths, source: SourceDocument,
                          source_dir: Optional[Path] = None,
                          options: Optional[BuildOptions] = None,
                          progress: ProgressFn = _noop,
                          diagnostics: Optional[Diagnostics] = None
                          ) -> List[ann_mod.Annotation]:
-    """Load annotations from any supported file type."""
+    """Load annotations from one or more supported files, in order.
+
+    Order matters: the first source wins when the same note appears in more
+    than one, which is what makes "the comments in the Word file first, then
+    anything the old page had" behave the way it should.
+    """
     opts = options or BuildOptions()
     diag = diagnostics if diagnostics is not None else Diagnostics()
+    if paths is None:
+        return []
+    if isinstance(paths, (str, Path)):
+        paths = [paths]
     items: List[ann_mod.Annotation] = []
-    if path is None:
-        return items
+    for path in paths:
+        if path is None:
+            continue
+        items.extend(_load_one_annotation_file(Path(path), diag, opts, progress))
+    return items
 
+
+def _load_one_annotation_file(path: Path, diag: Diagnostics,
+                              opts: BuildOptions,
+                              progress: ProgressFn) -> List[ann_mod.Annotation]:
+    if not path.exists():
+        raise InputError(f"no annotations file at '{path}'")
+    items: List[ann_mod.Annotation] = []
     suffix = path.suffix.lower()
     if suffix == ".pdf":
         # Annotations that live inside the PDF itself.  A highlight carries no
@@ -464,6 +487,15 @@ def build_site(source_path: Path, annotation_path: Optional[Path],
 
     progress(Stage.INPUT, 0.05, f"reading {source_path.name}")
     source = sourcefmt.parse_source(source_path)
+
+    if opts.migrate_from is not None:
+        try:
+            aliases, _report = migrate.aliases_from_page(
+                Path(opts.migrate_from), source, diag)
+            source.aliases.update(aliases)
+        except ToolError as exc:
+            diag.warn(Stage.MATCHING, f"could not read the page to migrate from: "
+                                      f"{exc.message}")
 
     progress(Stage.ANNOTATIONS, 0.2, "reading annotations")
     items = load_all_annotations(annotation_path, source, source_path.parent,

@@ -21,6 +21,11 @@
     --annot: #A3341F;
     --annot-soft: #C6684F;
     --seal: #8A6D1C;
+    /* The annotation pane's width.  The page reserves exactly this much when
+       the pane is open, so the two are defined in one place.  It narrows a
+       little on smaller screens so the reading column can keep its full
+       width for as long as possible. */
+    --pane-w: clamp(21rem, 27vw, 25rem);
   }
 
   body { background: var(--paper); color: var(--ink); }
@@ -43,29 +48,50 @@
   }
 
   .para-id { font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", ui-monospace, monospace; }
-  .note-card { max-width: 100%; background: none; border: none; padding: 0; box-shadow: none; margin-bottom: 0.5rem; }
-  .note-card .note-author { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .04em; color: var(--ink-faint); text-transform: uppercase; }
-  .note-card .note-title { font-family: "Source Serif 4", serif; font-weight: 600; color: var(--ink); margin-top: .1rem; }
-  .note-card .note-body { font-family: "IBM Plex Sans", sans-serif; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); margin-top: .25rem; }
-  .note-card .note-source { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-faint); margin-top: .5rem; }
+  .note-card { max-width: 100%; background: none; border: none; padding: 0; box-shadow: none; margin-bottom: 1.1rem; }
+  .note-card .note-title { font-family: "Source Serif 4", serif; font-weight: 600; color: var(--ink); }
+  .note-card .note-body { font-family: "IBM Plex Sans", sans-serif; font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); margin-top: .3rem; }
+  .note-card .note-source { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-faint); margin-top: .55rem; }
+  /* The author sits at the foot of the note as a signature, so the note
+     itself starts at the top of the card and has somewhere to breathe. */
+  .note-card .note-byline { display: flex; align-items: baseline; justify-content: flex-end; gap: .45rem;
+                            margin-top: .6rem; padding-top: .4rem; border-top: 1px dotted var(--rule); }
+  .note-card .note-byline::before { content: ""; }
+  .note-card .note-author { font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .09em;
+                            color: var(--ink-faint); text-transform: uppercase; }
 
   /* --- the annotation pane -------------------------------------------------
-     Clicking a paragraph with notes slides its annotations in from the right,
-     Genius-style.  The paragraph stays highlighted while the pane is open, so
-     it is always obvious which text is being annotated. */
+     Clicking a paragraph with notes opens them beside the text, Genius-style.
+     The page makes room for the pane rather than the pane floating over it:
+     the reading column keeps its width and slides over, so nothing is covered
+     and nothing has to shrink to fit. */
   [x-cloak] { display: none !important; }
   .pane-scrim { position: fixed; inset: 0; z-index: 45; background: rgba(28,34,51,.12); }
   .note-pane {
     position: fixed; top: 0; right: 0; bottom: 0; z-index: 50;
     display: flex; flex-direction: column;
-    width: min(400px, 100vw);
+    width: var(--pane-w);
     background: var(--paper-card);
     border-left: 1px solid var(--rule);
-    box-shadow: -16px 0 40px rgba(28,34,51,.12);
-    transform: translateX(101%); visibility: hidden;
-    transition: transform .2s ease, visibility .2s ease;
+    transform: translateX(100%); visibility: hidden;
+    transition: transform .22s ease, visibility .22s ease;
   }
   .note-pane.is-open { transform: none; visibility: visible; }
+  @media (max-width: 640px) { .note-pane { width: 100vw; } }   /* a phone: full screen */
+
+  /* Room for the pane: padding on the root shrinks the box the header and
+     the article are centred in, so the column slides left instead of being
+     narrowed and re-centred. */
+  html { overflow-anchor: none; }
+  @media (min-width: 1024px) {
+    html { transition: padding-right .22s ease; }
+    html.pane-open { padding-right: var(--pane-w); }
+    .pane-scrim { display: none !important; }        /* the page moves; it is not covered */
+  }
+  .jump-wrap { transition: right .22s ease; }
+  @media (min-width: 1024px) {
+    html.pane-open .jump-wrap { right: calc(var(--pane-w) + 1rem); }
+  }
   .pane-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem;
                padding: .6rem .75rem; border-bottom: 1px solid var(--rule); }
   .pane-kicker { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em;
@@ -89,21 +115,8 @@
   .pane-body a { text-decoration: underline; color: var(--annot); overflow-wrap: anywhere; }
   .pane-body .note-count { font-family: "IBM Plex Mono", monospace; font-size: 11px;
                            color: var(--ink-faint); }
-  /* Room for the pane.  The text column narrows and re-centres rather than
-     being covered by the panel, which on a 1440px screen would hide a third
-     of every line. */
-  .shell { transition: max-width .2s ease; }
-  .jump-wrap { transition: right .2s ease; }
-  /* The pane is 400px.  A column of width M centred in a viewport W ends at
-     (W + M) / 2, and the pane begins at W - 400, so M must stay under
-     W - 800 for the two never to touch.  52rem is that 800px plus a 32px
-     gap.  Below 1280px there is no room for both, so the pane overlays. */
-  @media (min-width: 1280px) {
-    html.pane-open .shell { max-width: min(64rem, calc(100vw - 52rem)); }
-    html.pane-open .jump-wrap { right: calc(25rem + 1rem); }
-  }
   @media (prefers-reduced-motion: reduce) {
-    .note-pane, .shell, .jump-wrap { transition: none; }
+    .note-pane, html, .jump-wrap { transition: none; }
   }
 
   /* The paragraph being annotated. */
@@ -122,8 +135,7 @@
      Sits in the left gutter beside the text column, so it never covers it;
      it is hidden once the gutter is too narrow to hold it. */
   .note-rail-wrap { position: fixed; top: var(--sticky-offset); z-index: 30;
-                    left: max(10px, calc(50% - 32rem - 2.5rem)); }
-  @media (max-width: 1180px) { .note-rail-wrap { display: none; } }
+                    left: 0; transition: left .22s ease, opacity .15s ease; }
   .note-rail { position: relative; width: 6px; border-radius: 9999px; background: var(--rule); }
   .note-dot { position: absolute; left: 50%; width: 12px; height: 9px; margin-left: -6px;
               border-radius: 9999px; padding: 0; border: 0;
@@ -218,10 +230,12 @@ function icjApp() {
       if (!list.length) return '<div class="note-count">No annotations from the selected authors.</div>';
       return list.map(n => {
         let h = '<div class="note-card">';
-        if (n.author) h += '<div class="note-author">' + this.esc(n.author) + '</div>';
-        if (n.title)  h += '<div class="note-title">' + this.esc(n.title) + '</div>';
+        if (n.title) h += '<div class="note-title">' + this.esc(n.title) + '</div>';
         h += '<div class="note-body" data-note-body>' + this.linkify(n.text || '') + '</div>';
         if (n.source) h += '<div class="note-source">Source: ' + this.esc(n.source) + '</div>';
+        // The author goes last, as a signature.  At the top it pushed the
+        // note itself down and left every card looking cramped.
+        if (n.author) h += '<div class="note-byline"><span class="note-author">' + this.esc(n.author) + '</span></div>';
         return h + '</div>';
       }).join('');
     },
@@ -242,17 +256,38 @@ function icjApp() {
     setPaneOpen(open) {
       this.paneOpen = open;
       document.documentElement.classList.toggle('pane-open', open);
-      // Narrowing the column moves every paragraph, so the rail has to
-      // measure again once the reflow has settled.
+      // Making room for the pane moves every paragraph, so the rail has to
+      // measure again once the layout has settled.
       setTimeout(() => {
         try { window.dispatchEvent(new Event('noteMap:update')); } catch (e) {}
-      }, 240);
+      }, 260);
+    },
+    // Opening the pane moves the text.  Keeping the clicked paragraph exactly
+    // where it was on screen is what stops the page appearing to jump: the
+    // reader's eye stays on the sentence they clicked.
+    keepInPlace(el, wasAt) {
+      if (!el || wasAt == null) return;
+      let cancelled = false;
+      const stop = () => { cancelled = true; };
+      window.addEventListener('wheel', stop, { once: true, passive: true });
+      window.addEventListener('touchmove', stop, { once: true, passive: true });
+      const settle = () => {
+        if (cancelled) return;
+        const now = el.getBoundingClientRect().top;
+        const drift = now - wasAt;
+        if (Math.abs(drift) > 0.5) window.scrollBy(0, drift);
+      };
+      requestAnimationFrame(settle);
+      setTimeout(settle, 260);          // once the transition has finished
     },
     openNote(id) {
+      const el = document.getElementById(id);
+      const wasAt = el ? el.getBoundingClientRect().top : null;
       this.paneId = id;
       this.setPaneOpen(true);
       this.renderPane();
       this.markSelected();
+      this.keepInPlace(el, wasAt);
       this.$nextTick(() => { const b = this.$refs.paneBody; if (b) b.scrollTop = 0; });
     },
     closePane() { this.setPaneOpen(false); this.markSelected(); },
@@ -340,18 +375,20 @@ function noteMap() {
   return {
     markers: [],
     activePos: 0,
+    railVisible: true,
     init: function () {
       var self = this;
       this.compute();
+      this.place();
       this.onScroll();
 
-      window.addEventListener('resize', function () { self.compute(); self.onScroll(); });
+      window.addEventListener('resize', function () { self.compute(); self.place(); self.onScroll(); });
       window.addEventListener('scroll', function () { self.onScroll(); }, { passive: true });
-      window.addEventListener('noteMap:update', function () { self.compute(); self.onScroll(); });
-      window.addEventListener('notes:ready', function () { self.compute(); self.onScroll(); });
+      window.addEventListener('noteMap:update', function () { self.compute(); self.place(); self.onScroll(); });
+      window.addEventListener('notes:ready', function () { self.compute(); self.place(); self.onScroll(); });
       // Web fonts change the text height, which moves every paragraph.
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { self.compute(); self.onScroll(); });
-      window.addEventListener('load', function () { self.compute(); self.onScroll(); });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { self.compute(); self.place(); self.onScroll(); });
+      window.addEventListener('load', function () { self.compute(); self.place(); self.onScroll(); });
     },
     // Everything here is measured in one coordinate space: absolute document
     // pixels.  The old version divided a paragraph's offsetTop (relative to
@@ -360,6 +397,7 @@ function noteMap() {
     compute: function () {
       var rail = this.rail();
       var noted = getNotedElements();
+      if (!this.railVisible && rail) { this.markers = []; return; }
       var docHeight = Math.max(1, document.documentElement.scrollHeight);
       var arr = [];
 
@@ -384,6 +422,25 @@ function noteMap() {
     },
     rail: function () {
       return document.querySelector('.note-rail');
+    },
+    wrap: function () {
+      return document.querySelector('[data-note-rail]');
+    },
+    // Put the rail in the gutter to the left of the article, and hide it when
+    // the article has moved so far over that the gutter is gone.  Reading the
+    // article's own box is what makes this survive the pane opening.
+    place: function () {
+      var wrap = this.wrap();
+      var main = document.querySelector('main');
+      if (!wrap || !main) return;
+      var box = main.getBoundingClientRect();
+      var gap = 18;
+      var left = box.left - wrap.offsetWidth - gap;
+      var room = left >= 6;
+      wrap.style.left = Math.max(6, left) + 'px';
+      wrap.style.opacity = room ? '1' : '0';
+      wrap.style.pointerEvents = room ? 'auto' : 'none';
+      this.railVisible = room;
     },
     // A dot is 12x9 on a 6px rail.  Without this, neighbouring notes pile up
     // and the ones underneath cannot be seen or clicked.

@@ -37,6 +37,27 @@ class ParagraphMarkupTests(unittest.TestCase):
 
 
 class TemplateTests(unittest.TestCase):
+    def test_the_stylesheet_is_not_malformed(self):
+        """Braces must balance.
+
+        An edit that swallowed the end of a media query left a dozen rules
+        inside it, which the browser then ignored silently.
+        """
+        style = re.search(r"<style>(.*?)</style>", PAGE_TEMPLATE, re.DOTALL).group(1)
+        self.assertEqual(style.count("{"), style.count("}"), "unbalanced CSS braces")
+        # media queries must each be closed, not nested inside one another
+        depth, opens = 0, 0
+        for token in re.findall(r"@media|\{|\}", style):
+            if token == "@media":
+                self.assertEqual(depth, 0, "a media query opened inside another block")
+                opens += 1
+            elif token == "{":
+                depth += 1
+            else:
+                depth -= 1
+        self.assertEqual(depth, 0)
+        self.assertEqual(opens, style.count("@media"))
+
     def test_the_hover_popover_library_is_gone(self):
         for gone in ("tippy", "@popperjs", "tippy-box", "mouseenter focus"):
             self.assertNotIn(gone, PAGE_TEMPLATE, gone)
@@ -56,6 +77,14 @@ class TemplateTests(unittest.TestCase):
         self.assertIn("this.openNote(row.id)", PAGE_TEMPLATE)
         self.assertIn("ev.target.closest('.note-pane')", PAGE_TEMPLATE)
 
+    def test_the_author_sits_at_the_foot_of_the_note(self):
+        """The note comes first and the author signs it at the bottom."""
+        self.assertIn("note-byline", PAGE_TEMPLATE)
+        body = PAGE_TEMPLATE.index('class="note-body"')
+        byline = PAGE_TEMPLATE.index("class=\"note-byline\"")
+        self.assertLess(body, byline, "the byline must come after the note body")
+        self.assertEqual(PAGE_TEMPLATE.count("note-author"), 2)  # one CSS rule, one use
+
     def test_the_pane_text_is_rendered_from_the_notes(self):
         # a plain property, not a getter: x-html does not re-run on getters
         for field in ("paneKicker: ''", "paneQuote: ''", "paneHtml: ''"):
@@ -63,9 +92,28 @@ class TemplateTests(unittest.TestCase):
         self.assertNotIn("get paneHtml()", PAGE_TEMPLATE)
         self.assertIn("this.paneHtml = this.notesHtml(list);", PAGE_TEMPLATE)
 
-    def test_the_reflow_gives_the_pane_room(self):
-        self.assertIn("html.pane-open .shell", PAGE_TEMPLATE)
+    def test_the_page_makes_room_for_the_pane(self):
+        """The pane pushes the page rather than floating over it.
+
+        Padding on the root shrinks the box the header and article are centred
+        in, so the column slides over and keeps its width; narrowing the
+        column instead made the text visibly shrink on every click.
+        """
+        self.assertIn("--pane-w:", PAGE_TEMPLATE)
+        self.assertIn("html.pane-open { padding-right: var(--pane-w); }", PAGE_TEMPLATE)
+        self.assertIn("width: var(--pane-w);", PAGE_TEMPLATE)
         self.assertIn("document.documentElement.classList.toggle('pane-open', open)", PAGE_TEMPLATE)
+        # no shadow: it is a column of the page, not a panel over it
+        self.assertNotIn("box-shadow: -16px 0 40px", PAGE_TEMPLATE)
+
+    def test_the_scrim_is_only_for_narrow_screens(self):
+        # on a phone the pane does cover the page, so it needs the scrim then
+        self.assertIn(".pane-scrim { display: none !important; }", PAGE_TEMPLATE)
+
+    def test_opening_the_pane_does_not_move_the_text_under_the_reader(self):
+        self.assertIn("keepInPlace(el, wasAt)", PAGE_TEMPLATE)
+        self.assertIn("window.scrollBy(0, drift)", PAGE_TEMPLATE)
+        self.assertIn("html { overflow-anchor: none; }", PAGE_TEMPLATE)
 
     def test_the_rail_measures_in_document_pixels(self):
         # the old rail divided an offsetTop by main.scrollHeight, two different
@@ -85,9 +133,16 @@ class TemplateTests(unittest.TestCase):
         # every marker gets a numeric position even when the rail is hidden
         self.assertIn("arr[i].top = arr[i].pos;", PAGE_TEMPLATE)
 
-    def test_the_rail_is_not_positioned_by_script_any_more(self):
-        self.assertNotIn("positionNoteRail", PAGE_TEMPLATE)
-        self.assertIn("left: max(10px, calc(50% - 32rem - 2.5rem))", PAGE_TEMPLATE)
+    def test_the_rail_follows_the_column_that_now_slides(self):
+        """A fixed CSS offset cannot know where the gutter is.
+
+        The column moves when the pane opens, so the rail is placed from the
+        article's own box and hidden when the gutter has closed up.
+        """
+        self.assertIn("place: function ()", PAGE_TEMPLATE)
+        self.assertIn("var box = main.getBoundingClientRect();", PAGE_TEMPLATE)
+        self.assertIn("this.railVisible = room;", PAGE_TEMPLATE)
+        self.assertIn("if (!this.railVisible && rail) { this.markers = []; return; }", PAGE_TEMPLATE)
 
 
 class GeneratedPageTests(unittest.TestCase):

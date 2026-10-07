@@ -182,17 +182,26 @@ The tool picks the best one automatically and says which it used.
 ## The page
 
 Clicking any paragraph that has annotations opens them in a pane on the right.
-The pane can be dismissed with its ✕, by clicking anywhere outside it, or with
-Esc, and `↑`/`↓` (or Alt+↑ / Alt+↓) step through the annotated paragraphs
-without going back to the text. The paragraph being annotated stays
-highlighted, and at widths of 1280px and up the text column narrows so the
-pane never covers it; below that the pane overlays, and on a phone it fills
-the screen.
+The page **makes room** for the pane rather than the pane floating over the
+text: the reading column keeps its width and slides across, so nothing is
+covered and nothing shrinks to fit. Above roughly 1440px that means the column
+is untouched apart from the shift; on narrower screens it narrows only as much
+as it must, and the paragraph you clicked stays exactly where it was on screen
+so the page never appears to jump. The pane is flush with the page edge — no
+shadow, no dimming — and below 1024px, where there is no room for both, it
+becomes an overlay and then a full screen on a phone.
+
+The pane can be dismissed with its ✕, by clicking outside it, or with Esc, and
+`↑`/`↓` (or Alt+↑ / Alt+↓) step through the annotated paragraphs without going
+back to the text. The paragraph being annotated stays highlighted. Each note
+ends with its author as a signature, so the note itself gets the top of the
+card.
 
 The rail beside the text marks where the annotated paragraphs are. Hovering a
 mark tells you which paragraph it is and how many notes it has; clicking it
 scrolls there and opens the pane. Marks that would land on top of each other
-are pushed apart so all of them stay clickable.
+are pushed apart so all of them stay clickable, and the rail is hidden when
+the column has slid far enough over that its gutter is gone.
 
 ## Validation
 

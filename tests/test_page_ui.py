@@ -64,7 +64,11 @@ class TemplateTests(unittest.TestCase):
 
     def test_the_pane_has_the_controls_a_reader_needs(self):
         self.assertIn('class="note-pane"', PAGE_TEMPLATE)
-        self.assertIn('x-show="paneOpen"', PAGE_TEMPLATE)          # the scrim
+        # The scrim uses the same class binding as the pane.  x-show was seen
+        # leaving it display:none while paneOpen was already true, which left
+        # a tablet with no way to tap the pane away.
+        self.assertIn("pane-scrim", PAGE_TEMPLATE)
+        self.assertIn(".pane-scrim.is-visible { display: block; }", PAGE_TEMPLATE)
         self.assertIn('@click="closePane()"', PAGE_TEMPLATE)       # the close button
         self.assertIn('@click="step(-1)"', PAGE_TEMPLATE)          # previous
         self.assertIn('@click="step(1)"', PAGE_TEMPLATE)           # next

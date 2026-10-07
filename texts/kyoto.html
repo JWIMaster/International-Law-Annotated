@@ -66,7 +66,10 @@
      the reading column keeps its width and slides over, so nothing is covered
      and nothing has to shrink to fit. */
   [x-cloak] { display: none !important; }
-  .pane-scrim { position: fixed; inset: 0; z-index: 45; background: rgba(28,34,51,.12); }
+  /* Driven by a class rather than x-show: the pane uses a class binding too,
+     and one mechanism for both is one thing to get right. */
+  .pane-scrim { position: fixed; inset: 0; z-index: 45; display: none;
+                background: rgba(28,34,51,.12); }
   .note-pane {
     position: fixed; top: 0; right: 0; bottom: 0; z-index: 50;
     display: flex; flex-direction: column;
@@ -77,7 +80,8 @@
     transition: transform .22s ease, visibility .22s ease;
   }
   .note-pane.is-open { transform: none; visibility: visible; }
-  @media (max-width: 640px) { .note-pane { width: 100vw; } }   /* a phone: full screen */
+  @media (max-width: 640px) { .note-pane { width: 100%; } }   /* a phone: full screen */
+  @media (max-width: 1023px) { .pane-scrim.is-visible { display: block; } }
 
   /* Room for the pane: padding on the root shrinks the box the header and
      the article are centred in, so the column slides left instead of being
@@ -115,6 +119,29 @@
   .pane-body a { text-decoration: underline; color: var(--annot); overflow-wrap: anywhere; }
   .pane-body .note-count { font-family: "IBM Plex Mono", monospace; font-size: 11px;
                            color: var(--ink-faint); }
+  /* --- small screens ------------------------------------------------------
+     A phone has no gutter, so the rail is already hidden; these are the
+     things that otherwise go wrong on a narrow screen. */
+  @media (max-width: 700px) {
+    /* Every control is a finger target: 30px was too small to hit reliably. */
+    .pane-btn { width: 2.75rem; height: 2.75rem; font-size: 15px; }
+    .pane-head { padding: .5rem .55rem; }
+    .pane-quote { max-height: 26vh; font-size: 13.5px; }
+    .pane-body { padding: .8rem .7rem 4rem; }
+
+    /* The author chips are shrink-0, so on a narrow header they took all the
+       width and truncated the title to nothing.  Give them a ceiling and let
+       them scroll sideways instead. */
+    #hdr-title { font-size: 15px; }
+    #hdr-authors { max-width: 62%; overflow-x: auto; scrollbar-width: none; }
+    #hdr-authors::-webkit-scrollbar { display: none; }
+    #hdr-authors > span { display: none; }              /* the "Authors" label */
+    .author-chip { padding: .2rem .5rem; font-size: 11px; white-space: nowrap; }
+  }
+  /* With the pane covering the page there is nowhere for the jump button to
+     sit, and it landed on top of the notes. */
+  @media (max-width: 1023px) { html.pane-open .jump-wrap { display: none; } }
+
   @media (prefers-reduced-motion: reduce) {
     .note-pane, html, .jump-wrap { transition: none; }
   }
@@ -134,8 +161,11 @@
   /* --- the marker rail ----------------------------------------------------
      Sits in the left gutter beside the text column, so it never covers it;
      it is hidden once the gutter is too narrow to hold it. */
+  /* No transition on `left`: the rail is placed from the article's box every
+     frame while the layout moves, so it travels *with* the text.  A CSS
+     transition here ran on its own clock and visibly lagged behind. */
   .note-rail-wrap { position: fixed; top: var(--sticky-offset); z-index: 30;
-                    left: 0; transition: left .22s ease, opacity .15s ease; }
+                    left: 0; transition: opacity .15s ease; }
   .note-rail { position: relative; width: 6px; border-radius: 9999px; background: var(--rule); }
   .note-dot { position: absolute; left: 50%; width: 12px; height: 9px; margin-left: -6px;
               border-radius: 9999px; padding: 0; border: 0;
@@ -143,9 +173,11 @@
               box-shadow: 0 0 0 2px var(--paper); z-index: 1; }
   .note-dot:hover, .note-dot:focus-visible { background: var(--annot); z-index: 3; }
   .note-dot.is-current { background: var(--annot); z-index: 2; }
+  /* Likewise no transition on the reading cursor: it marks where you are, so
+     it has to be where you are, not where you were 100ms ago. */
   .note-cursor { position: absolute; left: 50%; width: 8px; height: 8px; margin-left: -4px;
                  border-radius: 9999px; background: var(--annot); z-index: 4;
-                 pointer-events: none; transition: top .1s linear; }
+                 pointer-events: none; }
 
   .btn-primary { background: var(--ink); color: var(--paper); font-family: "IBM Plex Sans", sans-serif; }
   .btn-primary:hover { background: #2A3145; }
@@ -256,11 +288,15 @@ function icjApp() {
     setPaneOpen(open) {
       this.paneOpen = open;
       document.documentElement.classList.toggle('pane-open', open);
-      // Making room for the pane moves every paragraph, so the rail has to
-      // measure again once the layout has settled.
-      setTimeout(() => {
+      // The column is about to move.  Tell the rail now, so it starts
+      // travelling with the text on the first frame, and again once the
+      // layout has settled so the markers are measured against the final
+      // height.
+      const follow = () => {
         try { window.dispatchEvent(new Event('noteMap:update')); } catch (e) {}
-      }, 260);
+      };
+      follow();
+      setTimeout(follow, 280);
     },
     // Opening the pane moves the text.  Keeping the clicked paragraph exactly
     // where it was on screen is what stops the page appearing to jump: the
@@ -384,7 +420,12 @@ function noteMap() {
 
       window.addEventListener('resize', function () { self.compute(); self.place(); self.onScroll(); });
       window.addEventListener('scroll', function () { self.onScroll(); }, { passive: true });
-      window.addEventListener('noteMap:update', function () { self.compute(); self.place(); self.onScroll(); });
+      window.addEventListener('noteMap:update', function () {
+        // The pane is opening or closing: the column is about to move, so
+        // follow it for the whole transition.
+        self.track();
+        self.onScroll();
+      });
       window.addEventListener('notes:ready', function () { self.compute(); self.place(); self.onScroll(); });
       // Web fonts change the text height, which moves every paragraph.
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { self.compute(); self.place(); self.onScroll(); });
@@ -442,6 +483,21 @@ function noteMap() {
       wrap.style.pointerEvents = room ? 'auto' : 'none';
       this.railVisible = room;
     },
+    // Re-place the rail on every frame for as long as the layout can be
+    // moving.  A CSS transition on `left` ran on its own clock, so the rail
+    // drifted behind the column; reading the column each frame keeps the two
+    // locked together whatever the easing does.
+    track: function (frames) {
+      var self = this;
+      var left = frames || 26;
+      if (this._tracking) return;          // already following this move
+      this._tracking = true;
+      (function step() {
+        self.place();
+        if (--left > 0) requestAnimationFrame(step);
+        else { self._tracking = false; self.compute(); }
+      })();
+    },
     // A dot is 12x9 on a 6px rail.  Without this, neighbouring notes pile up
     // and the ones underneath cannot be seen or clicked.
     spread: function (arr, rail) {
@@ -486,7 +542,17 @@ function noteMap() {
       var head = label && label !== '¶' ? label : '';
       return (head ? head + ' · ' : '') + text;
     },
+    // Throttled to one update per frame: the cursor marks where you are, so
+    // it must not trail the scroll.
     onScroll: function () {
+      var self = this;
+      if (this._scrollRaf) return;
+      this._scrollRaf = requestAnimationFrame(function () {
+        self._scrollRaf = null;
+        self.updateCursor();
+      });
+    },
+    updateCursor: function () {
       var rail = this.rail();
       if (!rail) return;
       var railTop = rail.getBoundingClientRect().top + window.scrollY;
@@ -1570,7 +1636,7 @@ function noteMap() {
 
 <!-- Annotations open here, on the right, Genius-style. Click a paragraph to
      open the pane, another to switch, or click away / press Esc to dismiss. -->
-<div class="pane-scrim" x-cloak x-show="paneOpen" x-transition.opacity.duration.150ms @click="closePane()"></div>
+<div class="pane-scrim" :class="paneOpen ? 'is-visible' : ''" @click="closePane()"></div>
 <aside class="note-pane" :class="paneOpen ? 'is-open' : ''" x-cloak
        role="complementary" aria-label="Annotations">
   <div class="pane-head">

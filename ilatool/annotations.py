@@ -170,6 +170,11 @@ class MatchResult:
 
 ANN_BLOCK_START_RE = re.compile(r"^@([\w.:-]+)\s*$")
 ANN_QUOTE_FENCE_RE = re.compile(r'^"{3,}\s*$')
+#: Written at the start of a note's first line when that line would otherwise
+#: be mistaken for a field.  Zero-width, so the exported file still reads
+#: normally to a person.
+ANN_BODY_ESCAPE = "\u200b"
+
 ANN_FIELD_RE = re.compile(r"^(Author|Title|Source|Page|Quote|Para|Id):\s*(.*)$",
                           re.IGNORECASE)
 
@@ -226,6 +231,15 @@ def parse_annotations_text(text: str) -> List[Annotation]:
         if cur is None:
             continue
         if not stripped:
+            continue
+
+        if stripped.startswith(ANN_BODY_ESCAPE):
+            # The exporter protects a note that begins with something that
+            # looks like a field ("Author: see Smith (2020)") by prefixing
+            # that line with a zero-width space.  It is invisible, and it
+            # stops the line being read as a field and the note being lost.
+            body_started = True
+            body.append(stripped.lstrip(ANN_BODY_ESCAPE))
             continue
 
         fm = ANN_FIELD_RE.match(stripped)

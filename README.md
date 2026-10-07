@@ -5,16 +5,24 @@ annotations into an annotated web page in the style of this site: click a
 highlighted paragraph and its annotations open in a pane on the right, with an
 author filter, a note-density rail beside the text, and a jump link.
 
-The whole tool is `build_tool.py` plus the `ilatool/` package next to it.
-Nothing needs installing for the basic path; `pymupdf` is optional and
-strictly better (see *PDF backends* below).
+There is also a desktop application for the same work:
+
+```bash
+python3 -m pip install PySide6      # once
+python3 build_gui.py                # or: python3 build_tool.py gui
+```
+
+Nothing needs installing for the command-line path; `pymupdf` is optional and
+strictly better (see *PDF backends* below), and PySide6 is needed only for the
+desktop application.
 
 ---
 
 ## Quick start
 
 ```bash
-python3 build_tool.py                     # interactive interface
+python3 build_gui.py                      # the desktop application
+python3 build_tool.py                     # the terminal interface
 python3 build_tool.py doctor              # what is available here
 ```
 
@@ -114,7 +122,64 @@ guessed**: a note on the wrong sentence is worse than a note you place by hand.
 
 ---
 
-## Using the interface
+## Annotation Studio (desktop)
+
+`build_gui.py` opens a project by its folder and finds the rest itself. Pick
+the folder that holds `index.html`; the application locates the landing page,
+the card list, every generated text, its notes file — through the page's own
+`<script src>` tag, so a page whose notes are called `-notes.v7.js` still
+resolves — its source text, and the PDF or Word file it came from.
+
+```
++-- project: structure and every text          File  Edit  Text  View  Help
+|   +-- Project files                          Open  Reload  Save | New  Import  Export
+|   |     Landing page — index.html
+|   |     Card list (all.html) — all.html      +----------------------+---------------+
+|   |     Materials folder — materials         | Paragraph | Author   | Note          |
+|   +-- Texts (8)                              | This Conve| Oscar P. | For a discuss |
+|         CISG                                 | The partie| Oscar P. | See CISG Adv  |
+|           Page: cisg.html                    +----------------------+---------------+
+|           Annotations: cisg-notes.js         | the whole note, and the paragraph it |
+|           Source text: cisg.txt              | belongs to                           |
++----------------------------------------------+--------------------------------------+
+   Overview · Annotations · Build · Log
+```
+
+* **Overview** — what was found, and what was not. A text with a missing card,
+  an ambiguous material or an unreadable notes file is listed with the reason.
+* **Annotations** — every note of the selected text in a sortable table, with
+  search across all fields, an author filter, and a filter for notes whose
+  paragraph the source no longer has. Add, edit, duplicate, reorder, move to
+  another paragraph, delete; each with undo (`Ctrl+Z`).
+* **Build** — regenerate a page from its source and notes and read the
+  validation report; also for every text at once.
+* **Log** — everything the session did, with the technical detail behind it.
+
+Importing is a **merge**, never a replace. The application shows what would
+happen before it happens — how many notes are new, how many are already there,
+and which conflict — and nothing is written until the merge is applied.
+Conflicts (the same author's note on the same paragraph, edited) are resolved
+one at a time, or all at once.
+
+Files are written atomically, a backup is kept, and the notes file is written
+in the project's own `notes.js` format by the same code the builder uses.
+A file changed outside the application is never overwritten silently, and a
+notes file that cannot be parsed is reported and then refuses to be written
+over rather than being replaced with an empty one.
+
+The command-line tool is unchanged and remains the way to script a build:
+
+| what | where |
+|---|---|
+| project discovery | `ilatool/project.py` |
+| the editable annotations of one text | `ilatool/notestore.py` |
+| import, duplicate detection, conflicts | `ilatool/merge.py` |
+| atomic writes and change detection | `ilatool/fileio.py` |
+| the Qt interface | `ilatool/gui/` |
+
+---
+
+## Using the terminal interface
 
 | key | action |
 |---|---|

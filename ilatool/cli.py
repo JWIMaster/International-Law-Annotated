@@ -223,6 +223,12 @@ def cmd_annotations(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_gui(args: argparse.Namespace) -> int:
+    from .gui import main as gui_main
+    argv = [args.project] if getattr(args, "project", None) else []
+    return gui_main(argv)
+
+
 def cmd_doctor(args: argparse.Namespace) -> int:
     print(T.bold(f"ilatool {__version__}"))
     print()
@@ -321,6 +327,11 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("doctor", help="report on the environment")
     p.add_argument("--state", default=".annotate_state.json")
     p.set_defaults(func=cmd_doctor)
+
+    p = sub.add_parser("gui", help="the desktop application (needs PySide6)")
+    p.add_argument("project", nargs="?", default=None,
+                   help="project folder to open (the one with index.html)")
+    p.set_defaults(func=cmd_gui)
 
     p = sub.add_parser("menu", help="the interactive interface (default)")
     p.add_argument("--state", default=".annotate_state.json")

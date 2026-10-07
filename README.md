@@ -1,8 +1,9 @@
 # International Law Annotated — build tool
 
 Turns an instrument (a PDF of a treaty, judgment or opinion) plus its
-annotations into an annotated web page in the style of this site: hoverable
-paragraph markers, an author filter, a note-density rail and a jump link.
+annotations into an annotated web page in the style of this site: click a
+highlighted paragraph and its annotations open in a pane on the right, with an
+author filter, a note-density rail beside the text, and a jump link.
 
 The whole tool is `build_tool.py` plus the `ilatool/` package next to it.
 Nothing needs installing for the basic path; `pymupdf` is optional and
@@ -177,6 +178,21 @@ The tool picks the best one automatically and says which it used.
   reported rather than silently producing nonsense.
 * **Everything is escaped.** Paragraph text containing `<`, `&` or quotes can
   no longer break the generated page.
+
+## The page
+
+Clicking any paragraph that has annotations opens them in a pane on the right.
+The pane can be dismissed with its ✕, by clicking anywhere outside it, or with
+Esc, and `↑`/`↓` (or Alt+↑ / Alt+↓) step through the annotated paragraphs
+without going back to the text. The paragraph being annotated stays
+highlighted, and at widths of 1280px and up the text column narrows so the
+pane never covers it; below that the pane overlays, and on a phone it fills
+the screen.
+
+The rail beside the text marks where the annotated paragraphs are. Hovering a
+mark tells you which paragraph it is and how many notes it has; clicking it
+scrolls there and opens the pane. Marks that would land on top of each other
+are pushed apart so all of them stay clickable.
 
 ## Validation
 

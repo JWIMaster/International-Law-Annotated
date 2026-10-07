@@ -25,9 +25,9 @@ from .errors import RenderError
 from .page_template import PAGE_TEMPLATE
 from .structure import Block
 
-PARA_TEMPLATE = '''<div id="{pid}">
+PARA_TEMPLATE = '''<div id="{pid}" data-label="{label}">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('{pid}')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="{pid}" title="Copy link; hover/click for notes">{label}</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="{pid}" title="Click to read the annotations on this paragraph">{label}</button>
     <p>{text}</p>
   </div>
 </div>

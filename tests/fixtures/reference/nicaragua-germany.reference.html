@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-white" lang="en" x-data="icjApp()">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Nicaragua v Germany — Order (Annotated)</title>
+<meta content="Annotated ICJ Order with inline author-filtered notes." name="description"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer="" src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<link href="https://unpkg.com/tippy.js@6/animations/scale.css" rel="stylesheet"/>
+<style>
+    .para-id { font-variant-numeric: tabular-nums; }
+    
+.note-card {
+  max-width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 0.5rem;
+}
+
+.tippy-box[data-theme~='light-border'] {
+  background-color: #fafafa;
+  border: 1px solid rgb(229 229 229);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border-radius: 10px;
+  max-width: min(92vw, 420px);
+}
+.tippy-box[data-theme~='light-border'] .tippy-content {
+  max-height: 68vh;
+  overflow: auto;
+}
+@media (max-width: 380px) {
+  .tippy-box[data-theme~='light-border'] { max-width: 94vw; }
+  .tippy-box[data-theme~='light-border'] .tippy-content { max-height: 64vh; }
+}
+.tippy-box[data-theme~='light-border'] > .tippy-arrow {
+  display: none !important;
+}
+.tippy-box[data-theme~='light-border'] .tippy-content {
+  overflow-wrap: anywhere;   /* modern wrap */
+  word-break: break-word;    /* fallback */
+  white-space: normal;
+}
+
+.tippy-box[data-theme~='light-border'] a {
+  text-decoration: underline;
+  word-break: break-all;     /* allows very long URLs to wrap mid-word if needed */
+}
+
+
+    .hl { background: rgba(250, 204, 21, .25); }
+    .dim {
+  opacity: 0.35;                /* fades non-selected paragraphs */
+  transition: opacity 0.2s ease;
+}
+
+  .sc { font-variant: small-caps; letter-spacing: .02em; }
+  .hang { padding-left: 11ch; text-indent: -11ch; }
+  /* Classic hanging indent for numbered paragraphs like "1. ..." */
+  .hang-num { padding-left: 3ch; text-indent: -3ch; }
+
+  /* Nice readable flow + automatic hyphenation to mimic print wraps */
+  .legal-flow { line-height: 1.7; hyphens: auto; }
+
+  /* Indented preamble block (adjust ch to taste) */
+  .preamble { padding-left: 4ch; }
+  </style>
+<script defer="" src="nicaragua-germany-notes.v7.js"></script>
+<script defer="">
+  // Build AUTHORS once notes are ready
+  function computeAuthors(){
+    window.AUTHORS = Array.from(new Set(
+      Object.values(window.NOTES || {}).flat().map(n => (n.author||'').trim()).filter(Boolean)
+    )).sort();
+  }
+  if (window.NOTES && Object.keys(window.NOTES).length) { computeAuthors(); }
+  window.addEventListener('notes:ready', computeAuthors, { once: true });
+</script>
+
+<meta content="President Salam; Vice-President Sebutinde; Judges Tomka, Abraham, Yusuf, Xue, Bhandari, Iwasawa, Nolte, Charlesworth, Brant, Gómez Robledo, Cleveland, Aurescu, Tladi; Judge ad hoc Al-Khasawneh; Registrar Gautier" name="justices"/>
+
+<script>  
+function icjApp() {
+  return {
+    selectedAuthors: new Set(),
+    authors: [],
+
+    linkify(text = '') {
+  // escape HTML first
+  const esc = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // convert URLs to clickable links
+  const url = /(https?:\/\/[^\s)]+)(?=[)\s]|$)/gi;
+  return esc.replace(url, (m) =>
+    `<a href="${m}" target="_blank" rel="noopener noreferrer">${m}</a>`
+  );
+},
+
+    htmlFor(id) {
+      const list = (window.NOTES && window.NOTES[id]) ? window.NOTES[id] : [];
+      const hasFilter = this.selectedAuthors.size > 0;
+      const filtered = hasFilter ? list.filter(n => this.selectedAuthors.has((n.author || '').trim())) : list;
+      if (!filtered.length) return '<div class="text-sm text-neutral-500">No notes yet.</div>';
+      return filtered.map(n => {
+        let h = '';
+        h += '<div class="note-card mb-2">';
+        if (n.author) h += '<div class="text-[11px] tracking-wide text-neutral-600 mb-1">By ' + n.author + '</div>';
+        if (n.title)  h += '<div class="font-semibold mt-0.5">' + n.title + '</div>';
+        h += '<div class="text-sm leading-snug mt-1 text-neutral-700" data-note-body>'
+     + this.linkify(n.text || '')
+     + '</div>';
+        if (n.source) h += '<div class="text-xs mt-2 text-neutral-500">Source: ' + n.source + '</div>';
+        h += '</div>';
+        return h;
+      }).join('');
+    },
+
+    _tippies: [],
+
+    init() {
+      const run = () => {
+        // Pull authors from global after notes are computed
+        this.authors = Array.isArray(window.AUTHORS) ? window.AUTHORS : [];
+        this.refreshPopovers();
+        this.applyHighlights();
+        this.handleHashOnLoad();
+      };
+      if (!window.NOTES || Object.keys(window.NOTES).length === 0) {
+        const once = () => { window.removeEventListener('notes:ready', once); run(); };
+        window.addEventListener('notes:ready', once);
+      } else {
+        run();
+      }
+    },
+
+    refreshPopovers() {
+  // destroy old instances
+  this._tippies.forEach(t => t.destroy());
+  this._tippies = [];
+
+  const isMobile = window.matchMedia('(max-width: 640px)').matches;
+
+  document.querySelectorAll('[data-para]').forEach(el => {
+    const id = el.getAttribute('data-para');
+
+    const instance = tippy(el, {
+      allowHTML: true,
+      interactive: true,
+      theme: 'light-border',
+      animation: 'scale',
+      appendTo: () => document.body,             // avoid clipping in narrow containers
+      placement: isMobile ? 'bottom' : 'right-start',  // NOTE: plain hyphen, not en dash
+      trigger: isMobile ? 'click' : 'mouseenter focus',
+      offset: isMobile ? [0, 8] : [6, 0],
+      hideOnClick: true,
+      content: () => this.htmlFor(id),
+      popperOptions: {
+        modifiers: [
+          { name: 'preventOverflow', options: { padding: 8, altAxis: true } },
+          { name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'right', 'left'] } }
+        ]
+      }
+    });
+
+    this._tippies.push(instance);
+  });
+},
+
+    applyHighlights() {
+      const allParas = Array.from(document.querySelectorAll('[id^=\"para-\"],[data-dimmable="1"]'));
+      allParas.forEach(w => w.classList.remove('hl', 'dim'));
+      const allIds = allParas.map(el => el.id);
+
+      if (this.selectedAuthors.size === 0) {
+        allIds.forEach(id => {
+          const notes = (window.NOTES && window.NOTES[id]) ? window.NOTES[id] : [];
+          if (notes.length > 0) {
+            const w = document.getElementById(id);
+            if (w) w.classList.add('hl');
+          }
+        });
+        return;
+      }
+
+      allParas.forEach(w => w.classList.add('dim'));
+
+      allIds.forEach(id => {
+        const notes = (window.NOTES && window.NOTES[id]) ? window.NOTES[id] : [];
+        const hasSelected = notes.some(n => this.selectedAuthors.has((n.author || '').trim()));
+        if (hasSelected) {
+          const w = document.getElementById(id);
+          if (w) { w.classList.add('hl'); w.classList.remove('dim'); }
+        }
+      });
+    },
+
+    toggleAuthor(a) {
+      a = (a || '').trim();
+      if (this.selectedAuthors.has(a)) this.selectedAuthors.delete(a);
+      else this.selectedAuthors.add(a);
+      this.applyHighlights();
+      this.refreshPopovers();
+    },
+
+    isActive(a) { return this.selectedAuthors.has((a || '').trim()); },
+
+    copyLink(id) {
+      const url = new URL(window.location);
+      url.hash = id;
+      navigator.clipboard.writeText(url.toString());
+      const el = document.querySelector(`[data-para='${id}']`);
+      if (el) { el.classList.add('ring-2','ring-emerald-400'); setTimeout(()=>el.classList.remove('ring-2','ring-emerald-400'),800); }
+    },
+
+    handleHashOnLoad() {
+      if (location.hash) {
+        const id = location.hash.slice(1);
+        const el = document.getElementById(id);
+        if (el) { el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.add('bg-yellow-50'); setTimeout(()=>el.classList.remove('bg-yellow-50'),1200); }
+      }
+    }
+  }
+}
+
+</script>
+<style>:root { --sticky-offset: 80px; }
+html, body { scroll-padding-top: var(--sticky-offset); }
+.note-rail { width:6px; }
+.note-dot { width:12px; height:8px; }
+</style></head>
+
+<body class="min-h-full text-neutral-900" x-init="init()">
+<header class="sticky top-0 z-40 backdrop-blur bg-white/90 border-b border-neutral-200">
+  <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
+    <!-- add min-w-0 so the title can actually truncate -->
+    <div class="flex items-center gap-3 min-w-0">
+      <!-- add shrink-0 so the logo never squishes -->
+      <a href="../index.html"
+   class="shrink-0 text-neutral-900"
+   aria-label="International Law Annotated">
+  <!-- ILA mark: bracket with rounded arms + citation dot -->
+  <svg aria-hidden="true" viewBox="0 0 32 32" class="h-7 w-auto">
+    <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 8h6M12 24h6M12 8v16" />
+    </g>
+    <circle cx="23" cy="16" r="3" fill="currentColor"/>
+  </svg>
+</a>
+      <!-- add flex-1 min-w-0 truncate and an id for the script -->
+      <div id="hdr-title"
+           class="font-semibold tracking-tight flex-1 min-w-0 truncate">
+        Nicaragua v Germany
+      </div>
+    </div>
+
+    <!-- give the authors row an id; no breakpoint classes -->
+    <div id="hdr-authors" class="flex items-center gap-2">
+      <span class="text-sm text-neutral-600">Authors:</span>
+      <template x-for="a in authors" :key="a">
+  <button
+    class="px-2.5 py-1 rounded-full border text-sm transition
+           text-neutral-700 border-neutral-300"
+    :class="isActive(a)
+      ? 'bg-neutral-900 text-white border-neutral-900 hover:bg-neutral-600' 
+      : 'hover:bg-neutral-100 hover:text-neutral-900'"
+    @click="toggleAuthor(a)">
+    <span x-text="a"></span>
+  </button>
+</template>
+
+    </div>
+  </div>
+</header>
+<main class="mx-auto max-w-5xl px-4 py-8 prose prose-neutral">
+<div class="relative">
+  <!-- Note map rail — fixed, content-aligned -->
+  <div x-data="noteMap()" x-init="init()"
+       data-note-rail
+       class="hidden lg:block fixed z-30"
+       style="top: var(--sticky-offset);">
+    <div class="note-rail bg-neutral-200 rounded-full relative"
+         style="height: calc(100vh - var(--sticky-offset) - 24px);">
+      <template x-for="m in markers" :key="m.id">
+        <button
+  class="note-dot rounded-full absolute left-1/2 -translate-x-1/2
+         bg-neutral-500/70 hover:bg-neutral-900 transition ring-2 ring-white"
+  :style="`top:${m.pos}%; opacity:${m.opacity}; z-index:${10000 - (parseInt((m.id || '').replace(/[^0-9]/g, ''), 10) || 0)}`"
+  @click="scrollTo(m.id)"
+  :title="m.tooltip">
+</button>
+      </template>
+
+      <!-- active tracker -->
+      <div class="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-neutral-900 z-[1200]"
+     :style="`top:${activePos}%`"></div>
+  </div>
+</div>
+
+<section class="mb-8 border-b border-neutral-200 pb-5">
+<div class="text-[11px] uppercase tracking-[0.22em] text-neutral-500 mb-2">
+    International Law Annotated
+  </div>
+<h1 class="text-balance font-extrabold tracking-tight leading-[1.15] text-[clamp(1.6rem,3.5vw,2.75rem)] md:text-[clamp(1.9rem,2.6vw,3.2rem)] bg-clip-text text-transparent bg-gradient-to-b from-neutral-900 to-neutral-600 [word-spacing:0.02em]" id="page-title">
+<!-- Keep your exact title text (no casing changes) -->
+Alleged Breaches of Certain International Obligations in Respect of the Occupied Palestinian Territory (Nicaragua v Germany) — Request for the Indication of Provisional Measures (30 APRIL 2024)  </h1>
+<div class="mt-3 text-sm text-neutral-600" id="justices-line"></div>
+</section>
+<div class="flex items-center justify-center gap-2 text-sm text-neutral-700 border-l-4 border-sky-400 bg-sky-50 px-3 py-2 mb-6 rounded-r-lg">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-sky-600">
+    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-9 4a1 1 0 102 0 1 1 0 00-2 0zm1-9a1 1 0 00-.993.883L9 6v4a1 1 0 001.993.117L11 10V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+  </svg>
+  <span>Hover or tap paragraph numbers <span class="font-semibold">[¶]</span> to view annotations.</span>
+</div>
+
+
+<div data-dimmable="1" class="preamble legal-flow space-y-3 mb-3">
+<p>The International Court of Justice,</p>
+<p>Composed as above,</p>
+<p>After deliberation,</p>
+<p>Having regard to Articles 41 and 48 of the Statute of the Court and Articles 73, 74 and 75 of the Rules of Court,</p>
+<p><em>Makes the following Order:</em></p>
+</div>
+
+<div class="space-y-3">
+<div id="para-1">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-1')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-1" title="Copy link; hover/click for notes">[1]</button>
+<p>On 1 March 2024, the Republic of Nicaragua (hereinafter “Nicaragua”) filed in the Registry of the Court an Application instituting proceedings against the Federal Republic of Germany (hereinafter “Germany”) concerning alleged breaches of certain international obligations in respect of the Occupied Palestinian Territory.</p>
+</div>
+</div>
+<div id="para-2">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-2')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-2" title="Copy link; hover/click for notes">[2]</button>
+<p>At the end of its Application, Nicaragua “respectfully requests the Court to adjudge and declare that Germany: <br/>(1) has breached and continues to breach its obligations under the Genocide Convention in particular the obligations provided in Article I by, with full knowledge of the situation, failing to prevent the ongoing genocide against the Palestinian People in particular Gazans; <br/>(2) has breached and continues to breach its obligations under the Genocide Convention in particular the obligations provided in Article I by not only failing to prevent the ongoing genocide but by providing aid, including military equipment, to Israel that would be used in the commission of genocide, by Israel, and by withdrawing the financial assistance to the victims provided by UNRWA; <br/>(3) has breached and continues to breach its obligations under Article I of the Fourth Geneva Convention and intransgressible principles of humanitarian law, not only by failing to ensure that the requirements of that Convention are complied with, but also by providing aid, including military equipment, that would be used in the commission of genocide, crimes against humanity, grave breaches of the Geneva Conventions of 1949, attacks directed against civilian objects or civilians protected as such, or other war crimes, in violation of its duties under the 1949 Geneva Conventions and customary international law and by withdrawing Germany’s financial assist ance to UNRWA; <br/>(4) has breached and continues to breach its obligations under international humanitarian law not only by failing to ensure that these rules of elementary consideration of humanity are respected by Israel, but also by providing aid and assistance to Israel, and withdrawing Germany’s financial assistance to UNRWA; <br/>(5) has breached and continues to breach its conventional and customary law obligations, including the obligation to facilitate and cooperate in bringing about the Palestinian People’s right to self-determination, by providing aid and particularly military equipment to Israel that is used to deny this right of self-determination and moreover helps to maintain and impose an apartheid regime; <br/>(6) has breached and continues to breach international law by refusing to prosecute, bring to trial and punish persons responsible for, or accused of grave crimes under international law, including war crimes and apartheid, whether or not such persons are German nationals; <br/>(7) must cease immediately the breaches of its international obligations indicated above; <br/>(8) must give assurances of non-repetition of the breaches of its obligations indicated above; <br/>(9) must make full reparation for the injury caused by its internationally wrongful acts.”</p>
+</div>
+</div>
+<div id="para-3">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-3')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-3" title="Copy link; hover/click for notes">[3]</button>
+<p>In its Application, Nicaragua seeks to found the jurisdiction of the Court on the declaration which it made on 24 September 1929 (as amended on 23 October 2001) under Article 36 of the Statute of the Permanent Court of International Justice and which is deemed, pursuant to Article 36, paragraph 5, of the Statute of the present Court, for the period which it still has to run, to be acceptance of the compulsory jurisdiction of this Court, as well as on the declaration made by Germany on 30 April 2008, under Article 36, paragraph 2, of the Statute. Nicaragua also seeks to found the jurisdiction of the Court on Article IX of the Convention on the Prevention and Punishment of the Crime of Genocide (hereinafter the “Genocide Convention” or the “Convention”).</p>
+</div>
+</div>
+<div id="para-4">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-4')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-4" title="Copy link; hover/click for notes">[4]</button>
+<p>The Application contained a Request for the indication of provisional measures submitted with reference to Article 41 of the Statute and to Articles 73, 74 and 75 of the Rules of Court.</p>
+</div>
+</div>
+<div id="para-5">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-5')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-5" title="Copy link; hover/click for notes">[5]</button>
+<p>At the end of its Request, Nicaragua asks the Court to indicate the following provisional measures: <br/>“(1) Germany shall immediately suspend its aid to Israel, in particular its military assistance including military equipment, in so far as this aid may be used in the violation of the Genocide Convention, international humanitarian law or other peremptory norms of general international law such as the Palestinian People’s right to self-determination and to not be subject to a regime of apartheid; <br/>(2) Germany must immediately make every effort to ensure that weapons already delivered to Israel are not used to commit genocide, contribute to acts of genocide or are used in such a way as to violate international humanitarian law; <br/>(3) Germany must immediately do everything possible to comply with its obligations under humanitarian law; <br/>(4) Germany must reverse its decision to suspend the funding of UNRWA as part of the compliance of its obligations to prevent genocide and acts of genocide and the violation of the humanitarian rights of the Palestinian People which also includes the obligation to do everything possible to ensure that humanitarian aid reaches the Palestinian People, more particularly in Gaza; <br/>(5) Germany must cooperate to bring to an end the serious breaches of peremptory norms of international law by ceasing its support, including its supply of military equipment to Israel that may be used to commit serious crimes of international law and that it continue the support of the UNRWA on which this Organization has counted and based its activities.”</p>
+</div>
+</div>
+<div id="para-6">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-6')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-6" title="Copy link; hover/click for notes">[6]</button>
+<p>The Deputy-Registrar immediately communicated to the Government of Germany the Application containing the Request for the indication of provisional measures, in accordance with Article 40, paragraph 2, of the Statute of the Court and Article 73, paragraph 2, of the Rules of Court. He also notified the Secretary-General of the United Nations of the filing by Nicaragua of the Application and the Request for the indication of provisional measures.</p>
+</div>
+</div>
+<div id="para-7">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-7')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-7" title="Copy link; hover/click for notes">[7]</button>
+<p>Pending the notification provided for by Article 40, paragraph 3, of the Statute of the Court, the Registrar informed all States entitled to appear before the Court of the filing of the Application and the Request for the indication of provisional measures by a letter dated 4 March 2024.</p>
+</div>
+</div>
+<div id="para-8">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-8')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-8" title="Copy link; hover/click for notes">[8]</button>
+<p>Since the Court included upon the Bench no judge of Nicaraguan nationality, Nicaragua proceeded to exercise the right conferred upon it by Article 31, paragraph 3, of the Statute to choose a judge ad hoc to sit in the case; it chose Mr Awn Shawkat Al-Khasawneh.</p>
+</div>
+</div>
+<div id="para-9">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-9')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-9" title="Copy link; hover/click for notes">[9]</button>
+<p>By letters dated 5 March 2024, the Registrar informed the Parties that, pursuant to Article 74, paragraph 3, of its Rules, the Court had fixed Monday 8 April and Tuesday 9 April 2024 as the dates for the oral proceedings on the request for the indication of provisional measures.</p>
+</div>
+</div>
+<div id="para-10">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-10')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-10" title="Copy link; hover/click for notes">[10]</button>
+<p>At the public hearings, oral observations on the request for the indication of provisional measures were presented by: <br>On behalf of Nicaragua: HE Mr Carlos José Argüello Gómez, Mr Daniel Müller, Mr Alain Pellet. <br>On behalf of Germany: Ms Tania von Uslar-Gleichen, Mr Christian J. Tams, Mr Samuel Wordsworth, Ms Anne Peters, Mr Paolo Palchetti.</p>
+</div>
+</div>
+<div id="para-11">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-11')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-11" title="Copy link; hover/click for notes">[11]</button>
+<p>At the end of its oral observations, Nicaragua requested the Court “as a matter of extreme urgency, pending the Court’s determination of this case on the merits, and after recalling to the Parties the obligation of compliance with humanitarian law as well as of the obligation of cooperation to bring to an end all serious breaches of peremptory norms of international law, to indicate the following provisional measures with respect to Germany in its participation in the ongoing plausible genocide and serious breaches of international humanitarian law and other peremptory norms of general international law occurring in the Gaza Strip, as well as in other parts of Palestine, namely, to order that: <br/>(1) Germany must immediately suspend its aid to Israel, in particular its military assistance, export and authorization of export of military equipment and war weapons, in so far as this aid is used or could be used to commit or to facilitate serious violations of the Genocide Convention, international humanitarian law or other peremptory norms of general international law; <br/>(2) Germany must immediately ensure that military equipment, war weapons, and other equipment used for military purposes already delivered by Germany and German entities to Israel are not used to commit or to facilitate serious violations of the Genocide Convention, international humanitarian law or other peremptory norms of general international law; <br/>(3) Germany must resume its support and financing of UNRWA in respect of its operations in Gaza.”</p>
+</div>
+</div>
+<div id="para-12">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-12')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-12" title="Copy link; hover/click for notes">[12]</button>
+<p>At the end of its oral observations, Germany asked the Court <br>“(1) to reject the request for the indication of provisional measures submitted by the Republic of Nicaragua; and <br>(2) to remove from the General List the case introduced by the Republic of Nicaragua on 1 March 2024”. <br/>* * *</p>
+</div>
+</div>
+<div id="para-13">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-13')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-13" title="Copy link; hover/click for notes">[13]</button>
+<p>The Court recalls that, pursuant to Article 41 of the Statute, it has “the power to indicate, if it considers that circumstances so require, any provisional measures which ought to be taken to preserve the respective rights of either party”. In the present proceedings, the Court considers that it must first ascertain whether Nicaragua has sufficiently shown that the circumstances as they now present themselves to the Court are such as to require the exercise of its power to indicate provisional measures. <br/>* *</p>
+</div>
+</div>
+<div id="para-14">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-14')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-14" title="Copy link; hover/click for notes">[14]</button>
+<p>Nicaragua asserts that, by providing weapons to Israel and by suspending the provision of funds to the United Nations Relief and Works Agency for Palestine Refugees in the Near East (UNRWA), Germany has failed to comply with its obligations under the Genocide Convention and international humanitarian law, including the Geneva Conventions of 12 August 1949 (hereinafter the “Geneva Conventions”) and the Additional Protocols of 8 June 1977, and its intransgressible principles. Nicaragua contends that, for the year 2023, the German Government authorized exports “of military equipment and war weapons” worth more than €326 million which is more than ten times than for the year 2022 —, and that, out of this amount, licences for military equipment worth almost €300 million have been granted since the beginning of the military operation by Israel in the Gaza Strip. Nicaragua further argues that, in early 2024, the German Government provided export licences for “military equipment and weapons of war” worth more than €9 million. Nicaragua claims that Germany could not be unaware of the situation in Gaza nor ignore the likelihood that the “military equipment and war weapons” provided by it would be used by Israel “to bomb and kill thousands of Palestinian children, women and men”. It also claims that Germany has not only violated its obligations to prevent and punish breaches of the Genocide Convention and of international humanitarian law, but that it is also “complicit in them by aiding and assisting the commission of [those] breaches”.</p>
+</div>
+</div>
+<div id="para-15">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-15')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-15" title="Copy link; hover/click for notes">[15]</button>
+<p>In response, Germany first states that it has fulfilled the obligation incumbent on States parties to the Genocide Convention to prevent the occurrence of genocide by continuously using all reasonable means at its disposal to exert its influence on Israel in order to improve the situation in Gaza and to furnish humanitarian aid to the population of Gaza. Secondly, it contends that the obligation that could be derived from common Article 1 of the Geneva Conventions incumbent upon non-parties to an armed conflict does not obligate a State to refrain completely from providing military support to a State involved in an armed conflict. It rather requires States supplying arms to an area of armed conflict, before taking decisions regarding exports of military equipment and arms, to conduct a proper risk assessment as to whether such arms will be used to commit breaches of obligations under applicable rules of international law. Germany further contends that it has stringent licensing standards to assess whether there is any risk of serious violations of the Genocide Convention, international humanitarian law and other peremptory norms of international law by the recipient State. According to Germany, there is no evidence that the supply of military equipment to Israel by Germany would have contributed to an alleged genocide or to breaches of international humanitarian law. <br/>* *</p>
+</div>
+</div>
+<div id="para-16">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-16')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-16" title="Copy link; hover/click for notes">[16]</button>
+<p>The Court notes that Germany, as it has stated, is bound by the Arms Trade Treaty of 2 April 2013 and by the European Council Common Position 2008/944/CFSP of 8 December 2008 (as amended by Council Decision (CFSP) 2019/1560, published on 17 September 2019), which defines common rules governing the control of exports of military technology and equipment.</p>
+</div>
+</div>
+<div id="para-17">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-17')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-17" title="Copy link; hover/click for notes">[17]</button>
+<p>The Court further notes that, as Germany has also stated, the German legal framework on the manufacturing, marketing and export of weapons and other military equipment involves an inter-agency process with consideration by at least two ministries, and potentially other ministries depending on the content of the licence application. Under this legal framework, there are two categories of military technology and equipment subject to licensing, “war weapons” and “other military equipment”. The export of “war weapons”, which include combat aircraft, tanks, automatic weapons and certain corresponding ammunition and essential components, requires two licences. The export of “other military equipment”, which includes defence equipment against chemical hazards, protective gear such as helmets or body protection plates, as well as communication equipment, requires one licence. Under the German legal framework, for every licence that is granted, an assessment is carried out by the German Government to ascertain whether there is a clear risk that the particular item subject to licensing would be used in the commission of genocide, crimes against humanity or grave breaches of the four Geneva Conventions.</p>
+</div>
+</div>
+<div id="para-18">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-18')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-18" title="Copy link; hover/click for notes">[18]</button>
+<p>The Court in addition notes that, as stated by Germany, there has been a significant decrease since November 2023 in the value of material for which the licences were granted, from approximately €200 million in October 2023 to approximately €24 million in November 2023 to approximately €1 million in March 2024. The Court also notes that, since 7 October 2023, according to Germany, only four licences for “war weapons” have been granted: two for training ammunition, one for propellant charges for test purposes, and one concerned the export of 3,000 portable anti-tank weapons. The Court further notes that Israel had also approached the German Government in 2023 for tank ammunition and that no decision by the Respondent has thus far been made regarding this request. In addition, according to Germany, the licensing for export of a submarine to Israel is currently pending, as only one of the two licences required for this export has so far been granted. Finally, the Court takes note of Germany’s statement that 98 per cent of the licences granted since 7 October 2023 concerned “other military equipment” and not “war weapons”.</p>
+</div>
+</div>
+<div id="para-19">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-19')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-19" title="Copy link; hover/click for notes">[19]</button>
+<p>With regard to Nicaragua’s request that Germany “resume its support and financing of UNRWA in respect of its operations in Gaza” (see paragraph 11 above), the Court notes that Germany announced its decision to suspend its contribution to UNRWA on 27 January 2024 in respect of operations in Gaza. In this regard, the Court observes, first, that contributions to UNRWA are voluntary in nature. Secondly, it notes that, according to the information provided to it by Germany, no new payment was due from the latter in the weeks following the announcement of its decision. Finally, the Court notes that Germany stated that it has supported initiatives aimed at funding the agency’s work, in particular through the payment of €50 million by the European Union to UNRWA on 1 March 2024, as well as providing financial and material support to other organizations operating in the Gaza Strip.</p>
+</div>
+</div>
+<div id="para-20">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-20')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-20" title="Copy link; hover/click for notes">[20]</button>
+<p>Based on the factual information and legal arguments presented by the Parties, the Court concludes that, at present, the circumstances are not such as to require the exercise of its power under Article 41 of the Statute to indicate provisional measures. <br/>*</p>
+</div>
+</div>
+<div id="para-21">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-21')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-21" title="Copy link; hover/click for notes">[21]</button>
+<p>As to Germany’s request that the case be removed from the List (see paragraph 12 above), the Court notes that, as it has held in the past, where there is a manifest lack of jurisdiction, it can remove the case from the List at the provisional measures stage (Legality of Use of Force (Yugoslavia v. Spain), Provisional Measures, Order of 2 June 1999, I.C.J. Reports 1999 (II), p. 773, para. 35; Legality of Use of Force (Yugoslavia v. United States of America), Provisional Measures, Order of 2 June 1999, I.C.J. Reports 1999 (II), p. 925, para. 29; Immunities and Criminal Proceedings (Equatorial Guinea v. France), Provisional Measures, Order of  7 December 2016, I.C.J. Reports 2016 (II), p. 1165, para. 70). Conversely, where there is no such manifest lack of jurisdiction, the Court cannot remove the case at that stage (Armed Activities on the Territory of the Congo (New Application: 2002) (Democratic Republic of the Congo v. Rwanda), Provisional Measures, Order of 10 July 2002, I.C.J. Reports 2002, p. 249, para. 91; Immunities and Criminal Proceedings (Equatorial Guinea v. France), Provisional Measures, Order of 7 December 2016, I.C.J. Reports 2016 (II), p. 1165, para. 70). In the present case, there being no manifest lack of jurisdiction, the Court cannot accede to Germany’s request. <br/>* * *</p>
+</div>
+</div>
+<div id="para-22">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-22')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-22" title="Copy link; hover/click for notes">[22]</button>
+<p>The Court recalls that, in its Order of 26 January 2024, it noted that the military operation conducted by Israel following the attack of 7 October 2023 had resulted in “a large number of deaths and injuries, as well as the massive destruction of homes, the forcible displacement of the vast majority of the population, and extensive damage to civilian infrastructure” (Application of the Convention on the Prevention and Punishment of the Crime of Genocide in the Gaza Strip (South Africa v. Israel), Provisional Measures, Order of  26 January 2024, I.C.J. Reports 2024 (I), p. 20, para. 46). In addition, the Court remains deeply concerned about the catastrophic living conditions of the Palestinians in the Gaza Strip, in particular in view of the prolonged and widespread deprivation of food and other basic necessities to which they have been subjected, as acknowledged by the Court in its Order of 28 March 2024 (Application of the Convention on the Prevention and Punishment of the Crime of Genocide in the Gaza Strip (South Africa v. Israel), Provisional Measures, Order of 28 March 2024, I.C.J. Reports 2024 (I), p. 519, para. 18).</p>
+</div>
+</div>
+<div id="para-23">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-23')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-23" title="Copy link; hover/click for notes">[23]</button>
+<p>The Court recalls that, pursuant to common Article 1 of the Geneva Conventions, all States parties are under an obligation “to respect and to ensure respect” for the Conventions “in all circumstances”. It follows from that provision that every State party to these Conventions, “whether or not it is a party to a specific conflict, is under an obligation to ensure that the requirements of the instruments in question are complied with” (Legal Consequences of the Construction of a Wall in the Occupied Palestinian Territory, Advisory Opinion, I.C.J. Reports 2004 (I), pp. 199-200, para. 158). Such an obligation “does not derive only from the Conventions themselves, but from the general principles of humanitarian law to which the Conventions merely give specific expression” (Military and Paramilitary Activities in and against Nicaragua (Nicaragua v. United States of America), Merits, Judgment, I.C.J. Reports 1986, p. 114, para. 220). With regard to the Genocide Convention, the Court has had the opportunity to observe that the obligation to prevent the commission of the crime of genocide, pursuant to Article I, requires States parties that are aware, or that should normally have been aware, of the serious risk that acts of genocide would have been committed, to employ all means reasonably available to them to prevent genocide so far as possible (Application of the Convention on the Prevention and Punishment of the Crime of Genocide (Bosnia and Herzegovina v. Serbia and Montenegro), Judgment, I.C.J. Reports 2007 (I), pp. 221-222, paras. 430-431). Further, States parties are bound by the Genocide Convention not to commit any other acts enumerated in Article III (ibid., p. 114, para. 168).</p>
+</div>
+</div>
+<div id="para-24">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-24')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-24" title="Copy link; hover/click for notes">[24]</button>
+<p>Moreover, the Court considers it particularly important to remind all States of their international obligations relating to the transfer of arms to parties to an armed conflict, in order to avoid the risk that such arms might be used to violate the above-mentioned Conventions. All these obligations are incumbent upon Germany as a State party to the said Conventions in its supply of arms to Israel. <br/>* * *</p>
+</div>
+</div>
+<div id="para-25">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-25')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-25" title="Copy link; hover/click for notes">[25]</button>
+<p>The Court reaffirms that the decision given in the present proceedings in no way prejudges the question of the jurisdiction of the Court to deal with the merits of the case or any questions relating to the admissibility of the Application or to the merits themselves. It leaves unaffected the right of the Governments of Nicaragua and Germany to submit arguments in respect of those questions. <br/>* * *</p>
+</div>
+</div>
+<div id="para-26">
+<div class="grid grid-cols-[6ch_1fr] items-start gap-3">
+<button @click.prevent="copyLink('para-26')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 rounded-md border text-xs text-neutral-700 bg-white hover:bg-neutral-50" data-para="para-26" title="Copy link; hover/click for notes">[26]</button>
+</div>
+<!-- content column -->
+<div data-dimmable="1" class="leading-relaxed space-y-2">
+<p>For these reasons,</p>
+<p class="sc">THE COURT,</p>
+<p>By fifteen votes to one,</p>
+<p>
+<em>Finds</em> that the circumstances, as they now present themselves to the Court,
+        are not such as to require the exercise of its power under Article 41 of the
+        Statute to indicate provisional measures.
+      </p>
+<p class="hang">
+<span class="sc">IN FAVOUR:</span>
+<em>President</em> Salam; <em>Vice-President</em> Sebutinde;
+        <em>Judges</em> Tomka, Abraham, Yusuf, Xue, Bhandari, Iwasawa, Nolte, Charlesworth,
+        Brant, Gómez Robledo, Cleveland, Aurescu, Tladi;
+      </p>
+<p class="hang">
+<span class="sc">AGAINST:</span>
+<em>Judge ad hoc</em> Al-Khasawneh.
+      </p>
+<p>
+        Done in French and in English, the French text being authoritative, at the Peace
+        Palace, The Hague, this thirtieth day of April, two thousand and twenty-four, in
+        three copies, one of which will be placed in the archives of the Court and the
+        others transmitted to the Government of the Republic of Nicaragua and the
+        Government of the Federal Republic of Germany, respectively.
+      </p>
+<div class="text-center space-y-2 mt-3">
+<p><em>(Signed)</em> Nawaf <span class="sc">Salam</span>,<br/>President.</p>
+<p><em>(Signed)</em> Philippe <span class="sc">Gautier</span>,<br/>Registrar.</p>
+</div>
+<p class="mt-2">
+        Vice-President <span class="sc">Sebutinde</span> appends a separate opinion to the
+        Order of the Court; Judge <span class="sc">Iwasawa</span> appends a separate opinion
+        to the Order of the Court; Judges <span class="sc">Cleveland</span> and
+        <span class="sc">Tladi</span> append declarations to the Order of the Court; Judge
+        <em>ad hoc</em> <span class="sc">Al-Khasawneh</span> appends a dissenting opinion to
+        the Order of the Court.
+      </p>
+<div class="text-right italic space-y-1">
+<p>(Initialled) N.S.</p>
+<p>(Initialled) Ph.G.</p>
+</div>
+</div>
+</div>
+</div>
+<hr class="my-10"/>
+<div class="text-sm text-neutral-500">
+<strong>How to read:</strong> Hover/click the <span class="px-1 py-0.5 border rounded">[¶]</span> badge for notes.
+      Use the author chips to toggle highlights and filter tooltips.
+    </div>
+</main>
+<div class="fixed right-4 bottom-4 z-40" x-cloak="" x-data="jumpFirstNote({ headerSelector: '#site-header' })" x-init="init()">
+<button @click="go()" class="px-3 py-2 rounded-full bg-neutral-900 text-white shadow hover:bg-neutral-800 transition" x-show="show" x-transition.opacity.duration.300="">
+    Jump to first annotation
+  </button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const h = document.getElementById('page-title');
+  if (h) {
+    // Keep your title exactly as authored; only tweak rhythm for very long strings
+    const len = h.textContent.trim().length;
+    if (len > 120) {
+      h.style.letterSpacing = '-0.01em';
+      h.style.lineHeight = '1.12';
+    }
+    if (len > 180) {
+      // For extremely long titles, nudge font size down slightly
+      h.style.fontSize = 'clamp(1.5rem, 3.0vw, 2.5rem)';
+    }
+  }
+
+  // ---- Justices line (meta first, then fallback list) ----
+  const meta = document.querySelector('meta[name="justices"]');
+  let justices = meta?.content?.trim();
+  if (!justices) {
+    const list = document.querySelector('#justices-present');
+    if (list) {
+      justices = Array.from(list.querySelectorAll('li'))
+        .map(li => li.textContent.trim())
+        .filter(Boolean)
+        .join('; ');
+    }
+  }
+
+  const wrap = document.getElementById('justices-line');
+  if (wrap && justices) {
+    const limit = 60;
+    if (justices.length > limit) {
+      const short = justices.slice(0, limit).trim().replace(/[;,\s]+$/, '') + '…';
+      wrap.innerHTML = `
+        <span class="font-medium text-neutral-700">Judges present:</span>
+        <span id="justices-text">${short}</span>
+        <button id="justices-toggle" class="ml-2 underline underline-offset-2 text-neutral-600 hover:text-neutral-900">
+          Show all
+        </button>
+      `;
+      const txt = wrap.querySelector('#justices-text');
+      const btn = wrap.querySelector('#justices-toggle');
+      let expanded = false;
+      btn.addEventListener('click', () => {
+        expanded = !expanded;
+        txt.textContent = expanded ? justices : short;
+        btn.textContent = expanded ? 'Show less' : 'Show all';
+      });
+    } else {
+      wrap.innerHTML = `<span class="font-medium text-neutral-700">Judges present:</span> ${justices}`;
+    }
+  }
+});
+</script>
+
+<script>
+(function(){
+  function apply() {
+    var header = document.querySelector('header.sticky') || document.getElementById('site-header') || document.querySelector('header[role="banner"]');
+    var h = header && header.offsetHeight ? header.offsetHeight : 0;
+    document.documentElement.style.setProperty('--sticky-offset', (h + 8) + 'px');
+  }
+  if (document.readyState === 'complete') apply();
+  window.addEventListener('load', apply);
+  window.addEventListener('resize', apply);
+})();
+
+function scrollToIdWithOffset(id, behavior) {
+  if (!behavior) behavior = 'smooth';
+  var el = document.getElementById(id);
+  if (!el) return;
+  var header = document.querySelector('header.sticky') || document.getElementById('site-header') || document.querySelector('header[role="banner"]');
+  var headerH = (header && header.offsetHeight ? header.offsetHeight : 0) + 8;
+  var rect = el.getBoundingClientRect();
+  var targetY = window.scrollY + rect.top - headerH;
+  window.scrollTo({ top: Math.max(0, targetY), behavior: behavior });
+}
+
+(function(){
+  function handle(){
+    var id = location.hash ? decodeURIComponent(location.hash.replace('#','')) : '';
+    if (!id) return;
+    setTimeout(function(){ scrollToIdWithOffset(id, 'auto'); }, 0);
+  }
+  window.addEventListener('load', handle);
+  window.addEventListener('hashchange', handle);
+})();
+
+(function(){
+  var orig = window.copyLink;
+  if (typeof orig === 'function') {
+    window.copyLink = function(id){
+      try { orig.apply(this, arguments); } catch(e) {}
+      try { scrollToIdWithOffset(id); } catch(e) {}
+    };
+  }
+})();
+
+(function(){
+  function tagNotedParas() {
+    var paras = document.querySelectorAll('[id^="para-"]');
+    for (var i=0; i<paras.length; i++) {
+      var el = paras[i];
+      var list = (window.NOTES && window.NOTES[el.id]) || [];
+      if (list && list.length) el.setAttribute('data-has-notes','1');
+      else el.removeAttribute('data-has-notes');
+    }
+    try { window.dispatchEvent(new Event('noteMap:update')); } catch(e) {}
+  }
+  function readyNow(){
+    return !!(window.NOTES && Object.keys(window.NOTES).length);
+  }
+  if (!readyNow()) {
+    window.addEventListener('notes:ready', tagNotedParas, { once: true });
+    var tries = 0;
+    var iv = setInterval(function(){
+      if (readyNow() || ++tries > 300) { clearInterval(iv); if (readyNow()) tagNotedParas(); }
+    }, 100);
+  } else {
+    tagNotedParas();
+  }
+})();
+
+function noteMap() {
+  function clamp(v,min,max){ return Math.min(max, Math.max(min, v)); }
+  function collectNoted(){ return document.querySelectorAll('[id^="para-"][data-has-notes="1"]'); }
+  return {
+    markers: [],
+    activePos: 0,
+    init: function(){
+      this.compute();
+      this.onScroll();
+      var self = this;
+      window.addEventListener('resize', function(){ self.compute(); });
+      window.addEventListener('scroll', function(){ self.onScroll(); }, { passive: true });
+      window.addEventListener('noteMap:update', function(){ self.compute(); });
+    },
+    compute: function(){
+      var container = document.querySelector('main') || document.body;
+      var total = container && container.scrollHeight ? container.scrollHeight : 1;
+      var noted = collectNoted();
+      var arr = [];
+      for (var i=0; i<noted.length; i++) {
+        var el = noted[i];
+        var pos = Math.min(98, Math.max(2, (el.offsetTop / total) * 100));
+        var count = (window.NOTES && window.NOTES[el.id]) ? window.NOTES[el.id].length : 1;
+        arr.push({ id: el.id, pos: pos, opacity: Math.min(1, 0.45 + count * 0.18), tooltip: '¶' + el.id.replace('para-','') + ' • ' + count + ' note' + (count>1?'s':'') });
+      }
+      this.markers = arr;
+    },
+    onScroll: function(){
+      var container = document.querySelector('main') || document.body;
+      var total = container && container.scrollHeight ? container.scrollHeight : 1;
+      var y = window.scrollY + window.innerHeight * 0.25;
+      this.activePos = Math.min(98, Math.max(2, (y / total) * 100));
+    },
+    scrollTo: function(id){ scrollToIdWithOffset(id); }
+  };
+}
+
+function jumpFirstNote(opts){
+  opts = opts || {};
+  function getHeaderOffset(){
+    var header = document.querySelector(opts.headerSelector || 'header.sticky, #site-header, header[role="banner"]');
+    var h = header && header.offsetHeight ? header.offsetHeight : 0;
+    return h + 8;
+  }
+  return {
+    show: false,
+    firstId: null,
+    firstTop: 0,
+    _blockReshow: false,
+    _raf: null,
+    init: function(){
+      var self = this;
+      function ready(){
+        var noted = document.querySelectorAll('[id^="para-"][data-has-notes="1"]');
+        if (!noted.length) return;
+        self.firstId = noted[0].id;
+        var r = noted[0].getBoundingClientRect();
+        self.firstTop = r.top + window.scrollY;
+        self.updateShow();
+        window.addEventListener('scroll', function(){ self.onScroll(); }, { passive: true });
+        window.addEventListener('resize', function(){ self.recalc(); });
+      }
+      window.addEventListener('noteMap:update', ready, { once: true });
+      if (document.querySelector('[id^="para-"][data-has-notes="1"]')) ready();
+    },
+    recalc: function(){
+      if (!this.firstId) return;
+      var el = document.getElementById(this.firstId);
+      if (!el) return;
+      var r = el.getBoundingClientRect();
+      this.firstTop = r.top + window.scrollY;
+      this.updateShow();
+    },
+    onScroll: function(){
+      var self = this;
+      if (this._raf) return;
+      this._raf = requestAnimationFrame(function(){ self.updateShow(); self._raf = null; });
+    },
+    updateShow: function(){
+      var aboveFirst = (window.scrollY + getHeaderOffset()) < (this.firstTop - 2);
+      if (this._blockReshow && aboveFirst) { this.show = false; return; }
+      this.show = aboveFirst;
+    },
+    go: function(){
+      if (!this.firstId) return;
+      this._blockReshow = true;
+      this.show = false;
+      scrollToIdWithOffset(this.firstId);
+      var self = this;
+      function check(){
+        var atOrPast = (window.scrollY + getHeaderOffset()) >= (self.firstTop - 2);
+        if (atOrPast) {
+          self._blockReshow = false;
+          window.removeEventListener('scroll', onScrollCheck);
+          clearTimeout(timer);
+        }
+      }
+      function onScrollCheck(){ requestAnimationFrame(check); }
+      window.addEventListener('scroll', onScrollCheck, { passive: true });
+      var timer = setTimeout(function(){
+        self._blockReshow = false;
+        window.removeEventListener('scroll', onScrollCheck);
+      }, 1600);
+    }
+  };
+}
+</script>
+<script>
+(function positionNoteRail(){
+  var rail = document.querySelector('[data-note-rail]');
+  if (!rail) return;
+
+  function place(){
+    var main = document.querySelector('main') || document.body;
+    var r = main.getBoundingClientRect();
+    var gap = 20;                               // space between rail and content
+    var left = window.scrollX + r.left - gap - rail.offsetWidth;
+
+    // keep a minimum gutter from viewport edge
+    var minLeft = window.scrollX + 12;
+    rail.style.left = Math.max(minLeft, left) + 'px';
+  }
+
+  function ready(fn){
+    if (document.readyState === 'complete' || document.readyState === 'interactive') fn();
+    else window.addEventListener('DOMContentLoaded', fn, { once: true });
+  }
+
+  ready(place);
+  window.addEventListener('load', place);
+  window.addEventListener('resize', place);
+  window.addEventListener('noteMap:update', place);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+})();
+</script>
+<script>
+(function dynamicAuthorsVisibility(){
+  var title   = document.getElementById('hdr-title');
+  var authors = document.getElementById('hdr-authors');
+  if (!title || !authors) return;
+
+  function update(){
+    // ensure visible for a correct measurement
+    authors.classList.remove('hidden');
+    authors.classList.add('flex');
+
+    // ellipsis/truncation detection
+    var truncated = title.scrollWidth > title.clientWidth;
+
+    // hide only if the title would truncate with authors present
+    authors.classList.toggle('hidden', truncated);
+    authors.classList.toggle('flex', !truncated);
+    authors.setAttribute('aria-hidden', truncated ? 'true' : 'false');
+  }
+
+  // run and keep in sync with layout changes
+  var raf;
+  function queued(){ if (raf) cancelAnimationFrame(raf); raf = requestAnimationFrame(update); }
+
+  window.addEventListener('load', queued);
+  window.addEventListener('resize', queued);
+
+  // react to header/content size changes
+  if (window.ResizeObserver){
+    var ro = new ResizeObserver(queued);
+    ro.observe(document.getElementById('site-header') || document.body);
+    ro.observe(title);
+  }
+
+  // wait for fonts (width can change when fonts load)
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(queued);
+
+  // initial
+  queued();
+})();
+</script>
+
+</body>
+</html>

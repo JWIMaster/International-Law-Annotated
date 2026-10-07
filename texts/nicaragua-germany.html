@@ -7,9 +7,6 @@
 <meta content="Annotated ICJ Order with inline author-filtered notes." name="description"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://unpkg.com/@popperjs/core@2"></script>
-<script src="https://unpkg.com/tippy.js@6"></script>
-<link href="https://unpkg.com/tippy.js@6/animations/scale.css" rel="stylesheet"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
@@ -52,22 +49,91 @@
   .note-card .note-body { font-family: "IBM Plex Sans", sans-serif; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); margin-top: .25rem; }
   .note-card .note-source { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-faint); margin-top: .5rem; }
 
-  .tippy-box[data-theme~='light-border'] { background-color: var(--paper-card); border: 1px solid var(--rule); box-shadow: 0 8px 24px rgba(28,34,51,.10); border-radius: 4px; max-width: min(92vw, 420px); border-top: 2px solid var(--annot); }
-  .tippy-box[data-theme~='light-border'] .tippy-content { max-height: 68vh; overflow: auto; }
-  @media (max-width: 380px) {
-    .tippy-box[data-theme~='light-border'] { max-width: 94vw; }
-    .tippy-box[data-theme~='light-border'] .tippy-content { max-height: 64vh; }
+  /* --- the annotation pane -------------------------------------------------
+     Clicking a paragraph with notes slides its annotations in from the right,
+     Genius-style.  The paragraph stays highlighted while the pane is open, so
+     it is always obvious which text is being annotated. */
+  [x-cloak] { display: none !important; }
+  .pane-scrim { position: fixed; inset: 0; z-index: 45; background: rgba(28,34,51,.12); }
+  .note-pane {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 50;
+    display: flex; flex-direction: column;
+    width: min(400px, 100vw);
+    background: var(--paper-card);
+    border-left: 1px solid var(--rule);
+    box-shadow: -16px 0 40px rgba(28,34,51,.12);
+    transform: translateX(101%); visibility: hidden;
+    transition: transform .2s ease, visibility .2s ease;
   }
-  .tippy-box[data-theme~='light-border'] > .tippy-arrow { display: none !important; }
-  .tippy-box[data-theme~='light-border'] .tippy-content { overflow-wrap: anywhere; word-break: break-word; white-space: normal; }
-  .tippy-box[data-theme~='light-border'] a { text-decoration: underline; word-break: break-all; color: var(--annot); }
+  .note-pane.is-open { transform: none; visibility: visible; }
+  .pane-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+               padding: .6rem .75rem; border-bottom: 1px solid var(--rule); }
+  .pane-kicker { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em;
+                 text-transform: uppercase; color: var(--annot); }
+  .pane-tools { display: flex; align-items: center; gap: .25rem; }
+  .pane-btn { display: inline-flex; align-items: center; justify-content: center;
+              width: 1.85rem; height: 1.85rem; border-radius: 3px; border: 1px solid var(--rule);
+              background: var(--paper); color: var(--ink-soft);
+              font-family: "IBM Plex Mono", monospace; font-size: 13px; line-height: 1; }
+  .pane-btn:hover:not(:disabled) { border-color: var(--annot); color: var(--annot); }
+  .pane-btn:disabled { opacity: .35; cursor: default; }
+  .pane-quote { margin: 0; padding: .8rem .85rem; border-bottom: 1px dashed var(--rule);
+                max-height: 30vh; overflow: auto;
+                font-family: "Source Serif 4", Georgia, serif; font-size: 14px; line-height: 1.55;
+                color: var(--ink); }
+  .pane-quote::before { content: "\201C"; color: var(--annot); }
+  .pane-quote::after { content: "\201D"; color: var(--annot); }
+  .pane-body { flex: 1; overflow: auto; padding: .9rem .85rem 3rem; }
+  .pane-body .note-card { border-left: 2px solid var(--rule); padding-left: .7rem; margin-bottom: 1.1rem; }
+  .pane-body .note-card:last-child { margin-bottom: 0; }
+  .pane-body a { text-decoration: underline; color: var(--annot); overflow-wrap: anywhere; }
+  .pane-body .note-count { font-family: "IBM Plex Mono", monospace; font-size: 11px;
+                           color: var(--ink-faint); }
+  /* Room for the pane.  The text column narrows and re-centres rather than
+     being covered by the panel, which on a 1440px screen would hide a third
+     of every line. */
+  .shell { transition: max-width .2s ease; }
+  .jump-wrap { transition: right .2s ease; }
+  /* The pane is 400px.  A column of width M centred in a viewport W ends at
+     (W + M) / 2, and the pane begins at W - 400, so M must stay under
+     W - 800 for the two never to touch.  52rem is that 800px plus a 32px
+     gap.  Below 1280px there is no room for both, so the pane overlays. */
+  @media (min-width: 1280px) {
+    html.pane-open .shell { max-width: min(64rem, calc(100vw - 52rem)); }
+    html.pane-open .jump-wrap { right: calc(25rem + 1rem); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .note-pane, .shell, .jump-wrap { transition: none; }
+  }
+
+  /* The paragraph being annotated. */
+  [id^="para-"].is-selected { background: rgba(163,52,31,.13); box-shadow: inset 3px 0 0 var(--annot); }
 
   .hl { background: rgba(163, 52, 31, .09); }
   .dim { opacity: 0.35; transition: opacity 0.2s ease; }
   .sc { font-variant: small-caps; letter-spacing: .02em; }
   .legal-flow { line-height: 1.7; hyphens: auto; }
-  .note-rail { width:6px; }
-  .note-dot { width:12px; height:8px; }
+
+  /* --- paragraphs with notes --------------------------------------------- */
+  [id^="para-"][data-has-notes="1"] { cursor: pointer; }
+  [id^="para-"][data-has-notes="1"]:hover { background: rgba(163, 52, 31, .055); }
+
+  /* --- the marker rail ----------------------------------------------------
+     Sits in the left gutter beside the text column, so it never covers it;
+     it is hidden once the gutter is too narrow to hold it. */
+  .note-rail-wrap { position: fixed; top: var(--sticky-offset); z-index: 30;
+                    left: max(10px, calc(50% - 32rem - 2.5rem)); }
+  @media (max-width: 1180px) { .note-rail-wrap { display: none; } }
+  .note-rail { position: relative; width: 6px; border-radius: 9999px; background: var(--rule); }
+  .note-dot { position: absolute; left: 50%; width: 12px; height: 9px; margin-left: -6px;
+              border-radius: 9999px; padding: 0; border: 0;
+              background: color-mix(in srgb, var(--seal) 70%, transparent);
+              box-shadow: 0 0 0 2px var(--paper); z-index: 1; }
+  .note-dot:hover, .note-dot:focus-visible { background: var(--annot); z-index: 3; }
+  .note-dot.is-current { background: var(--annot); z-index: 2; }
+  .note-cursor { position: absolute; left: 50%; width: 8px; height: 8px; margin-left: -4px;
+                 border-radius: 9999px; background: var(--annot); z-index: 4;
+                 pointer-events: none; transition: top .1s linear; }
 
   .btn-primary { background: var(--ink); color: var(--paper); font-family: "IBM Plex Sans", sans-serif; }
   .btn-primary:hover { background: #2A3145; }
@@ -91,23 +157,6 @@ function icjApp() {
     esc(text = '') {
       return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     },
-    htmlFor(id) {
-      const list = (window.NOTES && window.NOTES[id]) ? window.NOTES[id] : [];
-      const hasFilter = this.selectedAuthors.size > 0;
-      const filtered = hasFilter ? list.filter(n => this.selectedAuthors.has((n.author || '').trim())) : list;
-      if (!filtered.length) return '<div class="text-sm text-neutral-500">No notes yet.</div>';
-      return filtered.map(n => {
-        let h = '';
-        h += '<div class="note-card mb-2">';
-        if (n.author) h += '<div class="text-[11px] tracking-wide text-neutral-600 mb-1">By ' + this.esc(n.author) + '</div>';
-        if (n.title)  h += '<div class="font-semibold mt-0.5">' + this.esc(n.title) + '</div>';
-        h += '<div class="text-sm leading-snug mt-1 text-neutral-700" data-note-body>' + this.linkify(n.text || '') + '</div>';
-        if (n.source) h += '<div class="text-xs mt-2 text-neutral-500">Source: ' + this.esc(n.source) + '</div>';
-        h += '</div>';
-        return h;
-      }).join('');
-    },
-    _tippies: [],
     init() {
       const computeAuthors = () => {
         window.AUTHORS = Array.from(new Set(
@@ -117,39 +166,118 @@ function icjApp() {
       };
       const run = () => {
         if (!window.NOTES || Object.keys(window.NOTES).length === 0) {
-          window.addEventListener('notes:ready', () => { computeAuthors(); this.refreshPopovers(); this.applyHighlights(); this.handleHashOnLoad(); }, { once: true });
+          window.addEventListener('notes:ready', () => { computeAuthors(); this.applyHighlights(); if (this.paneOpen) this.renderPane(); this.handleHashOnLoad(); }, { once: true });
         } else {
-          computeAuthors(); this.refreshPopovers(); this.applyHighlights(); this.handleHashOnLoad();
+          computeAuthors(); this.applyHighlights(); this.handleHashOnLoad();
         }
       };
       run();
-    },
-    refreshPopovers() {
-      this._tippies.forEach(t => t.destroy());
-      this._tippies = [];
-      const isMobile = window.matchMedia('(max-width: 640px)').matches;
-      document.querySelectorAll('[data-para]').forEach(el => {
-        const id = el.getAttribute('data-para');
-        const instance = tippy(el, {
-  allowHTML: true,
-  interactive: true,
-  theme: 'light-border',
-  animation: 'scale',
-  appendTo: () => document.body,
-  placement: isMobile ? 'bottom' : 'right-start',
-  trigger: isMobile ? 'click' : 'mouseenter focus',
-  offset: isMobile ? [0, 8] : [6, 0],
-  hideOnClick: true,
-  content: () => this.htmlFor(id),
-  popperOptions: {
-    modifiers: [
-      { name: 'preventOverflow', options: { padding: 8, altAxis: true } },
-      { name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'right', 'left'] } }
-    ]
-  }
-});
-        this._tippies.push(instance);
+
+      // One delegated listener: clicking *anywhere* on a paragraph that has
+      // notes opens them.  The paragraph rows are plain generated markup, so
+      // delegation is what keeps this working on every page.
+      document.addEventListener('click', (ev) => {
+        if (ev.target.closest('.note-pane')) return;          // clicks inside the pane
+        if (ev.defaultPrevented) return;
+        const row = ev.target.closest('[id^="para-"][data-has-notes="1"]');
+        if (!row) return;
+        ev.preventDefault();
+        this.openNote(row.id);
       });
+      window.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape' && this.paneOpen) { this.closePane(); }
+        else if (this.paneOpen && (ev.key === 'ArrowDown' || ev.key === 'j') && ev.altKey) { this.step(1); }
+        else if (this.paneOpen && (ev.key === 'ArrowUp' || ev.key === 'k') && ev.altKey) { this.step(-1); }
+      });
+      window.addEventListener('pane:open', (ev) => {
+        if (ev.detail && ev.detail.id) this.openNote(ev.detail.id);
+      });
+    },
+    // ---- the annotation pane ---------------------------------------------
+    // The pane's contents are plain properties filled in by renderPane(),
+    // not getters: Alpine binds x-html once and does not re-run an expression
+    // whose value is produced by a getter, so a getter left the pane showing
+    // its first, empty state.
+    paneOpen: false,
+    paneId: '',
+    paneKicker: '',
+    paneQuote: '',
+    paneHtml: '',
+    copied: false,
+    notedIds() {
+      const ids = [];
+      document.querySelectorAll('[id^="para-"][data-has-notes="1"]').forEach(el => ids.push(el.id));
+      return ids;
+    },
+    notesFor(id) {
+      const all = (window.NOTES && window.NOTES[id]) ? window.NOTES[id] : [];
+      if (this.selectedAuthors.size === 0) return all;
+      return all.filter(n => this.selectedAuthors.has((n.author || '').trim()));
+    },
+    notesHtml(list) {
+      if (!list.length) return '<div class="note-count">No annotations from the selected authors.</div>';
+      return list.map(n => {
+        let h = '<div class="note-card">';
+        if (n.author) h += '<div class="note-author">' + this.esc(n.author) + '</div>';
+        if (n.title)  h += '<div class="note-title">' + this.esc(n.title) + '</div>';
+        h += '<div class="note-body" data-note-body>' + this.linkify(n.text || '') + '</div>';
+        if (n.source) h += '<div class="note-source">Source: ' + this.esc(n.source) + '</div>';
+        return h + '</div>';
+      }).join('');
+    },
+    renderPane() {
+      const id = this.paneId;
+      if (!id) { this.paneKicker = this.paneQuote = this.paneHtml = ''; return; }
+      const ids = this.notedIds();
+      const at = ids.indexOf(id);
+      const list = this.notesFor(id);
+      this.paneKicker = at >= 0
+        ? 'Annotation ' + (at + 1) + ' of ' + ids.length
+        : (list.length === 1 ? '1 annotation' : list.length + ' annotations');
+      const el = document.getElementById(id);
+      const p = el ? el.querySelector('p') : null;
+      this.paneQuote = p ? p.innerHTML : '';
+      this.paneHtml = this.notesHtml(list);
+    },
+    setPaneOpen(open) {
+      this.paneOpen = open;
+      document.documentElement.classList.toggle('pane-open', open);
+      // Narrowing the column moves every paragraph, so the rail has to
+      // measure again once the reflow has settled.
+      setTimeout(() => {
+        try { window.dispatchEvent(new Event('noteMap:update')); } catch (e) {}
+      }, 240);
+    },
+    openNote(id) {
+      this.paneId = id;
+      this.setPaneOpen(true);
+      this.renderPane();
+      this.markSelected();
+      this.$nextTick(() => { const b = this.$refs.paneBody; if (b) b.scrollTop = 0; });
+    },
+    closePane() { this.setPaneOpen(false); this.markSelected(); },
+    markSelected() {
+      document.querySelectorAll('.is-selected').forEach(el => el.classList.remove('is-selected'));
+      if (this.paneOpen && this.paneId) {
+        const el = document.getElementById(this.paneId);
+        if (el) el.classList.add('is-selected');
+      }
+    },
+    step(delta) {
+      const ids = this.notedIds();
+      if (!ids.length) return;
+      let i = ids.indexOf(this.paneId);
+      if (i < 0) i = delta > 0 ? -1 : 0;
+      const id = ids[(i + delta + ids.length) % ids.length];
+      this.openNote(id);
+      scrollToIdWithOffset(id);
+    },
+    copyPaneLink() {
+      if (!this.paneId) return;
+      const url = new URL(window.location); url.hash = this.paneId;
+      navigator.clipboard.writeText(url.toString());
+      this.copied = true;
+      setTimeout(() => { this.copied = false; }, 1200);
     },
     applyHighlights() {
       const allParas = Array.from(document.querySelectorAll('[id^="para-"],[data-dimmable="1"]'));
@@ -169,14 +297,21 @@ function icjApp() {
         if (hasSelected) { const w = document.getElementById(id); if (w) { w.classList.add('hl'); w.classList.remove('dim'); } }
       });
     },
-    toggleAuthor(a) { a=(a||'').trim(); if (this.selectedAuthors.has(a)) this.selectedAuthors.delete(a); else this.selectedAuthors.add(a); this.applyHighlights(); this.refreshPopovers(); },
+    toggleAuthor(a) { a=(a||'').trim(); if (this.selectedAuthors.has(a)) this.selectedAuthors.delete(a); else this.selectedAuthors.add(a); this.applyHighlights(); if (this.paneOpen) this.renderPane(); },
     isActive(a) { return this.selectedAuthors.has((a||'').trim()); },
-    copyLink(id) {
-      const url = new URL(window.location); url.hash = id; navigator.clipboard.writeText(url.toString());
-      const el = document.querySelector(`[data-para='${id}']`);
-      if (el) { el.classList.add('ring-2','ring-emerald-400'); setTimeout(()=>el.classList.remove('ring-2','ring-emerald-400'),800); }
-    },
-    handleHashOnLoad() { if (location.hash) { const id = location.hash.slice(1); const el = document.getElementById(id); if (el) { el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.add('bg-yellow-50'); setTimeout(()=>el.classList.remove('bg-yellow-50'),1200); } } }
+    handleHashOnLoad() {
+      if (!location.hash) return;
+      const id = location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+      el.classList.add('bg-yellow-50');
+      setTimeout(()=>el.classList.remove('bg-yellow-50'),1200);
+      // A deep link to an annotated paragraph should open its annotations,
+      // not just scroll to them.
+      const notes = (window.NOTES && window.NOTES[id]) || [];
+      if (notes.length) this.openNote(id);
+    }
   }
 }
 
@@ -206,45 +341,107 @@ function noteMap() {
     markers: [],
     activePos: 0,
     init: function () {
+      var self = this;
       this.compute();
       this.onScroll();
 
-      var self = this;
-      window.addEventListener('resize', function () { self.compute(); });
+      window.addEventListener('resize', function () { self.compute(); self.onScroll(); });
       window.addEventListener('scroll', function () { self.onScroll(); }, { passive: true });
-      window.addEventListener('noteMap:update', function () { self.compute(); });
+      window.addEventListener('noteMap:update', function () { self.compute(); self.onScroll(); });
       window.addEventListener('notes:ready', function () { self.compute(); self.onScroll(); });
+      // Web fonts change the text height, which moves every paragraph.
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { self.compute(); self.onScroll(); });
+      window.addEventListener('load', function () { self.compute(); self.onScroll(); });
     },
+    // Everything here is measured in one coordinate space: absolute document
+    // pixels.  The old version divided a paragraph's offsetTop (relative to
+    // its offsetParent) by main.scrollHeight (a different box altogether), so
+    // on a long document the markers drifted away from their paragraphs.
     compute: function () {
-      var container = document.querySelector('main') || document.body;
-      var total = container && container.scrollHeight ? container.scrollHeight : 1;
+      var rail = this.rail();
       var noted = getNotedElements();
+      var docHeight = Math.max(1, document.documentElement.scrollHeight);
       var arr = [];
 
       for (var i = 0; i < noted.length; i++) {
         var el = noted[i];
-        var pos = Math.min(98, Math.max(2, (el.offsetTop / total) * 100));
+        var rect = el.getBoundingClientRect();
+        var centre = rect.top + window.scrollY + Math.min(rect.height, 200) / 2;
         var count = (window.NOTES && window.NOTES[el.id]) ? window.NOTES[el.id].length : 1;
 
         arr.push({
           id: el.id,
-          pos: pos,
-          opacity: Math.min(1, 0.45 + count * 0.18),
-          tooltip: '¶' + el.id.replace('para-', '') + ' • ' +
-            count + ' note' + (count > 1 ? 's' : '')
+          y: centre,
+          pos: Math.min(100, Math.max(0, (centre / docHeight) * 100)),
+          count: count,
+          opacity: Math.min(1, 0.5 + count * 0.16),
+          label: this.labelFor(el),
+          tooltip: this.labelFor(el) + ' — ' + count + (count > 1 ? ' notes' : ' note')
         });
       }
 
-      this.markers = arr;
+      this.markers = this.spread(arr, rail);
+    },
+    rail: function () {
+      return document.querySelector('.note-rail');
+    },
+    // A dot is 12x9 on a 6px rail.  Without this, neighbouring notes pile up
+    // and the ones underneath cannot be seen or clicked.
+    spread: function (arr, rail) {
+      if (!arr.length) return arr;
+      var height = rail ? (rail.offsetHeight || 0) : 0;
+      var i;
+      if (height <= 0) {
+        // The rail is hidden at this width (narrow viewport).  Every marker
+        // still needs a position: leaving `top` undefined writes
+        // "top:undefinedpx" into the style attribute.
+        for (i = 0; i < arr.length; i++) arr[i].top = arr[i].pos;
+        return arr;
+      }
+      var pad = 6;
+      var limit = Math.max(pad, height - pad);
+      var usable = Math.max(1, limit - pad);
+      arr.sort(function (a, b) { return a.y - b.y; });
+      var gap = arr.length > 1
+        ? Math.min(10, Math.max(2.5, (usable - 4) / (arr.length - 1)))
+        : 0;
+
+      for (i = 0; i < arr.length; i++) {
+        arr[i].top = pad + (arr[i].pos / 100) * usable;
+      }
+      // Push down whatever collides with its predecessor...
+      for (i = 1; i < arr.length; i++) {
+        if (arr[i].top < arr[i - 1].top + gap) arr[i].top = arr[i - 1].top + gap;
+      }
+      // ...then pull back whatever that pushed off the end.
+      arr[arr.length - 1].top = Math.min(arr[arr.length - 1].top, limit);
+      for (i = arr.length - 2; i >= 0; i--) {
+        if (arr[i].top > arr[i + 1].top - gap) arr[i].top = arr[i + 1].top - gap;
+      }
+      for (i = 0; i < arr.length; i++) arr[i].top = Math.max(pad, arr[i].top);
+      return arr;
+    },
+    labelFor: function (el) {
+      var label = (el.getAttribute('data-label') || '').trim();
+      var p = el.querySelector('p');
+      var text = p ? (p.textContent || '').replace(/\s+/g, ' ').trim() : '';
+      if (text.length > 52) text = text.slice(0, 52).replace(/\s\S*$/, '') + '…';
+      var head = label && label !== '¶' ? label : '';
+      return (head ? head + ' · ' : '') + text;
     },
     onScroll: function () {
-      var container = document.querySelector('main') || document.body;
-      var total = container && container.scrollHeight ? container.scrollHeight : 1;
-      var y = window.scrollY + window.innerHeight * 0.25;
-      this.activePos = Math.min(98, Math.max(2, (y / total) * 100));
+      var rail = this.rail();
+      if (!rail) return;
+      var railTop = rail.getBoundingClientRect().top + window.scrollY;
+      var height = rail.offsetHeight || 0;
+      var y = window.scrollY + window.innerHeight * 0.32;
+      this.activePos = Math.min(height - 6, Math.max(6, y - railTop));
     },
     scrollTo: function (id) {
       scrollToIdWithOffset(id);
+      // The pane lives in the page-level Alpine component; announce the click
+      // rather than reaching into another component's internals.
+      try { window.dispatchEvent(new CustomEvent('pane:open', { detail: { id: id } })); } catch (e) {}
     }
   };
 }
@@ -266,7 +463,7 @@ function noteMap() {
 
 <body class="min-h-full font-ui" style="background: var(--paper); color: var(--ink);" x-init="init()">
 <header class="sticky top-0 z-40 backdrop-blur border-b" style="background: color-mix(in srgb, var(--paper) 92%, transparent); border-color: var(--rule);">
-  <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
+  <div class="shell mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3 min-w-0">
       <a href="../index.html"
    class="seal-mark shrink-0"
@@ -293,26 +490,24 @@ function noteMap() {
     </div>
   </div>
 </header>
-<main class="mx-auto max-w-5xl px-4 py-8 prose">
+<main class="shell mx-auto max-w-5xl px-4 py-8 prose">
 
   <div x-data="noteMap()" x-init="init()"
        data-note-rail
-       class="hidden lg:block fixed z-30"
-       style="top: var(--sticky-offset);">
-    <div class="note-rail rounded-full relative" style="background: var(--rule); height: calc(100vh - var(--sticky-offset) - 24px);">
+       class="note-rail-wrap"
+       aria-hidden="true">
+    <div class="note-rail" style="height: calc(100vh - var(--sticky-offset) - 24px);">
       <template x-for="m in markers" :key="m.id">
-        <button
-          class="note-dot rounded-full absolute left-1/2 -translate-x-1/2 transition"
-          style="background: color-mix(in srgb, var(--seal) 70%, transparent); box-shadow: 0 0 0 2px var(--paper);"
-          onmouseover="this.style.background='var(--annot)'" onmouseout="this.style.background='color-mix(in srgb, var(--seal) 70%, transparent)'"
-          :style="`top:${m.pos}%; opacity:${m.opacity}; z-index:${10000 - (parseInt((m.id || '').replace(/[^0-9]/g, ''), 10) || 0)}`"
+        <button type="button"
+          class="note-dot focus-ring"
+          :class="paneId === m.id && paneOpen ? 'is-current' : ''"
+          :style="`top:${m.top}px; opacity:${m.opacity};`"
           @click="scrollTo(m.id)"
-          :title="m.tooltip">
+          :title="m.tooltip"
+          :aria-label="m.tooltip">
         </button>
       </template>
-      <div class="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full z-[1200]"
-           style="background: var(--annot);"
-           :style="`top:${activePos}%`"></div>
+      <div class="note-cursor" :style="`top:${activePos}px`"></div>
     </div>
   </div>
 
@@ -322,216 +517,216 @@ function noteMap() {
 </section>
 <div class="flex items-center gap-2.5 font-mono text-[13px] px-4 py-3 mb-6" style="color: var(--ink-soft); background: var(--paper-card); border: 1px solid var(--rule); border-left: 3px solid var(--annot);">
   <span style="color: var(--annot);">¶</span>
-  <span>Hover or tap paragraph markers to view annotations.</span>
+  <span>Click a highlighted paragraph to read its annotations.</span>
 </div>
 
-<div id="para-k9f1207ac">
+<div id="para-k9f1207ac" data-label="1.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k9f1207ac')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9f1207ac" title="Copy link; hover/click for notes">1.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9f1207ac" title="Click to read the annotations on this paragraph">1.</button>
     <p>On 1 March 2024, the Republic of Nicaragua (hereinafter “Nicaragua”) filed in the Registry of the Court an Application instituting proceedings against the Federal Republic of Germany (hereinafter “Germany”) concerning alleged breaches of certain international obligations in respect of the Occupied Palestinian Territory.</p>
   </div>
 </div>
-<div id="para-k9b097705">
+<div id="para-k9b097705" data-label="2.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k9b097705')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9b097705" title="Copy link; hover/click for notes">2.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9b097705" title="Click to read the annotations on this paragraph">2.</button>
     <p>At the end of its Application, Nicaragua “respectfully requests the Court to adjudge and declare that Germany: (1) has breached and continues to breach its obligations under the Genocide Convention in particular the obligations provided in Article I by, with full knowledge of the situation, failing to prevent the ongoing genocide against the Palestinian People in particular Gazans; (2) has breached and continues to breach its obligations under the Genocide Convention in particular the obligations provided in Article I by not only failing to prevent the ongoing genocide but by providing aid, including military equipment, to Israel that would be used in the commission of genocide, by Israel, and by withdrawing the financial assistance to the victims provided by UNRWA; (3) has breached and continues to breach its obligations under Article I of the Fourth Geneva Convention and intransgressible principles of humanitarian law, not only by failing to ensure that the requirements of that Convention are complied with, but also by providing aid, including military equipment, that would be used in the commission of genocide, crimes against humanity, grave breaches of the Geneva Conventions of 1949, attacks directed against civilian objects or civilians protected as such, or other war crimes, in violation of its duties under the 1949 Geneva Conventions and customary international law and by withdrawing Germany’s financial assist ance to UNRWA; (4) has breached and continues to breach its obligations under international humanitarian law not only by failing to ensure that these rules of elementary consideration of humanity are respected by Israel, but also by providing aid and assistance to Israel, and withdrawing Germany’s financial assistance to UNRWA; (5) has breached and continues to breach its conventional and customary law obligations, including the obligation to facilitate and cooperate in bringing about the Palestinian People’s right to self-determination, by providing aid and particularly military equipment to Israel that is used to deny this right of self-determination and moreover helps to maintain and impose an apartheid regime; (6) has breached and continues to breach international law by refusing to prosecute, bring to trial and punish persons responsible for, or accused of grave crimes under international law, including war crimes and apartheid, whether or not such persons are German nationals; (7) must cease immediately the breaches of its international obligations indicated above; (8) must give assurances of non-repetition of the breaches of its obligations indicated above; (9) must make full reparation for the injury caused by its internationally wrongful acts.”</p>
   </div>
 </div>
-<div id="para-kd869ed21">
+<div id="para-kd869ed21" data-label="3.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kd869ed21')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kd869ed21" title="Copy link; hover/click for notes">3.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kd869ed21" title="Click to read the annotations on this paragraph">3.</button>
     <p>In its Application, Nicaragua seeks to found the jurisdiction of the Court on the declaration which it made on 24 September 1929 (as amended on 23 October 2001) under Article 36 of the Statute of the Permanent Court of International Justice and which is deemed, pursuant to Article 36, paragraph 5, of the Statute of the present Court, for the period which it still has to run, to be acceptance of the compulsory jurisdiction of this Court, as well as on the declaration made by Germany on 30 April 2008, under Article 36, paragraph 2, of the Statute. Nicaragua also seeks to found the jurisdiction of the Court on Article IX of the Convention on the Prevention and Punishment of the Crime of Genocide (hereinafter the “Genocide Convention” or the “Convention”).</p>
   </div>
 </div>
-<div id="para-ka225dfc7">
+<div id="para-ka225dfc7" data-label="4.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-ka225dfc7')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ka225dfc7" title="Copy link; hover/click for notes">4.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ka225dfc7" title="Click to read the annotations on this paragraph">4.</button>
     <p>The Application contained a Request for the indication of provisional measures submitted with reference to Article 41 of the Statute and to Articles 73, 74 and 75 of the Rules of Court.</p>
   </div>
 </div>
-<div id="para-k21803d5f">
+<div id="para-k21803d5f" data-label="5.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k21803d5f')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k21803d5f" title="Copy link; hover/click for notes">5.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k21803d5f" title="Click to read the annotations on this paragraph">5.</button>
     <p>At the end of its Request, Nicaragua asks the Court to indicate the following provisional measures: “(1) Germany shall immediately suspend its aid to Israel, in particular its military assistance including military equipment, in so far as this aid may be used in the violation of the Genocide Convention, international humanitarian law or other peremptory norms of general international law such as the Palestinian People’s right to self-determination and to not be subject to a regime of apartheid; (2) Germany must immediately make every effort to ensure that weapons already delivered to Israel are not used to commit genocide, contribute to acts of genocide or are used in such a way as to violate international humanitarian law; (3) Germany must immediately do everything possible to comply with its obligations under humanitarian law; (4) Germany must reverse its decision to suspend the funding of UNRWA as part of the compliance of its obligations to prevent genocide and acts of genocide and the violation of the humanitarian rights of the Palestinian People which also includes the obligation to do everything possible to ensure that humanitarian aid reaches the Palestinian People, more particularly in Gaza; (5) Germany must cooperate to bring to an end the serious breaches of peremptory norms of international law by ceasing its support, including its supply of military equipment to Israel that may be used to commit serious crimes of international law and that it continue the support of the UNRWA on which this Organization has counted and based its activities.”</p>
   </div>
 </div>
-<div id="para-kd68ff437">
+<div id="para-kd68ff437" data-label="6.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kd68ff437')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kd68ff437" title="Copy link; hover/click for notes">6.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kd68ff437" title="Click to read the annotations on this paragraph">6.</button>
     <p>The Deputy-Registrar immediately communicated to the Government of Germany the Application containing the Request for the indication of provisional measures, in accordance with Article 40, paragraph 2, of the Statute of the Court and Article 73, paragraph 2, of the Rules of Court. He also notified the Secretary-General of the United Nations of the filing by Nicaragua of the Application and the Request for the indication of provisional measures.</p>
   </div>
 </div>
-<div id="para-ke4df58d0">
+<div id="para-ke4df58d0" data-label="7.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-ke4df58d0')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke4df58d0" title="Copy link; hover/click for notes">7.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke4df58d0" title="Click to read the annotations on this paragraph">7.</button>
     <p>Pending the notification provided for by Article 40, paragraph 3, of the Statute of the Court, the Registrar informed all States entitled to appear before the Court of the filing of the Application and the Request for the indication of provisional measures by a letter dated 4 March 2024.</p>
   </div>
 </div>
-<div id="para-kcc152aaa">
+<div id="para-kcc152aaa" data-label="8.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kcc152aaa')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kcc152aaa" title="Copy link; hover/click for notes">8.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kcc152aaa" title="Click to read the annotations on this paragraph">8.</button>
     <p>Since the Court included upon the Bench no judge of Nicaraguan nationality, Nicaragua proceeded to exercise the right conferred upon it by Article 31, paragraph 3, of the Statute to choose a judge ad hoc to sit in the case; it chose Mr Awn Shawkat Al-Khasawneh.</p>
   </div>
 </div>
-<div id="para-k346334e2">
+<div id="para-k346334e2" data-label="9.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k346334e2')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k346334e2" title="Copy link; hover/click for notes">9.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k346334e2" title="Click to read the annotations on this paragraph">9.</button>
     <p>By letters dated 5 March 2024, the Registrar informed the Parties that, pursuant to Article 74, paragraph 3, of its Rules, the Court had fixed Monday 8 April and Tuesday 9 April 2024 as the dates for the oral proceedings on the request for the indication of provisional measures.</p>
   </div>
 </div>
-<div id="para-k5627c221">
+<div id="para-k5627c221" data-label="10.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k5627c221')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k5627c221" title="Copy link; hover/click for notes">10.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k5627c221" title="Click to read the annotations on this paragraph">10.</button>
     <p>At the public hearings, oral observations on the request for the indication of provisional measures were presented by: On behalf of Nicaragua: HE Mr Carlos José Argüello Gómez, Mr Daniel Müller, Mr Alain Pellet. On behalf of Germany: Ms Tania von Uslar-Gleichen, Mr Christian J. Tams, Mr Samuel Wordsworth, Ms Anne Peters, Mr Paolo Palchetti.</p>
   </div>
 </div>
-<div id="para-k21484156">
+<div id="para-k21484156" data-label="11.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k21484156')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k21484156" title="Copy link; hover/click for notes">11.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k21484156" title="Click to read the annotations on this paragraph">11.</button>
     <p>At the end of its oral observations, Nicaragua requested the Court “as a matter of extreme urgency, pending the Court’s determination of this case on the merits, and after recalling to the Parties the obligation of compliance with humanitarian law as well as of the obligation of cooperation to bring to an end all serious breaches of peremptory norms of international law, to indicate the following provisional measures with respect to Germany in its participation in the ongoing plausible genocide and serious breaches of international humanitarian law and other peremptory norms of general international law occurring in the Gaza Strip, as well as in other parts of Palestine, namely, to order that: (1) Germany must immediately suspend its aid to Israel, in particular its military assistance, export and authorization of export of military equipment and war weapons, in so far as this aid is used or could be used to commit or to facilitate serious violations of the Genocide Convention, international humanitarian law or other peremptory norms of general international law; (2) Germany must immediately ensure that military equipment, war weapons, and other equipment used for military purposes already delivered by Germany and German entities to Israel are not used to commit or to facilitate serious violations of the Genocide Convention, international humanitarian law or other peremptory norms of general international law; (3) Germany must resume its support and financing of UNRWA in respect of its operations in Gaza.”</p>
   </div>
 </div>
-<div id="para-k16922809">
+<div id="para-k16922809" data-label="12.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k16922809')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k16922809" title="Copy link; hover/click for notes">12.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k16922809" title="Click to read the annotations on this paragraph">12.</button>
     <p>At the end of its oral observations, Germany asked the Court “(1) to reject the request for the indication of provisional measures submitted by the Republic of Nicaragua; and (2) to remove from the General List the case introduced by the Republic of Nicaragua on 1 March 2024”.</p>
   </div>
 </div>
-<div id="para-ke1023cbf">
+<div id="para-ke1023cbf" data-label="13.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-ke1023cbf')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke1023cbf" title="Copy link; hover/click for notes">13.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke1023cbf" title="Click to read the annotations on this paragraph">13.</button>
     <p>The Court recalls that, pursuant to Article 41 of the Statute, it has “the power to indicate, if it considers that circumstances so require, any provisional measures which ought to be taken to preserve the respective rights of either party”. In the present proceedings, the Court considers that it must first ascertain whether Nicaragua has sufficiently shown that the circumstances as they now present themselves to the Court are such as to require the exercise of its power to indicate provisional measures.</p>
   </div>
 </div>
-<div id="para-kf5af0cb3">
+<div id="para-kf5af0cb3" data-label="14.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kf5af0cb3')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf5af0cb3" title="Copy link; hover/click for notes">14.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf5af0cb3" title="Click to read the annotations on this paragraph">14.</button>
     <p>Nicaragua asserts that, by providing weapons to Israel and by suspending the provision of funds to the United Nations Relief and Works Agency for Palestine Refugees in the Near East (UNRWA), Germany has failed to comply with its obligations under the Genocide Convention and international humanitarian law, including the Geneva Conventions of 12 August 1949 (hereinafter the “Geneva Conventions”) and the Additional Protocols of 8 June 1977, and its intransgressible principles. Nicaragua contends that, for the year 2023, the German Government authorized exports “of military equipment and war weapons” worth more than €326 million  which is more than ten times than for the year 2022 —, and that, out of this amount, licences for military equipment worth almost €300 million have been granted since the beginning of the military operation by Israel in the Gaza Strip. Nicaragua further argues that, in early 2024, the German Government provided export licences for “military equipment and weapons of war” worth more than €9 million. Nicaragua claims that Germany could not be unaware of the situation in Gaza nor ignore the likelihood that the “military equipment and war weapons” provided by it would be used by Israel “to bomb and kill thousands of Palestinian children, women and men”. It also claims that Germany has not only violated its obligations to prevent and punish breaches of the Genocide Convention and of international humanitarian law, but that it is also “complicit in them by aiding and assisting the commission of [those] breaches”.</p>
   </div>
 </div>
-<div id="para-k9902465c">
+<div id="para-k9902465c" data-label="15.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k9902465c')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9902465c" title="Copy link; hover/click for notes">15.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9902465c" title="Click to read the annotations on this paragraph">15.</button>
     <p>In response, Germany first states that it has fulfilled the obligation incumbent on States parties to the Genocide Convention to prevent the occurrence of genocide by continuously using all reasonable means at its disposal to exert its influence on Israel in order to improve the situation in Gaza and to furnish humanitarian aid to the population of Gaza. Secondly, it contends that the obligation that could be derived from common Article 1 of the Geneva Conventions incumbent upon non-parties to an armed conflict does not obligate a State to refrain completely from providing military support to a State involved in an armed conflict. It rather requires States supplying arms to an area of armed conflict, before taking decisions regarding exports of military equipment and arms, to conduct a proper risk assessment as to whether such arms will be used to commit breaches of obligations under applicable rules of international law. Germany further contends that it has stringent licensing standards to assess whether there is any risk of serious violations of the Genocide Convention, international humanitarian law and other peremptory norms of international law by the recipient State. According to Germany, there is no evidence that the supply of military equipment to Israel by Germany would have contributed to an alleged genocide or to breaches of international humanitarian law.</p>
   </div>
 </div>
-<div id="para-kf143824d">
+<div id="para-kf143824d" data-label="16.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kf143824d')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf143824d" title="Copy link; hover/click for notes">16.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf143824d" title="Click to read the annotations on this paragraph">16.</button>
     <p>The Court notes that Germany, as it has stated, is bound by the Arms Trade Treaty of 2 April 2013 and by the European Council Common Position 2008/944/CFSP of 8 December 2008 (as amended by Council Decision (CFSP) 2019/1560, published on 17 September 2019), which defines common rules governing the control of exports of military technology and equipment.</p>
   </div>
 </div>
-<div id="para-k232bdea1">
+<div id="para-k232bdea1" data-label="17.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k232bdea1')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k232bdea1" title="Copy link; hover/click for notes">17.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k232bdea1" title="Click to read the annotations on this paragraph">17.</button>
     <p>The Court further notes that, as Germany has also stated, the German legal framework on the manufacturing, marketing and export of weapons and other military equipment involves an inter-agency process with consideration by at least two ministries, and potentially other ministries depending on the content of the licence application. Under this legal framework, there are two categories of military technology and equipment subject to licensing, “war weapons” and “other military equipment”. The export of “war weapons”, which include combat aircraft, tanks, automatic weapons and certain corresponding ammunition and essential components, requires two licences. The export of “other military equipment”, which includes defence equipment against chemical hazards, protective gear such as helmets or body protection plates, as well as communication equipment, requires one licence. Under the German legal framework, for every licence that is granted, an assessment is carried out by the German Government to ascertain whether there is a clear risk that the particular item subject to licensing would be used in the commission of genocide, crimes against humanity or grave breaches of the four Geneva Conventions.</p>
   </div>
 </div>
-<div id="para-kbd1745dd">
+<div id="para-kbd1745dd" data-label="18.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kbd1745dd')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kbd1745dd" title="Copy link; hover/click for notes">18.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kbd1745dd" title="Click to read the annotations on this paragraph">18.</button>
     <p>The Court in addition notes that, as stated by Germany, there has been a significant decrease since November 2023 in the value of material for which the licences were granted, from approximately €200 million in October 2023 to approximately €24 million in November 2023 to approximately €1 million in March 2024. The Court also notes that, since 7 October 2023, according to Germany, only four licences for “war weapons” have been granted: two for training ammunition, one for propellant charges for test purposes, and one concerned the export of 3,000 portable anti-tank weapons. The Court further notes that Israel had also approached the German Government in 2023 for tank ammunition and that no decision by the Respondent has thus far been made regarding this request. In addition, according to Germany, the licensing for export of a submarine to Israel is currently pending, as only one of the two licences required for this export has so far been granted. Finally, the Court takes note of Germany’s statement that 98 per cent of the licences granted since 7 October 2023 concerned “other military equipment” and not “war weapons”.</p>
   </div>
 </div>
-<div id="para-kabf855a4">
+<div id="para-kabf855a4" data-label="19.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kabf855a4')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kabf855a4" title="Copy link; hover/click for notes">19.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kabf855a4" title="Click to read the annotations on this paragraph">19.</button>
     <p>With regard to Nicaragua’s request that Germany “resume its support and financing of UNRWA in respect of its operations in Gaza” (see paragraph 11 above), the Court notes that Germany announced its decision to suspend its contribution to UNRWA on 27 January 2024 in respect of operations in Gaza. In this regard, the Court observes, first, that contributions to UNRWA are voluntary in nature. Secondly, it notes that, according to the information provided to it by Germany, no new payment was due from the latter in the weeks following the announcement of its decision. Finally, the Court notes that Germany stated that it has supported initiatives aimed at funding the agency’s work, in particular through the payment of €50 million by the European Union to UNRWA on 1 March 2024, as well as providing financial and material support to other organizations operating in the Gaza Strip.</p>
   </div>
 </div>
-<div id="para-k14512d27">
+<div id="para-k14512d27" data-label="20.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k14512d27')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k14512d27" title="Copy link; hover/click for notes">20.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k14512d27" title="Click to read the annotations on this paragraph">20.</button>
     <p>Based on the factual information and legal arguments presented by the Parties, the Court concludes that, at present, the circumstances are not such as to require the exercise of its power under Article 41 of the Statute to indicate provisional measures.</p>
   </div>
 </div>
-<div id="para-kf2632e31">
+<div id="para-kf2632e31" data-label="21.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kf2632e31')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf2632e31" title="Copy link; hover/click for notes">21.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf2632e31" title="Click to read the annotations on this paragraph">21.</button>
     <p>As to Germany’s request that the case be removed from the List (see paragraph 12 above), the Court notes that, as it has held in the past, where there is a manifest lack of jurisdiction, it can remove the case from the List at the provisional measures stage (Legality of Use of Force (Yugoslavia v. Spain), Provisional Measures, Order of 2 June 1999, I.C.J. Reports 1999 (II), p. 773, para. 35; Legality of Use of Force (Yugoslavia v. United States of America), Provisional Measures, Order of 2 June 1999, I.C.J. Reports 1999 (II), p. 925, para. 29; Immunities and Criminal Proceedings (Equatorial Guinea v. France), Provisional Measures, Order of 7 December 2016, I.C.J. Reports 2016 (II), p. 1165, para. 70). Conversely, where there is no such manifest lack of jurisdiction, the Court cannot remove the case at that stage (Armed Activities on the Territory of the Congo (New Application: 2002) (Democratic Republic of the Congo v. Rwanda), Provisional Measures, Order of 10 July 2002, I.C.J. Reports 2002, p. 249, para. 91; Immunities and Criminal Proceedings (Equatorial Guinea v. France), Provisional Measures, Order of 7 December 2016, I.C.J. Reports 2016 (II), p. 1165, para. 70). In the present case, there being no manifest lack of jurisdiction, the Court cannot accede to Germany’s request.</p>
   </div>
 </div>
-<div id="para-k96be9e05">
+<div id="para-k96be9e05" data-label="22.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k96be9e05')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k96be9e05" title="Copy link; hover/click for notes">22.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k96be9e05" title="Click to read the annotations on this paragraph">22.</button>
     <p>The Court recalls that, in its Order of 26 January 2024, it noted that the military operation conducted by Israel following the attack of 7 October 2023 had resulted in “a large number of deaths and injuries, as well as the massive destruction of homes, the forcible displacement of the vast majority of the population, and extensive damage to civilian infrastructure” (Application of the Convention on the Prevention and Punishment of the Crime of Genocide in the Gaza Strip (South Africa v. Israel), Provisional Measures, Order of 26 January 2024, I.C.J. Reports 2024 (I), p. 20, para. 46). In addition, the Court remains deeply concerned about the catastrophic living conditions of the Palestinians in the Gaza Strip, in particular in view of the prolonged and widespread deprivation of food and other basic necessities to which they have been subjected, as acknowledged by the Court in its Order of 28 March 2024 (Application of the Convention on the Prevention and Punishment of the Crime of Genocide in the Gaza Strip (South Africa v. Israel), Provisional Measures, Order of 28 March 2024, I.C.J. Reports 2024 (I), p. 519, para. 18).</p>
   </div>
 </div>
-<div id="para-k4428e079">
+<div id="para-k4428e079" data-label="23.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k4428e079')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k4428e079" title="Copy link; hover/click for notes">23.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k4428e079" title="Click to read the annotations on this paragraph">23.</button>
     <p>The Court recalls that, pursuant to common Article 1 of the Geneva Conventions, all States parties are under an obligation “to respect and to ensure respect” for the Conventions “in all circumstances”. It follows from that provision that every State party to these Conventions, “whether or not it is a party to a specific conflict, is under an obligation to ensure that the requirements of the instruments in question are complied with” (Legal Consequences of the Construction of a Wall in the Occupied Palestinian Territory, Advisory Opinion, I.C.J. Reports 2004 (I), pp. 199-200, para. 158). Such an obligation “does not derive only from the Conventions themselves, but from the general principles of humanitarian law to which the Conventions merely give specific expression” (Military and Paramilitary Activities in and against Nicaragua (Nicaragua v. United States of America), Merits, Judgment, I.C.J. Reports 1986, p. 114, para. 220). With regard to the Genocide Convention, the Court has had the opportunity to observe that the obligation to prevent the commission of the crime of genocide, pursuant to Article I, requires States parties that are aware, or that should normally have been aware, of the serious risk that acts of genocide would have been committed, to employ all means reasonably available to them to prevent genocide so far as possible (Application of the Convention on the Prevention and Punishment of the Crime of Genocide (Bosnia and Herzegovina v. Serbia and Montenegro), Judgment, I.C.J. Reports 2007 (I), pp. 221-222, paras. 430-431). Further, States parties are bound by the Genocide Convention not to commit any other acts enumerated in Article III (ibid., p. 114, para. 168).</p>
   </div>
 </div>
-<div id="para-k9c99d8a5">
+<div id="para-k9c99d8a5" data-label="24.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k9c99d8a5')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9c99d8a5" title="Copy link; hover/click for notes">24.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k9c99d8a5" title="Click to read the annotations on this paragraph">24.</button>
     <p>Moreover, the Court considers it particularly important to remind all States of their international obligations relating to the transfer of arms to parties to an armed conflict, in order to avoid the risk that such arms might be used to violate the above-mentioned Conventions. All these obligations are incumbent upon Germany as a State party to the said Conventions in its supply of arms to Israel.</p>
   </div>
 </div>
-<div id="para-ke85f69ff">
+<div id="para-ke85f69ff" data-label="25.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-ke85f69ff')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke85f69ff" title="Copy link; hover/click for notes">25.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke85f69ff" title="Click to read the annotations on this paragraph">25.</button>
     <p>The Court reaffirms that the decision given in the present proceedings in no way prejudges the question of the jurisdiction of the Court to deal with the merits of the case or any questions relating to the admissibility of the Application or to the merits themselves. It leaves unaffected the right of the Governments of Nicaragua and Germany to submit arguments in respect of those questions.</p>
   </div>
 </div>
-<div id="para-k30639cdd">
+<div id="para-k30639cdd" data-label="26.">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k30639cdd')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k30639cdd" title="Copy link; hover/click for notes">26.</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k30639cdd" title="Click to read the annotations on this paragraph">26.</button>
     <p>For these reasons, The Court, By fifteen votes to one, Finds that the circumstances, as they now present themselves to the Court, are not such as to require the exercise of its power under Article 41 of the Statute to indicate provisional measures.</p>
   </div>
 </div>
-<div id="para-k481387f9">
+<div id="para-k481387f9" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k481387f9')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k481387f9" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k481387f9" title="Click to read the annotations on this paragraph">¶</button>
     <p>in favour: President Salam; Vice-President Sebutinde; Judges Tomka,</p>
   </div>
 </div>
-<div id="para-kf69683cd">
+<div id="para-kf69683cd" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-kf69683cd')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf69683cd" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-kf69683cd" title="Click to read the annotations on this paragraph">¶</button>
     <p>Abraham, Yusuf, Xue, Bhandari, Iwasawa, Nolte, Charlesworth, Brant, Gómez Robledo, Cleveland, Aurescu, Tladi;</p>
   </div>
 </div>
-<div id="para-k96b9eaeb">
+<div id="para-k96b9eaeb" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k96b9eaeb')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k96b9eaeb" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k96b9eaeb" title="Click to read the annotations on this paragraph">¶</button>
     <p>against: Judge ad hoc Al-Khasawneh.</p>
   </div>
 </div>
-<div id="para-ka9b0279c">
+<div id="para-ka9b0279c" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-ka9b0279c')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ka9b0279c" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ka9b0279c" title="Click to read the annotations on this paragraph">¶</button>
     <p>Done in French and in English, the French text being authoritative, at the Peace Palace, The Hague, this thirtieth day of April, two thousand and twenty-four, in three copies, one of which will be placed in the archives of the Court and the others transmitted to the Government of the Republic of Nicaragua and the Government of the Federal Republic of Germany, respectively.</p>
   </div>
 </div>
-<div id="para-ke06638b8">
+<div id="para-ke06638b8" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-ke06638b8')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke06638b8" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-ke06638b8" title="Click to read the annotations on this paragraph">¶</button>
     <p>(Signed) Nawaf Salam, President.</p>
   </div>
 </div>
-<div id="para-k4d43cc93">
+<div id="para-k4d43cc93" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k4d43cc93')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k4d43cc93" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k4d43cc93" title="Click to read the annotations on this paragraph">¶</button>
     <p>(Signed) Philippe Gautier, Registrar.</p>
   </div>
 </div>
-<div id="para-k8d79388b">
+<div id="para-k8d79388b" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k8d79388b')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k8d79388b" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k8d79388b" title="Click to read the annotations on this paragraph">¶</button>
     <p>Vice-President Sebutinde appends a separate opinion to the Order of the Court; Judge Iwasawa appends a separate opinion to the Order of the Court; Judges Cleveland and Tladi append declarations to the Order of the Court; Judge ad hoc Al-Khasawneh appends a dissenting opinion to the Order of the Court.</p>
   </div>
 </div>
-<div id="para-k2f9f944d">
+<div id="para-k2f9f944d" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k2f9f944d')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k2f9f944d" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k2f9f944d" title="Click to read the annotations on this paragraph">¶</button>
     <p>(Initialled) N.S.</p>
   </div>
 </div>
-<div id="para-k935d818b">
+<div id="para-k935d818b" data-label="¶">
   <div class="grid grid-cols-[6ch_1fr] items-start gap-3">
-    <button @click.prevent="copyLink('para-k935d818b')" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k935d818b" title="Copy link; hover/click for notes">¶</button>
+    <button type="button" class="para-id text-center shrink-0 w-full mt-1 px-2 py-0.5 focus-ring transition-colors" style="border: 1px solid var(--rule); color: var(--ink-soft); background: var(--paper-card);" onmouseover="this.style.borderColor='var(--annot)';this.style.color='var(--annot)'" onmouseout="this.style.borderColor='var(--rule)';this.style.color='var(--ink-soft)'" data-para="para-k935d818b" title="Click to read the annotations on this paragraph">¶</button>
     <p>(Initialled) Ph.G.</p>
   </div>
 </div>
@@ -539,7 +734,30 @@ function noteMap() {
 
 </main>
 
-<div class="fixed right-4 bottom-4 z-40" x-cloak x-data="jumpFirstNote({ headerSelector: '#site-header' })" x-init="init()">
+<!-- Annotations open here, on the right, Genius-style. Click a paragraph to
+     open the pane, another to switch, or click away / press Esc to dismiss. -->
+<div class="pane-scrim" x-cloak x-show="paneOpen" x-transition.opacity.duration.150ms @click="closePane()"></div>
+<aside class="note-pane" :class="paneOpen ? 'is-open' : ''" x-cloak
+       role="complementary" aria-label="Annotations">
+  <div class="pane-head">
+    <div class="pane-kicker" x-text="paneKicker"></div>
+    <div class="pane-tools">
+      <button type="button" class="pane-btn focus-ring" @click="step(-1)"
+              title="Previous annotated paragraph (Alt+↑)" aria-label="Previous annotated paragraph">↑</button>
+      <button type="button" class="pane-btn focus-ring" @click="step(1)"
+              title="Next annotated paragraph (Alt+↓)" aria-label="Next annotated paragraph">↓</button>
+      <button type="button" class="pane-btn focus-ring" @click="copyPaneLink()"
+              :title="copied ? 'Link copied' : 'Copy a link to this paragraph'"
+              aria-label="Copy a link to this paragraph"><span x-text="copied ? '✓' : '⧉'"></span></button>
+      <button type="button" class="pane-btn focus-ring" @click="closePane()"
+              title="Close (Esc)" aria-label="Close annotations">✕</button>
+    </div>
+  </div>
+  <blockquote class="pane-quote" x-html="paneQuote"></blockquote>
+  <div class="pane-body" x-ref="paneBody" x-html="paneHtml"></div>
+</aside>
+
+<div class="jump-wrap fixed right-4 bottom-4 z-40" x-cloak x-data="jumpFirstNote({ headerSelector: '#site-header' })" x-init="init()">
   <button @click="go()" class="btn-primary px-4 py-2.5 text-sm font-medium shadow transition-colors focus-ring" x-show="show" x-transition.opacity.duration.300>
     Jump to first annotation
 </button>
@@ -599,46 +817,6 @@ function jumpFirstNote(opts){
     }
   };
 }
-</script>
-
-<script>
-(function positionNoteRail() {
-  var rail = null, placedOnce = false;
-
-  function getRail() {
-    if (!rail) rail = document.querySelector('[data-note-rail]');
-    return rail;
-  }
-
-  function place() {
-    var el = getRail();
-    var main = document.querySelector('main') || document.body;
-    if (!el || !main) return;
-    var r = main.getBoundingClientRect();
-    var gap = 20;
-    var left = window.scrollX + r.left - gap - el.offsetWidth;
-    var minLeft = window.scrollX + 12;
-    el.style.left = Math.max(minLeft, left) + 'px';
-    placedOnce = true;
-  }
-
-  function onReady(fn) {
-    if (document.readyState === 'interactive' || document.readyState === 'complete') fn();
-    else window.addEventListener('DOMContentLoaded', fn, { once: true });
-  }
-
-  onReady(place);
-  window.addEventListener('load', place);
-  window.addEventListener('resize', place);
-  window.addEventListener('noteMap:update', place);
-
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
-
-  let tries = 0, iv = setInterval(function () {
-    if (placedOnce || ++tries > 20) return clearInterval(iv);
-    place();
-  }, 150);
-})();
 </script>
 
 </body>

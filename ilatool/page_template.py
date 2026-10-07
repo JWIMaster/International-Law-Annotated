@@ -16,9 +16,6 @@ PAGE_TEMPLATE = r'''<!DOCTYPE html>
 <meta content="__DESC__" name="description"/>
 <script src="https://cdn.tailwindcss.com"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-<script src="https://unpkg.com/@popperjs/core@2"></script>
-<script src="https://unpkg.com/tippy.js@6"></script>
-<link href="https://unpkg.com/tippy.js@6/animations/scale.css" rel="stylesheet"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
@@ -61,22 +58,91 @@ PAGE_TEMPLATE = r'''<!DOCTYPE html>
   .note-card .note-body { font-family: "IBM Plex Sans", sans-serif; font-size: 13.5px; line-height: 1.5; color: var(--ink-soft); margin-top: .25rem; }
   .note-card .note-source { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--ink-faint); margin-top: .5rem; }
 
-  .tippy-box[data-theme~='light-border'] { background-color: var(--paper-card); border: 1px solid var(--rule); box-shadow: 0 8px 24px rgba(28,34,51,.10); border-radius: 4px; max-width: min(92vw, 420px); border-top: 2px solid var(--annot); }
-  .tippy-box[data-theme~='light-border'] .tippy-content { max-height: 68vh; overflow: auto; }
-  @media (max-width: 380px) {
-    .tippy-box[data-theme~='light-border'] { max-width: 94vw; }
-    .tippy-box[data-theme~='light-border'] .tippy-content { max-height: 64vh; }
+  /* --- the annotation pane -------------------------------------------------
+     Clicking a paragraph with notes slides its annotations in from the right,
+     Genius-style.  The paragraph stays highlighted while the pane is open, so
+     it is always obvious which text is being annotated. */
+  [x-cloak] { display: none !important; }
+  .pane-scrim { position: fixed; inset: 0; z-index: 45; background: rgba(28,34,51,.12); }
+  .note-pane {
+    position: fixed; top: 0; right: 0; bottom: 0; z-index: 50;
+    display: flex; flex-direction: column;
+    width: min(400px, 100vw);
+    background: var(--paper-card);
+    border-left: 1px solid var(--rule);
+    box-shadow: -16px 0 40px rgba(28,34,51,.12);
+    transform: translateX(101%); visibility: hidden;
+    transition: transform .2s ease, visibility .2s ease;
   }
-  .tippy-box[data-theme~='light-border'] > .tippy-arrow { display: none !important; }
-  .tippy-box[data-theme~='light-border'] .tippy-content { overflow-wrap: anywhere; word-break: break-word; white-space: normal; }
-  .tippy-box[data-theme~='light-border'] a { text-decoration: underline; word-break: break-all; color: var(--annot); }
+  .note-pane.is-open { transform: none; visibility: visible; }
+  .pane-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+               padding: .6rem .75rem; border-bottom: 1px solid var(--rule); }
+  .pane-kicker { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em;
+                 text-transform: uppercase; color: var(--annot); }
+  .pane-tools { display: flex; align-items: center; gap: .25rem; }
+  .pane-btn { display: inline-flex; align-items: center; justify-content: center;
+              width: 1.85rem; height: 1.85rem; border-radius: 3px; border: 1px solid var(--rule);
+              background: var(--paper); color: var(--ink-soft);
+              font-family: "IBM Plex Mono", monospace; font-size: 13px; line-height: 1; }
+  .pane-btn:hover:not(:disabled) { border-color: var(--annot); color: var(--annot); }
+  .pane-btn:disabled { opacity: .35; cursor: default; }
+  .pane-quote { margin: 0; padding: .8rem .85rem; border-bottom: 1px dashed var(--rule);
+                max-height: 30vh; overflow: auto;
+                font-family: "Source Serif 4", Georgia, serif; font-size: 14px; line-height: 1.55;
+                color: var(--ink); }
+  .pane-quote::before { content: "\201C"; color: var(--annot); }
+  .pane-quote::after { content: "\201D"; color: var(--annot); }
+  .pane-body { flex: 1; overflow: auto; padding: .9rem .85rem 3rem; }
+  .pane-body .note-card { border-left: 2px solid var(--rule); padding-left: .7rem; margin-bottom: 1.1rem; }
+  .pane-body .note-card:last-child { margin-bottom: 0; }
+  .pane-body a { text-decoration: underline; color: var(--annot); overflow-wrap: anywhere; }
+  .pane-body .note-count { font-family: "IBM Plex Mono", monospace; font-size: 11px;
+                           color: var(--ink-faint); }
+  /* Room for the pane.  The text column narrows and re-centres rather than
+     being covered by the panel, which on a 1440px screen would hide a third
+     of every line. */
+  .shell { transition: max-width .2s ease; }
+  .jump-wrap { transition: right .2s ease; }
+  /* The pane is 400px.  A column of width M centred in a viewport W ends at
+     (W + M) / 2, and the pane begins at W - 400, so M must stay under
+     W - 800 for the two never to touch.  52rem is that 800px plus a 32px
+     gap.  Below 1280px there is no room for both, so the pane overlays. */
+  @media (min-width: 1280px) {
+    html.pane-open .shell { max-width: min(64rem, calc(100vw - 52rem)); }
+    html.pane-open .jump-wrap { right: calc(25rem + 1rem); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .note-pane, .shell, .jump-wrap { transition: none; }
+  }
+
+  /* The paragraph being annotated. */
+  [id^="para-"].is-selected { background: rgba(163,52,31,.13); box-shadow: inset 3px 0 0 var(--annot); }
 
   .hl { background: rgba(163, 52, 31, .09); }
   .dim { opacity: 0.35; transition: opacity 0.2s ease; }
   .sc { font-variant: small-caps; letter-spacing: .02em; }
   .legal-flow { line-height: 1.7; hyphens: auto; }
-  .note-rail { width:6px; }
-  .note-dot { width:12px; height:8px; }
+
+  /* --- paragraphs with notes --------------------------------------------- */
+  [id^="para-"][data-has-notes="1"] { cursor: pointer; }
+  [id^="para-"][data-has-notes="1"]:hover { background: rgba(163, 52, 31, .055); }
+
+  /* --- the marker rail ----------------------------------------------------
+     Sits in the left gutter beside the text column, so it never covers it;
+     it is hidden once the gutter is too narrow to hold it. */
+  .note-rail-wrap { position: fixed; top: var(--sticky-offset); z-index: 30;
+                    left: max(10px, calc(50% - 32rem - 2.5rem)); }
+  @media (max-width: 1180px) { .note-rail-wrap { display: none; } }
+  .note-rail { position: relative; width: 6px; border-radius: 9999px; background: var(--rule); }
+  .note-dot { position: absolute; left: 50%; width: 12px; height: 9px; margin-left: -6px;
+              border-radius: 9999px; padding: 0; border: 0;
+              background: color-mix(in srgb, var(--seal) 70%, transparent);
+              box-shadow: 0 0 0 2px var(--paper); z-index: 1; }
+  .note-dot:hover, .note-dot:focus-visible { background: var(--annot); z-index: 3; }
+  .note-dot.is-current { background: var(--annot); z-index: 2; }
+  .note-cursor { position: absolute; left: 50%; width: 8px; height: 8px; margin-left: -4px;
+                 border-radius: 9999px; background: var(--annot); z-index: 4;
+                 pointer-events: none; transition: top .1s linear; }
 
   .btn-primary { background: var(--ink); color: var(--paper); font-family: "IBM Plex Sans", sans-serif; }
   .btn-primary:hover { background: #2A3145; }
@@ -100,23 +166,6 @@ function icjApp() {
     esc(text = '') {
       return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     },
-    htmlFor(id) {
-      const list = (window.NOTES && window.NOTES[id]) ? window.NOTES[id] : [];
-      const hasFilter = this.selectedAuthors.size > 0;
-      const filtered = hasFilter ? list.filter(n => this.selectedAuthors.has((n.author || '').trim())) : list;
-      if (!filtered.length) return '<div class="text-sm text-neutral-500">No notes yet.</div>';
-      return filtered.map(n => {
-        let h = '';
-        h += '<div class="note-card mb-2">';
-        if (n.author) h += '<div class="text-[11px] tracking-wide text-neutral-600 mb-1">By ' + this.esc(n.author) + '</div>';
-        if (n.title)  h += '<div class="font-semibold mt-0.5">' + this.esc(n.title) + '</div>';
-        h += '<div class="text-sm leading-snug mt-1 text-neutral-700" data-note-body>' + this.linkify(n.text || '') + '</div>';
-        if (n.source) h += '<div class="text-xs mt-2 text-neutral-500">Source: ' + this.esc(n.source) + '</div>';
-        h += '</div>';
-        return h;
-      }).join('');
-    },
-    _tippies: [],
     init() {
       const computeAuthors = () => {
         window.AUTHORS = Array.from(new Set(
@@ -126,39 +175,118 @@ function icjApp() {
       };
       const run = () => {
         if (!window.NOTES || Object.keys(window.NOTES).length === 0) {
-          window.addEventListener('notes:ready', () => { computeAuthors(); this.refreshPopovers(); this.applyHighlights(); this.handleHashOnLoad(); }, { once: true });
+          window.addEventListener('notes:ready', () => { computeAuthors(); this.applyHighlights(); if (this.paneOpen) this.renderPane(); this.handleHashOnLoad(); }, { once: true });
         } else {
-          computeAuthors(); this.refreshPopovers(); this.applyHighlights(); this.handleHashOnLoad();
+          computeAuthors(); this.applyHighlights(); this.handleHashOnLoad();
         }
       };
       run();
-    },
-    refreshPopovers() {
-      this._tippies.forEach(t => t.destroy());
-      this._tippies = [];
-      const isMobile = window.matchMedia('(max-width: 640px)').matches;
-      document.querySelectorAll('[data-para]').forEach(el => {
-        const id = el.getAttribute('data-para');
-        const instance = tippy(el, {
-  allowHTML: true,
-  interactive: true,
-  theme: 'light-border',
-  animation: 'scale',
-  appendTo: () => document.body,
-  placement: isMobile ? 'bottom' : 'right-start',
-  trigger: isMobile ? 'click' : 'mouseenter focus',
-  offset: isMobile ? [0, 8] : [6, 0],
-  hideOnClick: true,
-  content: () => this.htmlFor(id),
-  popperOptions: {
-    modifiers: [
-      { name: 'preventOverflow', options: { padding: 8, altAxis: true } },
-      { name: 'flip', options: { fallbackPlacements: ['bottom', 'top', 'right', 'left'] } }
-    ]
-  }
-});
-        this._tippies.push(instance);
+
+      // One delegated listener: clicking *anywhere* on a paragraph that has
+      // notes opens them.  The paragraph rows are plain generated markup, so
+      // delegation is what keeps this working on every page.
+      document.addEventListener('click', (ev) => {
+        if (ev.target.closest('.note-pane')) return;          // clicks inside the pane
+        if (ev.defaultPrevented) return;
+        const row = ev.target.closest('[id^="para-"][data-has-notes="1"]');
+        if (!row) return;
+        ev.preventDefault();
+        this.openNote(row.id);
       });
+      window.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape' && this.paneOpen) { this.closePane(); }
+        else if (this.paneOpen && (ev.key === 'ArrowDown' || ev.key === 'j') && ev.altKey) { this.step(1); }
+        else if (this.paneOpen && (ev.key === 'ArrowUp' || ev.key === 'k') && ev.altKey) { this.step(-1); }
+      });
+      window.addEventListener('pane:open', (ev) => {
+        if (ev.detail && ev.detail.id) this.openNote(ev.detail.id);
+      });
+    },
+    // ---- the annotation pane ---------------------------------------------
+    // The pane's contents are plain properties filled in by renderPane(),
+    // not getters: Alpine binds x-html once and does not re-run an expression
+    // whose value is produced by a getter, so a getter left the pane showing
+    // its first, empty state.
+    paneOpen: false,
+    paneId: '',
+    paneKicker: '',
+    paneQuote: '',
+    paneHtml: '',
+    copied: false,
+    notedIds() {
+      const ids = [];
+      document.querySelectorAll('[id^="para-"][data-has-notes="1"]').forEach(el => ids.push(el.id));
+      return ids;
+    },
+    notesFor(id) {
+      const all = (window.NOTES && window.NOTES[id]) ? window.NOTES[id] : [];
+      if (this.selectedAuthors.size === 0) return all;
+      return all.filter(n => this.selectedAuthors.has((n.author || '').trim()));
+    },
+    notesHtml(list) {
+      if (!list.length) return '<div class="note-count">No annotations from the selected authors.</div>';
+      return list.map(n => {
+        let h = '<div class="note-card">';
+        if (n.author) h += '<div class="note-author">' + this.esc(n.author) + '</div>';
+        if (n.title)  h += '<div class="note-title">' + this.esc(n.title) + '</div>';
+        h += '<div class="note-body" data-note-body>' + this.linkify(n.text || '') + '</div>';
+        if (n.source) h += '<div class="note-source">Source: ' + this.esc(n.source) + '</div>';
+        return h + '</div>';
+      }).join('');
+    },
+    renderPane() {
+      const id = this.paneId;
+      if (!id) { this.paneKicker = this.paneQuote = this.paneHtml = ''; return; }
+      const ids = this.notedIds();
+      const at = ids.indexOf(id);
+      const list = this.notesFor(id);
+      this.paneKicker = at >= 0
+        ? 'Annotation ' + (at + 1) + ' of ' + ids.length
+        : (list.length === 1 ? '1 annotation' : list.length + ' annotations');
+      const el = document.getElementById(id);
+      const p = el ? el.querySelector('p') : null;
+      this.paneQuote = p ? p.innerHTML : '';
+      this.paneHtml = this.notesHtml(list);
+    },
+    setPaneOpen(open) {
+      this.paneOpen = open;
+      document.documentElement.classList.toggle('pane-open', open);
+      // Narrowing the column moves every paragraph, so the rail has to
+      // measure again once the reflow has settled.
+      setTimeout(() => {
+        try { window.dispatchEvent(new Event('noteMap:update')); } catch (e) {}
+      }, 240);
+    },
+    openNote(id) {
+      this.paneId = id;
+      this.setPaneOpen(true);
+      this.renderPane();
+      this.markSelected();
+      this.$nextTick(() => { const b = this.$refs.paneBody; if (b) b.scrollTop = 0; });
+    },
+    closePane() { this.setPaneOpen(false); this.markSelected(); },
+    markSelected() {
+      document.querySelectorAll('.is-selected').forEach(el => el.classList.remove('is-selected'));
+      if (this.paneOpen && this.paneId) {
+        const el = document.getElementById(this.paneId);
+        if (el) el.classList.add('is-selected');
+      }
+    },
+    step(delta) {
+      const ids = this.notedIds();
+      if (!ids.length) return;
+      let i = ids.indexOf(this.paneId);
+      if (i < 0) i = delta > 0 ? -1 : 0;
+      const id = ids[(i + delta + ids.length) % ids.length];
+      this.openNote(id);
+      scrollToIdWithOffset(id);
+    },
+    copyPaneLink() {
+      if (!this.paneId) return;
+      const url = new URL(window.location); url.hash = this.paneId;
+      navigator.clipboard.writeText(url.toString());
+      this.copied = true;
+      setTimeout(() => { this.copied = false; }, 1200);
     },
     applyHighlights() {
       const allParas = Array.from(document.querySelectorAll('[id^="para-"],[data-dimmable="1"]'));
@@ -178,14 +306,21 @@ function icjApp() {
         if (hasSelected) { const w = document.getElementById(id); if (w) { w.classList.add('hl'); w.classList.remove('dim'); } }
       });
     },
-    toggleAuthor(a) { a=(a||'').trim(); if (this.selectedAuthors.has(a)) this.selectedAuthors.delete(a); else this.selectedAuthors.add(a); this.applyHighlights(); this.refreshPopovers(); },
+    toggleAuthor(a) { a=(a||'').trim(); if (this.selectedAuthors.has(a)) this.selectedAuthors.delete(a); else this.selectedAuthors.add(a); this.applyHighlights(); if (this.paneOpen) this.renderPane(); },
     isActive(a) { return this.selectedAuthors.has((a||'').trim()); },
-    copyLink(id) {
-      const url = new URL(window.location); url.hash = id; navigator.clipboard.writeText(url.toString());
-      const el = document.querySelector(`[data-para='${id}']`);
-      if (el) { el.classList.add('ring-2','ring-emerald-400'); setTimeout(()=>el.classList.remove('ring-2','ring-emerald-400'),800); }
-    },
-    handleHashOnLoad() { if (location.hash) { const id = location.hash.slice(1); const el = document.getElementById(id); if (el) { el.scrollIntoView({behavior:'smooth', block:'start'}); el.classList.add('bg-yellow-50'); setTimeout(()=>el.classList.remove('bg-yellow-50'),1200); } } }
+    handleHashOnLoad() {
+      if (!location.hash) return;
+      const id = location.hash.slice(1);
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({behavior:'smooth', block:'start'});
+      el.classList.add('bg-yellow-50');
+      setTimeout(()=>el.classList.remove('bg-yellow-50'),1200);
+      // A deep link to an annotated paragraph should open its annotations,
+      // not just scroll to them.
+      const notes = (window.NOTES && window.NOTES[id]) || [];
+      if (notes.length) this.openNote(id);
+    }
   }
 }
 
@@ -215,45 +350,107 @@ function noteMap() {
     markers: [],
     activePos: 0,
     init: function () {
+      var self = this;
       this.compute();
       this.onScroll();
 
-      var self = this;
-      window.addEventListener('resize', function () { self.compute(); });
+      window.addEventListener('resize', function () { self.compute(); self.onScroll(); });
       window.addEventListener('scroll', function () { self.onScroll(); }, { passive: true });
-      window.addEventListener('noteMap:update', function () { self.compute(); });
+      window.addEventListener('noteMap:update', function () { self.compute(); self.onScroll(); });
       window.addEventListener('notes:ready', function () { self.compute(); self.onScroll(); });
+      // Web fonts change the text height, which moves every paragraph.
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { self.compute(); self.onScroll(); });
+      window.addEventListener('load', function () { self.compute(); self.onScroll(); });
     },
+    // Everything here is measured in one coordinate space: absolute document
+    // pixels.  The old version divided a paragraph's offsetTop (relative to
+    // its offsetParent) by main.scrollHeight (a different box altogether), so
+    // on a long document the markers drifted away from their paragraphs.
     compute: function () {
-      var container = document.querySelector('main') || document.body;
-      var total = container && container.scrollHeight ? container.scrollHeight : 1;
+      var rail = this.rail();
       var noted = getNotedElements();
+      var docHeight = Math.max(1, document.documentElement.scrollHeight);
       var arr = [];
 
       for (var i = 0; i < noted.length; i++) {
         var el = noted[i];
-        var pos = Math.min(98, Math.max(2, (el.offsetTop / total) * 100));
+        var rect = el.getBoundingClientRect();
+        var centre = rect.top + window.scrollY + Math.min(rect.height, 200) / 2;
         var count = (window.NOTES && window.NOTES[el.id]) ? window.NOTES[el.id].length : 1;
 
         arr.push({
           id: el.id,
-          pos: pos,
-          opacity: Math.min(1, 0.45 + count * 0.18),
-          tooltip: '¶' + el.id.replace('para-', '') + ' • ' +
-            count + ' note' + (count > 1 ? 's' : '')
+          y: centre,
+          pos: Math.min(100, Math.max(0, (centre / docHeight) * 100)),
+          count: count,
+          opacity: Math.min(1, 0.5 + count * 0.16),
+          label: this.labelFor(el),
+          tooltip: this.labelFor(el) + ' — ' + count + (count > 1 ? ' notes' : ' note')
         });
       }
 
-      this.markers = arr;
+      this.markers = this.spread(arr, rail);
+    },
+    rail: function () {
+      return document.querySelector('.note-rail');
+    },
+    // A dot is 12x9 on a 6px rail.  Without this, neighbouring notes pile up
+    // and the ones underneath cannot be seen or clicked.
+    spread: function (arr, rail) {
+      if (!arr.length) return arr;
+      var height = rail ? (rail.offsetHeight || 0) : 0;
+      var i;
+      if (height <= 0) {
+        // The rail is hidden at this width (narrow viewport).  Every marker
+        // still needs a position: leaving `top` undefined writes
+        // "top:undefinedpx" into the style attribute.
+        for (i = 0; i < arr.length; i++) arr[i].top = arr[i].pos;
+        return arr;
+      }
+      var pad = 6;
+      var limit = Math.max(pad, height - pad);
+      var usable = Math.max(1, limit - pad);
+      arr.sort(function (a, b) { return a.y - b.y; });
+      var gap = arr.length > 1
+        ? Math.min(10, Math.max(2.5, (usable - 4) / (arr.length - 1)))
+        : 0;
+
+      for (i = 0; i < arr.length; i++) {
+        arr[i].top = pad + (arr[i].pos / 100) * usable;
+      }
+      // Push down whatever collides with its predecessor...
+      for (i = 1; i < arr.length; i++) {
+        if (arr[i].top < arr[i - 1].top + gap) arr[i].top = arr[i - 1].top + gap;
+      }
+      // ...then pull back whatever that pushed off the end.
+      arr[arr.length - 1].top = Math.min(arr[arr.length - 1].top, limit);
+      for (i = arr.length - 2; i >= 0; i--) {
+        if (arr[i].top > arr[i + 1].top - gap) arr[i].top = arr[i + 1].top - gap;
+      }
+      for (i = 0; i < arr.length; i++) arr[i].top = Math.max(pad, arr[i].top);
+      return arr;
+    },
+    labelFor: function (el) {
+      var label = (el.getAttribute('data-label') || '').trim();
+      var p = el.querySelector('p');
+      var text = p ? (p.textContent || '').replace(/\s+/g, ' ').trim() : '';
+      if (text.length > 52) text = text.slice(0, 52).replace(/\s\S*$/, '') + '…';
+      var head = label && label !== '¶' ? label : '';
+      return (head ? head + ' · ' : '') + text;
     },
     onScroll: function () {
-      var container = document.querySelector('main') || document.body;
-      var total = container && container.scrollHeight ? container.scrollHeight : 1;
-      var y = window.scrollY + window.innerHeight * 0.25;
-      this.activePos = Math.min(98, Math.max(2, (y / total) * 100));
+      var rail = this.rail();
+      if (!rail) return;
+      var railTop = rail.getBoundingClientRect().top + window.scrollY;
+      var height = rail.offsetHeight || 0;
+      var y = window.scrollY + window.innerHeight * 0.32;
+      this.activePos = Math.min(height - 6, Math.max(6, y - railTop));
     },
     scrollTo: function (id) {
       scrollToIdWithOffset(id);
+      // The pane lives in the page-level Alpine component; announce the click
+      // rather than reaching into another component's internals.
+      try { window.dispatchEvent(new CustomEvent('pane:open', { detail: { id: id } })); } catch (e) {}
     }
   };
 }
@@ -275,7 +472,7 @@ function noteMap() {
 
 <body class="min-h-full font-ui" style="background: var(--paper); color: var(--ink);" x-init="init()">
 <header class="sticky top-0 z-40 backdrop-blur border-b" style="background: color-mix(in srgb, var(--paper) 92%, transparent); border-color: var(--rule);">
-  <div class="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
+  <div class="shell mx-auto max-w-5xl px-4 py-3 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3 min-w-0">
       <a href="__HOME__"
    class="seal-mark shrink-0"
@@ -302,26 +499,24 @@ function noteMap() {
     </div>
   </div>
 </header>
-<main class="mx-auto max-w-5xl px-4 py-8 prose">
+<main class="shell mx-auto max-w-5xl px-4 py-8 prose">
 
   <div x-data="noteMap()" x-init="init()"
        data-note-rail
-       class="hidden lg:block fixed z-30"
-       style="top: var(--sticky-offset);">
-    <div class="note-rail rounded-full relative" style="background: var(--rule); height: calc(100vh - var(--sticky-offset) - 24px);">
+       class="note-rail-wrap"
+       aria-hidden="true">
+    <div class="note-rail" style="height: calc(100vh - var(--sticky-offset) - 24px);">
       <template x-for="m in markers" :key="m.id">
-        <button
-          class="note-dot rounded-full absolute left-1/2 -translate-x-1/2 transition"
-          style="background: color-mix(in srgb, var(--seal) 70%, transparent); box-shadow: 0 0 0 2px var(--paper);"
-          onmouseover="this.style.background='var(--annot)'" onmouseout="this.style.background='color-mix(in srgb, var(--seal) 70%, transparent)'"
-          :style="`top:${m.pos}%; opacity:${m.opacity}; z-index:${10000 - (parseInt((m.id || '').replace(/[^0-9]/g, ''), 10) || 0)}`"
+        <button type="button"
+          class="note-dot focus-ring"
+          :class="paneId === m.id && paneOpen ? 'is-current' : ''"
+          :style="`top:${m.top}px; opacity:${m.opacity};`"
           @click="scrollTo(m.id)"
-          :title="m.tooltip">
+          :title="m.tooltip"
+          :aria-label="m.tooltip">
         </button>
       </template>
-      <div class="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full z-[1200]"
-           style="background: var(--annot);"
-           :style="`top:${activePos}%`"></div>
+      <div class="note-cursor" :style="`top:${activePos}px`"></div>
     </div>
   </div>
 
@@ -331,14 +526,37 @@ function noteMap() {
 </section>
 <div class="flex items-center gap-2.5 font-mono text-[13px] px-4 py-3 mb-6" style="color: var(--ink-soft); background: var(--paper-card); border: 1px solid var(--rule); border-left: 3px solid var(--annot);">
   <span style="color: var(--annot);">¶</span>
-  <span>Hover or tap paragraph markers to view annotations.</span>
+  <span>Click a highlighted paragraph to read its annotations.</span>
 </div>
 
 __BODY__
 __CLOSING__
 </main>
 
-<div class="fixed right-4 bottom-4 z-40" x-cloak x-data="jumpFirstNote({ headerSelector: '#site-header' })" x-init="init()">
+<!-- Annotations open here, on the right, Genius-style. Click a paragraph to
+     open the pane, another to switch, or click away / press Esc to dismiss. -->
+<div class="pane-scrim" x-cloak x-show="paneOpen" x-transition.opacity.duration.150ms @click="closePane()"></div>
+<aside class="note-pane" :class="paneOpen ? 'is-open' : ''" x-cloak
+       role="complementary" aria-label="Annotations">
+  <div class="pane-head">
+    <div class="pane-kicker" x-text="paneKicker"></div>
+    <div class="pane-tools">
+      <button type="button" class="pane-btn focus-ring" @click="step(-1)"
+              title="Previous annotated paragraph (Alt+↑)" aria-label="Previous annotated paragraph">↑</button>
+      <button type="button" class="pane-btn focus-ring" @click="step(1)"
+              title="Next annotated paragraph (Alt+↓)" aria-label="Next annotated paragraph">↓</button>
+      <button type="button" class="pane-btn focus-ring" @click="copyPaneLink()"
+              :title="copied ? 'Link copied' : 'Copy a link to this paragraph'"
+              aria-label="Copy a link to this paragraph"><span x-text="copied ? '✓' : '⧉'"></span></button>
+      <button type="button" class="pane-btn focus-ring" @click="closePane()"
+              title="Close (Esc)" aria-label="Close annotations">✕</button>
+    </div>
+  </div>
+  <blockquote class="pane-quote" x-html="paneQuote"></blockquote>
+  <div class="pane-body" x-ref="paneBody" x-html="paneHtml"></div>
+</aside>
+
+<div class="jump-wrap fixed right-4 bottom-4 z-40" x-cloak x-data="jumpFirstNote({ headerSelector: '#site-header' })" x-init="init()">
   <button @click="go()" class="btn-primary px-4 py-2.5 text-sm font-medium shadow transition-colors focus-ring" x-show="show" x-transition.opacity.duration.300>
     Jump to first annotation
 </button>
@@ -398,46 +616,6 @@ function jumpFirstNote(opts){
     }
   };
 }
-</script>
-
-<script>
-(function positionNoteRail() {
-  var rail = null, placedOnce = false;
-
-  function getRail() {
-    if (!rail) rail = document.querySelector('[data-note-rail]');
-    return rail;
-  }
-
-  function place() {
-    var el = getRail();
-    var main = document.querySelector('main') || document.body;
-    if (!el || !main) return;
-    var r = main.getBoundingClientRect();
-    var gap = 20;
-    var left = window.scrollX + r.left - gap - el.offsetWidth;
-    var minLeft = window.scrollX + 12;
-    el.style.left = Math.max(minLeft, left) + 'px';
-    placedOnce = true;
-  }
-
-  function onReady(fn) {
-    if (document.readyState === 'interactive' || document.readyState === 'complete') fn();
-    else window.addEventListener('DOMContentLoaded', fn, { once: true });
-  }
-
-  onReady(place);
-  window.addEventListener('load', place);
-  window.addEventListener('resize', place);
-  window.addEventListener('noteMap:update', place);
-
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
-
-  let tries = 0, iv = setInterval(function () {
-    if (placedOnce || ++tries > 20) return clearInterval(iv);
-    place();
-  }, 150);
-})();
 </script>
 
 </body>

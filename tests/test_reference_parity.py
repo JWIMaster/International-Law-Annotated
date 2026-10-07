@@ -1,13 +1,15 @@
-"""Parity with the page the project already publishes.
+"""Parity with the page the project used to publish.
 
-``texts/nicaragua-germany.html`` is the hand-checked output for the
-Nicaragua v. Germany order.  Converting ``materials/nicaragua-germany:/
+The hand-checked page for the Nicaragua v. Germany order is kept frozen at
+``tests/fixtures/reference/``.  Converting ``materials/nicaragua-germany:/
 Nicaragua v Germany.pdf`` should reproduce the same paragraphs: same
 boundaries, same wording, and the Word comments landing on the same content.
 
-That page is the reference for "does the text formatting look right", so it
-is also the regression test for it.  A handful of near-misses are tolerated
-(spacing, one stray character) but the structure has to hold.
+It is frozen rather than read from ``texts/`` because ``texts/`` now holds
+*this tool's* output: comparing a build against itself would assert nothing.
+The fixture is the last page a person checked by hand, so it is the standard
+for "does the text formatting look right".  A handful of near-misses are
+tolerated (spacing, one stray character) but the structure has to hold.
 """
 
 from __future__ import annotations
@@ -20,11 +22,14 @@ from tempfile import TemporaryDirectory
 
 from tests.helpers import ROOT
 
-from ilatool import pipeline, textutil
+from ilatool import annotations as ann_mod, migrate, pipeline, textutil
 
 PDF = ROOT / "materials" / "nicaragua-germany:" / "Nicaragua v Germany.pdf"
 COMMENTS = ROOT / "materials" / "nicaragua-germany:" / "Annotated_Nicaragua_v_Germany.docx"
-REFERENCE = ROOT / "texts" / "nicaragua-germany.html"
+#: The notes that were published with that page, kept beside it.
+REFERENCE_NOTES = (ROOT / "tests" / "fixtures" / "reference"
+                   / "nicaragua-germany-notes.reference.js")
+REFERENCE = ROOT / "tests" / "fixtures" / "reference" / "nicaragua-germany.reference.html"
 
 #: How many of the reference paragraphs must come out word for word.  One of
 #: them ("For these reasons,") is a stub the reference stops at, and OCR-grade
@@ -144,6 +149,74 @@ class NicaraguaParityTests(unittest.TestCase):
         joined = " ".join(b.text for b in self.source.blocks)
         self.assertIn("self-determination", joined)
         self.assertNotIn("selfdetermination", joined)
+
+
+@unittest.skipUnless(PDF.exists(), "the Nicaragua PDF is not present")
+@unittest.skipUnless(REFERENCE_NOTES.exists(), "the published notes are not present")
+class ReferenceNoteMigrationTests(unittest.TestCase):
+    """Notes published against the old page must survive a rebuild.
+
+    The old page keyed its notes by position (``para-18``); a rebuilt page
+    keys them by paragraph text.  Carrying them over by *renumbering* would
+    silently move every note to whatever is eighteenth now, so the migration
+    goes through the paragraph each note was actually attached to.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls._tmp = TemporaryDirectory()
+        tmp = Path(cls._tmp.name)
+        cls.published = ann_mod.parse_notes_js(REFERENCE_NOTES.read_text(encoding="utf-8"))
+        cls.report = pipeline.run(pipeline.RunRequest(
+            source=PDF,
+            annotations=[REFERENCE_NOTES] + ([COMMENTS] if COMMENTS.exists() else []),
+            out_html=tmp / "migrated.html",
+            out_notes=tmp / "migrated-notes.js",
+            out_source=tmp / "migrated.txt",
+            meta={"TITLE": "Nicaragua v Germany"},
+            build=pipeline.BuildOptions(migrate_from=REFERENCE),
+        ))
+        cls.migrated = (ann_mod.parse_notes_js((tmp / "migrated-notes.js").read_text())
+                        if cls.report.ok else {})
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmp.cleanup()
+
+    def _key(self, note):
+        return (note.get("author", "").strip(),
+                textutil.normalize_for_match(note.get("text", "")))
+
+    def test_the_build_succeeds_with_nothing_left_unplaced(self):
+        self.assertTrue(self.report.ok, self.report.error)
+        self.assertEqual(self.report.result.match.unplaced, [])
+
+    def test_every_published_note_is_still_on_the_page(self):
+        before = {self._key(n) for v in self.published.values() for n in v}
+        after = {self._key(n) for v in self.migrated.values() for n in v}
+        missing = sorted(before - after)
+        self.assertEqual(missing, [], f"{len(missing)} published note(s) were lost")
+
+    def test_no_note_was_renumbered_onto_a_different_paragraph(self):
+        """Each migrated note sits on text the old page also associated it with."""
+        reference_text = {pid: migrate.paragraph_texts(
+            REFERENCE.read_text(encoding="utf-8")).get(pid, "")
+            for pid in self.published}
+        by_id = {b.id: b for b in self.report.result.source.paragraphs}
+        for old_id, entries in self.published.items():
+            old_text = textutil.normalize_for_match(reference_text.get(old_id, ""))
+            if not old_text:
+                continue
+            for note in entries:
+                key = self._key(note)
+                target = next((pid for pid, notes in self.migrated.items()
+                               if any(self._key(n) == key for n in notes)), None)
+                self.assertIsNotNone(target, f"{key[1][:40]!r} lost its paragraph")
+                new_text = textutil.normalize_for_match(by_id[target].text)
+                self.assertTrue(
+                    old_text in new_text or new_text in old_text,
+                    f"note moved to unrelated text: {new_text[:60]!r} "
+                    f"was {old_text[:60]!r}")
 
 
 if __name__ == "__main__":  # pragma: no cover
